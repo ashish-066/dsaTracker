@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureVault – Dashboard</title>
+    <meta name="description" content="SecureVault JWT Dashboard – Manage and test your secured API endpoints" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0e1a;
+            --sidebar: #0d1224;
+            --surface: rgba(255, 255, 255, 0.04);
+            --card: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #6c63ff;
+            --accent2: #a78bfa;
+            --success: #34d399;
+            --error: #f87171;
+            --warn: #fbbf24;
+            --text: #e2e8f0;
+            --muted: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            height: 64px;
+            background: rgba(13, 18, 36, 0.9);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .nav-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .nav-email {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .nav-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 7px 16px;
+            background: rgba(248, 113, 113, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            border-radius: 8px;
+            color: var(--error);
+            font-size: 13px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        /* Main layout */
+        main {
+            flex: 1;
+            padding: 32px;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Welcome banner */
+        .banner {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(167, 139, 250, 0.10));
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .banner h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .banner p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .banner-icon {
+            font-size: 56px;
+            line-height: 1;
+        }
+
+        /* Stats row */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            animation: fadeIn 0.6s ease;
+            transition: border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(108, 99, 255, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+        }
+
+        .stat-val {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Token section */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(52, 211, 153, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        .badge.warn {
+            background: rgba(251, 191, 36, 0.12);
+            color: var(--warn);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .token-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .token-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--success);
+            word-break: break-all;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .token-display.empty {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.85;
+        }
+
+        .btn-ghost {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--accent2);
+        }
+
+        .btn-danger {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+            color: var(--error);
+        }
+
+        .btn-danger:hover {
+            background: rgba(248, 113, 113, 0.2);
+        }
+
+        /* API Tester */
+        .api-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            animation: fadeIn 0.7s ease;
+        }
+
+        .endpoint-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .endpoint-item:hover {
+            border-color: var(--accent);
+            background: rgba(108, 99, 255, 0.08);
+        }
+
+        .endpoint-item.selected {
+            border-color: var(--accent);
+            background: rgba(108, 99, 255, 0.12);
+        }
+
+        .method {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 46px;
+            text-align: center;
+        }
+
+        .method.get {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+        }
+
+        .method.post {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+
+        .endpoint-path {
+            font-size: 13px;
+            font-family: monospace;
+            flex: 1;
+        }
+
+        .endpoint-desc {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .lock-icon {
+            font-size: 14px;
+        }
+
+        .response-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--text);
+            min-height: 80px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .response-box.success-color {
+            color: var(--success);
+        }
+
+        .response-box.error-color {
+            color: var(--error);
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .status-pill {
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pill.s2 {
+            background: rgba(52, 211, 153, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        .status-pill.s4 {
+            background: rgba(248, 113, 113, 0.12);
+            color: var(--error);
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        @media (max-width: 640px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .banner {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            nav {
+                padding: 0 16px;
+            }
+
+            main {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">🔐</div>
+            SecureVault
+        </div>
+        <div class="nav-user">
+            <span>Signed in as <span class="nav-email" id="navEmail">user</span></span>
+            <div class="nav-avatar" id="navAvatar">?</div>
+            <button class="logout-btn" onclick="logout()">Sign out</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Banner -->
+        <div class="banner">
+            <div>
+                <h2>Welcome back, <span id="welcomeName">User</span>! 👋</h2>
+                <p>Your JWT authentication session is active and secured.</p>
+            </div>
+            <div class="banner-icon">🛡️</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon">🔑</div>
+                <div>
+                    <div class="stat-val">JWT</div>
+                    <div class="stat-label">Authentication method</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div>
+                    <div class="stat-val" id="tokenExpiry">30 min</div>
+                    <div class="stat-label">Token expiry</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div>
+                    <div class="stat-val">:8080</div>
+                    <div class="stat-label">Server port</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Token Panel -->
+        <div class="token-panel">
+            <div class="section-title">
+                🎫 Your JWT Token
+                <span class="badge" id="tokenBadge">Active</span>
+            </div>
+            <div class="token-display" id="tokenDisplay">No token found. Please log in first.</div>
+            <div class="btn-row">
+                <button class="btn btn-ghost" onclick="copyToken()">📋 Copy token</button>
+                <button class="btn btn-danger" onclick="clearToken()">🗑️ Clear token</button>
+                <button class="btn btn-ghost" onclick="window.location.href='/login.html'">🔄 Re-login</button>
+            </div>
+        </div>
+
+        <!-- API Tester -->
+        <div class="api-panel">
+            <div class="section-title">🧪 API Endpoint Tester</div>
+
+            <div class="endpoint-list">
+                <div class="endpoint-item selected" id="ep0" onclick="selectEndpoint(0)">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/auth/welcome</span>
+                    <span class="endpoint-desc">Public – no auth needed</span>
+                    <span class="lock-icon">🔓</span>
+                </div>
+                <div class="endpoint-item" id="ep1" onclick="selectEndpoint(1)">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/auth/user/userProfile</span>
+                    <span class="endpoint-desc">Requires ROLE_USER</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div class="endpoint-item" id="ep2" onclick="selectEndpoint(2)">
+                    <span class="method get">GET</span>
+                    <span class="endpoint-path">/auth/admin/adminProfile</span>
+                    <span class="endpoint-desc">Requires ROLE_ADMIN</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+            </div>
+
+            <div class="btn-row" style="margin-bottom:14px">
+                <button class="btn btn-primary" id="callBtn" onclick="callEndpoint()">▶ Send Request</button>
+            </div>
+
+            <div class="status-bar" id="statusBar" style="display:none">
+                <span style="color:var(--muted)">Status:</span>
+                <span class="status-pill" id="statusPill"></span>
+                <span style="color:var(--muted)" id="statusTime"></span>
+            </div>
+
+            <div class="response-box" id="responseBox">Response will appear here…</div>
+        </div>
+    </main>
+
+    <script>
+        const ENDPOINTS = [
+            { method: 'GET', path: '/auth/welcome', auth: false },
+            { method: 'GET', path: '/auth/user/userProfile', auth: true },
+            { method: 'GET', path: '/auth/admin/adminProfile', auth: true },
+        ];
+        let selectedIdx = 0;
+
+        function init() {
+            const token = localStorage.getItem('jwt_token');
+            const email = localStorage.getItem('jwt_email') || 'user';
+
+            document.getElementById('navEmail').textContent = email;
+            document.getElementById('navAvatar').textContent = email[0].toUpperCase();
+            document.getElementById('welcomeName').textContent = email.split('@')[0];
+
+            if (token) {
+                document.getElementById('tokenDisplay').textContent = token;
+                document.getElementById('tokenDisplay').classList.remove('empty');
+
+                // Decode expiry
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const exp = new Date(payload.exp * 1000);
+                    const now = new Date();
+                    const diff = Math.round((exp - now) / 60000);
+                    if (diff > 0) {
+                        document.getElementById('tokenExpiry').textContent = diff + ' min';
+                    } else {
+                        document.getElementById('tokenExpiry').textContent = 'Expired';
+                        document.getElementById('tokenBadge').textContent = 'Expired';
+                        document.getElementById('tokenBadge').className = 'badge warn';
+                    }
+                } catch (e) { }
+            } else {
+                document.getElementById('tokenDisplay').textContent = 'No token found. Please log in first.';
+                document.getElementById('tokenDisplay').classList.add('empty');
+                document.getElementById('tokenBadge').textContent = 'None';
+                document.getElementById('tokenBadge').className = 'badge warn';
+            }
+        }
+
+        function selectEndpoint(idx) {
+            selectedIdx = idx;
+            ENDPOINTS.forEach((_, i) => {
+                document.getElementById('ep' + i).classList.toggle('selected', i === idx);
+            });
+        }
+
+        async function callEndpoint() {
+            const ep = ENDPOINTS[selectedIdx];
+            const token = localStorage.getItem('jwt_token');
+            const btn = document.getElementById('callBtn');
+            const box = document.getElementById('responseBox');
+            const statusBar = document.getElementById('statusBar');
+            const statusPill = document.getElementById('statusPill');
+            const statusTime = document.getElementById('statusTime');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Sending…';
+            box.className = 'response-box';
+            box.textContent = 'Calling ' + ep.path + '…';
+            statusBar.style.display = 'none';
+
+            const headers = { 'Content-Type': 'application/json' };
+            if (ep.auth && token) { headers['Authorization'] = 'Bearer ' + token; }
+
+            const t0 = Date.now();
+            try {
+                const res = await fetch(ep.path, { method: ep.method, headers });
+                const elapsed = Date.now() - t0;
+                const text = await res.text();
+
+                statusBar.style.display = 'flex';
+                statusPill.textContent = res.status + ' ' + res.statusText;
+                statusPill.className = 'status-pill ' + (res.ok ? 's2' : 's4');
+                statusTime.textContent = elapsed + 'ms';
+
+                if (res.ok) {
+                    box.textContent = text || '(empty response)';
+                    box.classList.add('success-color');
+                } else {
+                    box.textContent = '⚠️  ' + res.status + ' ' + res.statusText + '\n\n' + text;
+                    box.classList.add('error-color');
+                }
+            } catch (err) {
+                box.textContent = '❌ Network error: ' + err.message;
+                box.classList.add('error-color');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '▶ Send Request';
+            }
+        }
+
+        function copyToken() {
+            const t = localStorage.getItem('jwt_token');
+            if (!t) return alert('No token to copy.');
+            navigator.clipboard.writeText(t);
+            const btn = event.target;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => { btn.textContent = '📋 Copy token'; }, 2000);
+        }
+
+        function clearToken() {
+            if (confirm('Clear the stored JWT token?')) {
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('jwt_email');
+                window.location.reload();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('jwt_email');
+            window.location.href = '/login.html';
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
