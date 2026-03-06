@@ -49,7 +49,8 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**",
                                 "/auth/welcome",
                                 "/auth/addNewUser",
-                                "/auth/generateToken")
+                                "/auth/generateToken",
+                                "/api/leetcode/**")
                         .permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
