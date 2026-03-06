@@ -1,0 +1,162 @@
+{
+  "username": "rKT7SyTxg2",
+  "email": "demo@test.com",
+  "fetchedAt": "2026-02-25T16:35:26.272Z",
+  "profile": {
+    "ranking": 2897834,
+    "totalSolved": 37,
+    "easySolved": 31,
+    "mediumSolved": 5,
+    "hardSolved": 1,
+    "acceptanceRate": 0,
+    "recentSubmissions": []
+  },
+  "contests": {
+    "contestAttend": 10,
+    "contestRating": 1421,
+    "contestParticipation": [
+      {
+        "attended": true,
+        "rating": 1456.264,
+        "ranking": 17980,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 5282,
+        "contest": {
+          "title": "Biweekly Contest 163",
+          "startTime": 1755354600
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1395.494,
+        "ranking": 27942,
+        "trendDirection": "DOWN",
+        "problemsSolved": 0,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 0,
+        "contest": {
+          "title": "Weekly Contest 463",
+          "startTime": 1755397800
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1389.188,
+        "ranking": 16984,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 771,
+        "contest": {
+          "title": "Weekly Contest 464",
+          "startTime": 1756002600
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1388.126,
+        "ranking": 16013,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 2180,
+        "contest": {
+          "title": "Biweekly Contest 164",
+          "startTime": 1756564200
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1374.267,
+        "ranking": 17120,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 2915,
+        "contest": {
+          "title": "Weekly Contest 465",
+          "startTime": 1756607400
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1355.85,
+        "ranking": 18076,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 4697,
+        "contest": {
+          "title": "Weekly Contest 469",
+          "startTime": 1759026600
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1339.889,
+        "ranking": 17855,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 3010,
+        "contest": {
+          "title": "Weekly Contest 470",
+          "startTime": 1759631400
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1324.472,
+        "ranking": 20737,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 4084,
+        "contest": {
+          "title": "Weekly Contest 471",
+          "startTime": 1760236200
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1320.701,
+        "ranking": 16238,
+        "trendDirection": "DOWN",
+        "problemsSolved": 1,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 2398,
+        "contest": {
+          "title": "Weekly Contest 472",
+          "startTime": 1760841000
+        }
+      },
+      {
+        "attended": true,
+        "rating": 1421.617,
+        "ranking": 1996,
+        "trendDirection": "UP",
+        "problemsSolved": 3,
+        "totalProblems": 4,
+        "finishTimeInSeconds": 4918,
+        "contest": {
+          "title": "Weekly Contest 477",
+          "startTime": 1763865000
+        }
+      }
+    ]
+  },
+  "submissions_2024": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  },
+  "submissions_2025": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  }
+}

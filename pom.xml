@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.8</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -86,7 +86,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.0.8</version>
                 <configuration>
                     <mainClass>com.example.dsa.DsaApplication</mainClass>
                 </configuration>

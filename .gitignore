@@ -35,3 +35,17 @@ build/
 ### macOS ###
 .DS_Store
 **/.DS_Store
+
+### Sensitive config (contains DB passwords) ###
+src/main/resources/application.properties
+
+### Logs ###
+*.log
+
+### Frontend ###
+frontend/website/node_modules/
+frontend/website/dist/
+frontend/website/.vite/
+
+### Misc ###
+.vite/

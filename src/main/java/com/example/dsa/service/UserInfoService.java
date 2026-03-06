@@ -33,8 +33,18 @@ public class UserInfoService implements org.springframework.security.core.userde
     }
 
     public String addUser(UserInfo userInfo) {
+        if (repository.findByEmail(userInfo.getEmail()).isPresent()) {
+            return "Email already registered";
+        }
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User added successfully!";
+    }
+
+    /** Returns the DB id of the user with the given email, as a String. */
+    public String findIdByEmail(String email) {
+        return repository.findByEmail(email)
+                .map(u -> String.valueOf(u.getId()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 }

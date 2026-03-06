@@ -7,7 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DsaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DsaApplication.class, args);
+        try {
+            SpringApplication.run(DsaApplication.class, args);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.err.println("STARTUP FAILED");
+        }
     }
 
 }

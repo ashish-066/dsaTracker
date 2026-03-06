@@ -1,0 +1,30 @@
+{
+  "username": "FHHcSrCmYL",
+  "email": "demo@test.com",
+  "fetchedAt": "2026-02-25T16:58:26.264Z",
+  "profile": {
+    "ranking": 5000001,
+    "totalSolved": 0,
+    "easySolved": 0,
+    "mediumSolved": 0,
+    "hardSolved": 0,
+    "acceptanceRate": 0,
+    "recentSubmissions": []
+  },
+  "contests": {
+    "contestRating": 0,
+    "contestParticipation": []
+  },
+  "submissions_2024": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  },
+  "submissions_2025": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "username": {
+    "username": "FHHcSrCmYL",
+    "verifiedAt": "2026-02-24T13:12:23.897Z"
+  },
+  "email": "demo@test.com",
+  "fetchedAt": "2026-02-24T16:36:20.197Z",
+  "profile": null,
+  "contests": {
+    "contestRating": 0,
+    "contestParticipation": []
+  },
+  "submissions_2024": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  },
+  "submissions_2025": {
+    "activeYears": [],
+    "streak": 0,
+    "totalActiveDays": 0,
+    "submissionCalendar": []
+  }
+}

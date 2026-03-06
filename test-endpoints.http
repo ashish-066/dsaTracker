@@ -1,8 +1,0 @@
-### Get submissions for a username
-GET http://localhost:8080/api/leetcode/submissions/your_leetcode_username
-
-### Verify submission for a problem
-POST http://localhost:8080/api/leetcode/verify-submission?username=your_leetcode_username&problemSlug=two-sum
-
-### Test with empty response
-GET http://localhost:8080/api/leetcode/submissions/invaliduserxyz123

@@ -5,6 +5,7 @@ import com.example.dsa.entity.UserInfo;
 import com.example.dsa.service.JwtService;
 import com.example.dsa.service.UserInfoService;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +33,12 @@ public class UserController {
     }
 
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        return service.addUser(userInfo);
+    public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
+        String result = service.addUser(userInfo);
+        if (result.equals("Email already registered")) {
+            return ResponseEntity.badRequest().body(result);
+        }
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/generateToken")

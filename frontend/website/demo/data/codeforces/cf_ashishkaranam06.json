@@ -1,0 +1,1366 @@
+{
+  "handle": "ashishkaranam06",
+  "fetchedAt": "2026-02-25T16:58:26.880Z",
+  "info": {
+    "contribution": 0,
+    "lastOnlineTimeSeconds": 1771984840,
+    "rating": 610,
+    "friendOfCount": 0,
+    "titlePhoto": "https://userpic.codeforces.org/no-title.jpg",
+    "rank": "newbie",
+    "handle": "ashishkaranam06",
+    "maxRating": 610,
+    "avatar": "https://userpic.codeforces.org/no-avatar.jpg",
+    "registrationTimeSeconds": 1730038388,
+    "maxRank": "newbie"
+  },
+  "ratingHistory": [
+    {
+      "contestId": 2035,
+      "contestName": "Codeforces Global Round 27",
+      "handle": "ashishkaranam06",
+      "rank": 9175,
+      "ratingUpdateTimeSeconds": 1730050500,
+      "oldRating": 0,
+      "newRating": 393
+    },
+    {
+      "contestId": 2036,
+      "contestName": "Codeforces Round 984 (Div. 3)",
+      "handle": "ashishkaranam06",
+      "rank": 18782,
+      "ratingUpdateTimeSeconds": 1730566200,
+      "oldRating": 393,
+      "newRating": 610
+    }
+  ],
+  "recentSubmissions": [
+    {
+      "id": 364204283,
+      "contestId": 4,
+      "creationTimeSeconds": 1771943777,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 364194619,
+      "contestId": 4,
+      "creationTimeSeconds": 1771938898,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 30,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 363977971,
+      "contestId": 4,
+      "creationTimeSeconds": 1771816105,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "COMPILATION_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 0,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 363977925,
+      "contestId": 4,
+      "creationTimeSeconds": 1771816040,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "RUNTIME_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 156,
+      "memoryConsumedBytes": 2252800
+    },
+    {
+      "id": 298445341,
+      "contestId": 112,
+      "creationTimeSeconds": 1735144429,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 112,
+        "index": "A",
+        "name": "Petya and Strings",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 112,
+        "participantId": 200189295,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1315051200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 53,
+      "timeConsumedMillis": 154,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298444914,
+      "contestId": 112,
+      "creationTimeSeconds": 1735144224,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 112,
+        "index": "A",
+        "name": "Petya and Strings",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 112,
+        "participantId": 200189295,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1315051200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 122,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298440786,
+      "contestId": 263,
+      "creationTimeSeconds": 1735142242,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 263,
+        "index": "A",
+        "name": "Beautiful Matrix",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 263,
+        "participantId": 200189290,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1358350200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 25,
+      "timeConsumedMillis": 154,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298440319,
+      "contestId": 263,
+      "creationTimeSeconds": 1735142023,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 263,
+        "index": "A",
+        "name": "Beautiful Matrix",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 263,
+        "participantId": 200189290,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1358350200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 92,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298440194,
+      "contestId": 263,
+      "creationTimeSeconds": 1735141969,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 263,
+        "index": "A",
+        "name": "Beautiful Matrix",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 263,
+        "participantId": 200189290,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1358350200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 92,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298439823,
+      "contestId": 263,
+      "creationTimeSeconds": 1735141785,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 263,
+        "index": "A",
+        "name": "Beautiful Matrix",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 263,
+        "participantId": 200189290,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1358350200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "RUNTIME_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 124,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298439511,
+      "contestId": 263,
+      "creationTimeSeconds": 1735141632,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 263,
+        "index": "A",
+        "name": "Beautiful Matrix",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 263,
+        "participantId": 200189290,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1358350200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "RUNTIME_ERROR",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 122,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298436725,
+      "contestId": 50,
+      "creationTimeSeconds": 1735140296,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 50,
+        "index": "A",
+        "name": "Domino piling",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "greedy",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 50,
+        "participantId": 200189258,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1292862000
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 35,
+      "timeConsumedMillis": 124,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298435977,
+      "contestId": 158,
+      "creationTimeSeconds": 1735139955,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 158,
+        "index": "A",
+        "name": "Next Round",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "*special",
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 158,
+        "participantId": 200180714,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1330804800
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 50,
+      "timeConsumedMillis": 154,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298419730,
+      "contestId": 282,
+      "creationTimeSeconds": 1735132613,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 282,
+        "index": "A",
+        "name": "Bit++",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 282,
+        "participantId": 197297183,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1363188600
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 36,
+      "timeConsumedMillis": 77,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 298407509,
+      "contestId": 282,
+      "creationTimeSeconds": 1735126457,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 282,
+        "index": "A",
+        "name": "Bit++",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 282,
+        "participantId": 197297183,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1363188600
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 46,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 291494750,
+      "contestId": 231,
+      "creationTimeSeconds": 1731610483,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 231,
+        "index": "A",
+        "name": "Team",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "greedy"
+        ]
+      },
+      "author": {
+        "contestId": 231,
+        "participantId": 196911109,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1349623800
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 21,
+      "timeConsumedMillis": 216,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 291492658,
+      "contestId": 71,
+      "creationTimeSeconds": 1731609312,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 71,
+        "index": "A",
+        "name": "Way Too Long Words",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 800,
+        "tags": [
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 71,
+        "participantId": 196910263,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1301410800
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 20,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 291491745,
+      "contestId": 4,
+      "creationTimeSeconds": 1731608792,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 20,
+      "timeConsumedMillis": 156,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290494298,
+      "contestId": 798,
+      "creationTimeSeconds": 1731046118,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 99,
+      "timeConsumedMillis": 77,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290493964,
+      "contestId": 798,
+      "creationTimeSeconds": 1731045940,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 2,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290493199,
+      "contestId": 798,
+      "creationTimeSeconds": 1731045471,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 7,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290493031,
+      "contestId": 798,
+      "creationTimeSeconds": 1731045360,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 4,
+      "timeConsumedMillis": 92,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290492494,
+      "contestId": 798,
+      "creationTimeSeconds": 1731045049,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 46,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290492265,
+      "contestId": 798,
+      "creationTimeSeconds": 1731044889,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 798,
+        "index": "A",
+        "name": "Mike and palindrome",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "brute force",
+          "constructive algorithms",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 798,
+        "participantId": 196412923,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1492785300
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 61,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290434823,
+      "contestId": 1111,
+      "creationTimeSeconds": 1730998833,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 1111,
+        "index": "A",
+        "name": "Superhero Transformation",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 1000,
+        "tags": [
+          "implementation",
+          "strings"
+        ]
+      },
+      "author": {
+        "contestId": 1111,
+        "participantId": 196383303,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1549208100
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 34,
+      "timeConsumedMillis": 77,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290379036,
+      "contestId": 1066,
+      "creationTimeSeconds": 1730981286,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 1066,
+        "index": "A",
+        "name": "Vova and Train",
+        "type": "PROGRAMMING",
+        "rating": 1100,
+        "tags": [
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 1066,
+        "participantId": 196334196,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1539354900
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 14,
+      "timeConsumedMillis": 124,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290328045,
+      "contestId": 1066,
+      "creationTimeSeconds": 1730955965,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 1066,
+        "index": "A",
+        "name": "Vova and Train",
+        "type": "PROGRAMMING",
+        "rating": 1100,
+        "tags": [
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 1066,
+        "participantId": 196334196,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1539354900
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "TIME_LIMIT_EXCEEDED",
+      "testset": "TESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 1000,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290327820,
+      "contestId": 1066,
+      "creationTimeSeconds": 1730955755,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 1066,
+        "index": "A",
+        "name": "Vova and Train",
+        "type": "PROGRAMMING",
+        "rating": 1100,
+        "tags": [
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 1066,
+        "participantId": 196334196,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1539354900
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 62,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 290327255,
+      "contestId": 1066,
+      "creationTimeSeconds": 1730955224,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 1066,
+        "index": "A",
+        "name": "Vova and Train",
+        "type": "PROGRAMMING",
+        "rating": 1100,
+        "tags": [
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 1066,
+        "participantId": 196334196,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1539354900
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "TIME_LIMIT_EXCEEDED",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 1000,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 289562394,
+      "contestId": 2036,
+      "creationTimeSeconds": 1730563696,
+      "relativeTimeSeconds": 5596,
+      "problem": {
+        "contestId": 2036,
+        "index": "A",
+        "name": "Quintomania",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 2036,
+        "participantId": 195981712,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1730558100
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 3,
+      "timeConsumedMillis": 78,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 289548668,
+      "contestId": 2036,
+      "creationTimeSeconds": 1730562584,
+      "relativeTimeSeconds": 4484,
+      "problem": {
+        "contestId": 2036,
+        "index": "A",
+        "name": "Quintomania",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "implementation"
+        ]
+      },
+      "author": {
+        "contestId": 2036,
+        "participantId": 195981712,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "startTimeSeconds": 1730558100
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 61,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288361097,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730048384,
+      "relativeTimeSeconds": 8684,
+      "problem": {
+        "contestId": 2035,
+        "index": "B",
+        "name": "Everyone Loves Tres",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 900,
+        "tags": [
+          "constructive algorithms",
+          "greedy",
+          "math",
+          "number theory"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 6,
+      "timeConsumedMillis": 77,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288360288,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730048237,
+      "relativeTimeSeconds": 8537,
+      "problem": {
+        "contestId": 2035,
+        "index": "B",
+        "name": "Everyone Loves Tres",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 900,
+        "tags": [
+          "constructive algorithms",
+          "greedy",
+          "math",
+          "number theory"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "RUNTIME_ERROR",
+      "testset": "PRETESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 61,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288354598,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730047242,
+      "relativeTimeSeconds": 7542,
+      "problem": {
+        "contestId": 2035,
+        "index": "B",
+        "name": "Everyone Loves Tres",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 900,
+        "tags": [
+          "constructive algorithms",
+          "greedy",
+          "math",
+          "number theory"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "TIME_LIMIT_EXCEEDED",
+      "testset": "PRETESTS",
+      "passedTestCount": 1,
+      "timeConsumedMillis": 1000,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288353510,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730047037,
+      "relativeTimeSeconds": 7337,
+      "problem": {
+        "contestId": 2035,
+        "index": "B",
+        "name": "Everyone Loves Tres",
+        "type": "PROGRAMMING",
+        "points": 500,
+        "rating": 900,
+        "tags": [
+          "constructive algorithms",
+          "greedy",
+          "math",
+          "number theory"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "PRETESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 921,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288334898,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730043926,
+      "relativeTimeSeconds": 4226,
+      "problem": {
+        "contestId": 2035,
+        "index": "A",
+        "name": "Sliding",
+        "type": "PROGRAMMING",
+        "points": 250,
+        "rating": 800,
+        "tags": [
+          "implementation",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "OK",
+      "testset": "TESTS",
+      "passedTestCount": 4,
+      "timeConsumedMillis": 124,
+      "memoryConsumedBytes": 0
+    },
+    {
+      "id": 288332626,
+      "contestId": 2035,
+      "creationTimeSeconds": 1730043574,
+      "relativeTimeSeconds": 3874,
+      "problem": {
+        "contestId": 2035,
+        "index": "A",
+        "name": "Sliding",
+        "type": "PROGRAMMING",
+        "points": 250,
+        "rating": 800,
+        "tags": [
+          "implementation",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 2035,
+        "participantId": 195435434,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "CONTESTANT",
+        "ghost": false,
+        "room": 73,
+        "startTimeSeconds": 1730039700
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "RUNTIME_ERROR",
+      "testset": "PRETESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 61,
+      "memoryConsumedBytes": 0
+    }
+  ]
+}
