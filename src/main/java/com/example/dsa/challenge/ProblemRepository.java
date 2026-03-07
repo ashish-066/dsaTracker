@@ -11,6 +11,10 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
     Optional<Problem> findByTitleSlug(String titleSlug);
 
+    List<Problem> findByTopicIgnoreCaseAndDifficultyIgnoreCase(String topic, String difficulty);
+
+    List<Problem> findByTopicIgnoreCase(String topic);
+
     @Query("SELECT p FROM Problem p WHERE LOWER(p.difficulty) = LOWER(:diff) ORDER BY RAND()")
     List<Problem> findRandomByDifficulty(@Param("diff") String difficulty);
 

@@ -47,7 +47,8 @@ public class SecurityConfig {
                         // Public auth endpoints
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
                         // Public platform APIs (username verification during onboarding)
-                        .requestMatchers("/api/leetcode/**", "/api/codeforces/**").permitAll()
+                        .requestMatchers("/api/leetcode/**", "/api/codeforces/**", "/challenges/problems/seed")
+                        .permitAll()
                         // Role-based protected endpoints
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")

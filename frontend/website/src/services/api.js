@@ -33,6 +33,18 @@ async function authFetch(path, options = {}) {
     return fetch(`${API_BASE}${path}`, { ...options, headers })
 }
 
+/** Convenience: authenticated fetch that parses JSON and returns {ok, data, error} */
+export async function authFetchJson(path, options = {}) {
+    try {
+        const res = await authFetch(path, options)
+        const data = await res.json()
+        if (res.ok) return { ok: true, data }
+        return { ok: false, error: data?.error || data?.message || `HTTP ${res.status}` }
+    } catch (e) {
+        return { ok: false, error: e.message }
+    }
+}
+
 /* ── localStorage helpers (for UI state only) ── */
 
 const STORAGE_KEY = 'algoledger_platforms'
