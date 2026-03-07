@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 const NAV_ITEMS = [
     { icon: '⊞', label: 'Dashboard', path: '/dashboard' },
     { icon: '📋', label: 'Problems', path: '/problems' },
+    { icon: '⚔️', label: 'Challenges', path: '/challenges' },
     { icon: '💡', label: 'Recommendations', path: '/recommendations' },
     { icon: '👤', label: 'Profile', path: '/profile' },
 ]

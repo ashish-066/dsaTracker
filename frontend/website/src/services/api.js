@@ -197,3 +197,78 @@ export async function fetchLeetCodeSubmissions(username) {
         return { success: false, error: e.message }
     }
 }
+
+/* ─────────────────────────────────────────────
+   CHALLENGE / CONTEST APIs
+───────────────────────────────────────────── */
+
+export async function createChallenge(opponentEmail, contestType) {
+    try {
+        const res = await authFetch('/challenges', {
+            method: 'POST',
+            body: JSON.stringify({ opponentEmail, contestType }),
+        })
+        const data = await res.json()
+        if (res.ok) return { success: true, data }
+        return { success: false, error: data.error || 'Failed to create challenge' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function getChallenge(id) {
+    try {
+        const res = await authFetch(`/challenges/${id}`)
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: 'Not found' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function acceptChallenge(id) {
+    try {
+        const res = await authFetch(`/challenges/${id}/accept`, { method: 'POST' })
+        const data = await res.json()
+        if (res.ok) return { success: true, data }
+        return { success: false, error: data.error || 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function declineChallenge(id) {
+    try {
+        const res = await authFetch(`/challenges/${id}/decline`, { method: 'POST' })
+        const data = await res.json()
+        if (res.ok) return { success: true, data }
+        return { success: false, error: data.error || 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function fetchMyChallenges() {
+    try {
+        const res = await authFetch('/challenges/mine')
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function fetchInvitations() {
+    try {
+        const res = await authFetch('/challenges/invitations')
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function fetchLeaderboard(id) {
+    try {
+        const res = await authFetch(`/challenges/${id}/leaderboard`)
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}
+
+export async function finishChallenge(id) {
+    try {
+        const res = await authFetch(`/challenges/${id}/finish`, { method: 'POST' })
+        const data = await res.json()
+        if (res.ok) return { success: true, data }
+        return { success: false, error: data.error || 'Failed' }
+    } catch (e) { return { success: false, error: e.message } }
+}

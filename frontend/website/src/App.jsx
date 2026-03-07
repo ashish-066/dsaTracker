@@ -7,6 +7,8 @@ import DashboardPage from './pages/DashboardPage'
 import ProblemsPage from './pages/ProblemsPage'
 import RecommendationsPage from './pages/RecommendationsPage'
 import ProfilePage from './pages/ProfilePage'
+import ChallengePage from './pages/ChallengePage'
+import ContestPage from './pages/ContestPage'
 
 export default function App() {
     return (
@@ -20,6 +22,8 @@ export default function App() {
                 <Route path="/problems" element={<ProblemsPage />} />
                 <Route path="/recommendations" element={<RecommendationsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/challenges" element={<ChallengePage />} />
+                <Route path="/contest/:id" element={<ContestPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
