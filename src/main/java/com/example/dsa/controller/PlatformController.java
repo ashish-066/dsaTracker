@@ -58,6 +58,17 @@ public class PlatformController {
     }
 
     /**
+     * Get live calendar/heatmap data.
+     * GET /api/platforms/calendar
+     */
+    @GetMapping("/calendar")
+    public ResponseEntity<?> getCalendar(@AuthenticationPrincipal UserDetails userDetails) {
+        String userId = getUserId(userDetails.getUsername());
+        Map<String, Integer> data = syncService.getLiveCalendar(userId);
+        return ResponseEntity.ok(data);
+    }
+
+    /**
      * Force-sync all linked platforms.
      * POST /api/platforms/sync
      */

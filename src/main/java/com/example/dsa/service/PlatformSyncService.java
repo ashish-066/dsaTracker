@@ -19,15 +19,18 @@ public class PlatformSyncService {
     private final UserStatsRepository userStatsRepo;
     private final TopicStatsRepository topicStatsRepo;
     private final LeetCodeClient leetCodeClient;
+    private final CodeforcesClient codeforcesClient;
 
     public PlatformSyncService(PlatformAccountRepository platformAccountRepo,
             UserStatsRepository userStatsRepo,
             TopicStatsRepository topicStatsRepo,
-            LeetCodeClient leetCodeClient) {
+            LeetCodeClient leetCodeClient,
+            CodeforcesClient codeforcesClient) {
         this.platformAccountRepo = platformAccountRepo;
         this.userStatsRepo = userStatsRepo;
         this.topicStatsRepo = topicStatsRepo;
         this.leetCodeClient = leetCodeClient;
+        this.codeforcesClient = codeforcesClient;
     }
 
     /** Link a platform account (or update username if already linked) */
@@ -56,6 +59,8 @@ public class PlatformSyncService {
     public Map<String, Object> syncPlatformStats(String userId, String platform, String username) {
         if ("leetcode".equalsIgnoreCase(platform)) {
             return syncLeetCode(userId, username);
+        } else if ("codeforces".equalsIgnoreCase(platform)) {
+            return syncCodeforces(userId, username);
         }
         return Map.of("error", "Unsupported platform: " + platform);
     }
@@ -68,7 +73,36 @@ public class PlatformSyncService {
         for (PlatformAccount acc : accounts) {
             results.add(syncPlatformStats(userId, acc.getPlatformName(), acc.getUsername()));
         }
+        // Save the last synced time
+        accounts.forEach(a -> a.setLastSynced(LocalDateTime.now()));
+        platformAccountRepo.saveAll(accounts);
         return results;
+    }
+
+    /** Live fetch calendar data from all platforms without waiting for DB sync */
+    public Map<String, Integer> getLiveCalendar(String userId) {
+        List<PlatformAccount> accounts = platformAccountRepo.findByUserId(userId);
+        Map<String, Integer> mergedCalendar = new LinkedHashMap<>();
+
+        for (PlatformAccount acc : accounts) {
+            Map<String, Object> stats = new HashMap<>();
+            try {
+                if ("leetcode".equalsIgnoreCase(acc.getPlatformName())) {
+                    stats = leetCodeClient.fetchProfileStats(acc.getUsername());
+                } else if ("codeforces".equalsIgnoreCase(acc.getPlatformName())) {
+                    stats = codeforcesClient.fetchStats(acc.getUsername());
+                }
+                if (stats.containsKey("calendar")) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Integer> cal = (Map<String, Integer>) stats.get("calendar");
+                    if (cal != null) {
+                        cal.forEach((k, v) -> mergedCalendar.merge(k, v, Integer::sum));
+                    }
+                }
+            } catch (Exception e) {
+            }
+        }
+        return mergedCalendar;
     }
 
     /** Get dashboard data for a user from DB */
@@ -139,12 +173,41 @@ public class PlatformSyncService {
     /* ── Private: LeetCode sync ── */
     private Map<String, Object> syncLeetCode(String userId, String username) {
         Map<String, Object> stats = leetCodeClient.fetchProfileStats(username);
+        upsertStats(userId, "leetcode", stats);
+        upsertTopics(userId, stats);
+        markSynced(userId, "leetcode");
 
-        // Upsert user_stats
-        UserStats us = userStatsRepo.findByUserIdAndPlatform(userId, "leetcode")
+        Map<String, Object> response = new LinkedHashMap<>(stats);
+        response.put("syncedAt", LocalDateTime.now().toString());
+        response.remove("topics");
+        return response;
+    }
+
+    /* ── Private: Codeforces sync ── */
+    private Map<String, Object> syncCodeforces(String userId, String username) {
+        Map<String, Object> stats = codeforcesClient.fetchStats(username);
+        Map<String, Object> info = codeforcesClient.fetchUserInfo(username);
+
+        // Merge user info into stats
+        stats.putAll(info);
+
+        upsertStats(userId, "codeforces", stats);
+        upsertTopics(userId, stats);
+        markSynced(userId, "codeforces");
+
+        Map<String, Object> response = new LinkedHashMap<>(stats);
+        response.put("syncedAt", LocalDateTime.now().toString());
+        response.remove("topics");
+        return response;
+    }
+
+    /* ── Shared helpers ── */
+
+    private void upsertStats(String userId, String platform, Map<String, Object> stats) {
+        UserStats us = userStatsRepo.findByUserIdAndPlatform(userId, platform)
                 .orElse(new UserStats());
         us.setUserId(userId);
-        us.setPlatform("leetcode");
+        us.setPlatform(platform);
         us.setTotalSolved((Integer) stats.getOrDefault("totalSolved", 0));
         us.setEasyCount((Integer) stats.getOrDefault("easySolved", 0));
         us.setMediumCount((Integer) stats.getOrDefault("mediumSolved", 0));
@@ -153,31 +216,29 @@ public class PlatformSyncService {
         us.setLongestStreak((Integer) stats.getOrDefault("longestStreak", 0));
         us.setUpdatedAt(LocalDateTime.now());
         userStatsRepo.save(us);
+    }
 
-        // Update topic_stats (delete + re-insert)
-        topicStatsRepo.deleteByUserId(userId);
+    private void upsertTopics(String userId, Map<String, Object> stats) {
+        // We merge topics (don't delete existing from other platform)
         @SuppressWarnings("unchecked")
         Map<String, Integer> topics = (Map<String, Integer>) stats.getOrDefault("topics", Map.of());
         for (Map.Entry<String, Integer> e : topics.entrySet()) {
             if (e.getValue() > 0) {
-                TopicStats ts = new TopicStats();
-                ts.setUserId(userId);
-                ts.setTopic(e.getKey());
-                ts.setSolvedCount(e.getValue());
-                topicStatsRepo.save(ts);
+                TopicStats existing = topicStatsRepo.findByUserIdAndTopic(userId, e.getKey())
+                        .orElse(new TopicStats());
+                existing.setUserId(userId);
+                existing.setTopic(e.getKey());
+                existing.setSolvedCount(e.getValue() + (existing.getId() != null ? 0 : 0));
+                topicStatsRepo.save(existing);
             }
         }
+    }
 
-        // Update last_synced on the platform account
-        platformAccountRepo.findByUserIdAndPlatformName(userId, "leetcode")
+    private void markSynced(String userId, String platform) {
+        platformAccountRepo.findByUserIdAndPlatformName(userId, platform)
                 .ifPresent(acc -> {
                     acc.setLastSynced(LocalDateTime.now());
                     platformAccountRepo.save(acc);
                 });
-
-        Map<String, Object> response = new LinkedHashMap<>(stats);
-        response.put("syncedAt", LocalDateTime.now().toString());
-        response.remove("topics"); // don't re-send full topic list in sync response
-        return response;
     }
 }

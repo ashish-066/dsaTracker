@@ -121,6 +121,20 @@ export async function verifyLeetCodeUsername(username) {
     }
 }
 
+/** Verify a Codeforces handle exists (public endpoint) */
+export async function verifyCodeforcesHandle(handle) {
+    try {
+        const res = await fetch(`${API_BASE}/api/codeforces/user/${encodeURIComponent(handle)}`)
+        if (res.ok) {
+            const data = await res.json()
+            return { valid: data.exists, data }
+        }
+        return { valid: false, error: 'Handle not found' }
+    } catch (e) {
+        return { valid: false, error: e.message }
+    }
+}
+
 /* ── Dashboard data (served from DB, synced from real platform APIs) ── */
 
 /**
@@ -130,6 +144,14 @@ export async function verifyLeetCodeUsername(username) {
  */
 export async function fetchDashboardData() {
     const res = await authFetch('/api/platforms/dashboard')
+    if (res.ok) {
+        return { success: true, data: await res.json() }
+    }
+    return { success: false, error: `HTTP ${res.status}` }
+}
+
+export async function fetchCalendarData() {
+    const res = await authFetch('/api/platforms/calendar')
     if (res.ok) {
         return { success: true, data: await res.json() }
     }
@@ -153,14 +175,25 @@ export async function addLeetCode(username) {
     return linkPlatform('leetcode', username)
 }
 
-export async function deleteLeetCode() {
-    const platforms = getLinkedPlatforms()
-    delete platforms.leetcode
-    savePlatforms(platforms)
-    return { success: true }
+export async function addCodeforces(handle) {
+    return linkPlatform('codeforces', handle)
 }
 
 /** @deprecated Use fetchDashboardData() instead */
 export async function fetchAllPlatformData() {
     return fetchDashboardData()
+}
+
+
+export async function fetchLeetCodeSubmissions(username) {
+    try {
+        const res = await fetch(`${API_BASE}/api/leetcode/submissions/${encodeURIComponent(username)}`)
+        if (res.ok) {
+            const data = await res.json()
+            return { success: true, data: data.submissions || [] }
+        }
+        return { success: false, error: 'Failed to fetch' }
+    } catch (e) {
+        return { success: false, error: e.message }
+    }
 }

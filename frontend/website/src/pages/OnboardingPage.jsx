@@ -22,15 +22,19 @@ export default function OnboardingPage() {
     const [skill, setSkill] = useState(null)
     const [platforms, setPlatforms] = useState({ leetcode: '', codeforces: '', gfg: '' })
     const [selectedCompanies, setSelectedCompanies] = useState([])
+
+    // LeetCode validation
     const [validatingLeetCode, setValidatingLeetCode] = useState(false)
     const [leetCodeError, setLeetCodeError] = useState('')
     const [submissions, setSubmissions] = useState([])
 
+    // Codeforces validation
+    const [validatingCF, setValidatingCF] = useState(false)
+    const [cfError, setCfError] = useState('')
+    const [cfInfo, setCfInfo] = useState(null)
+
     useEffect(() => {
-        // Check authentication
-        if (!api.isAuthenticated()) {
-            navigate('/login')
-        }
+        if (!api.isAuthenticated()) { navigate('/login') }
     }, [navigate])
 
     const toggleCompany = c => {
@@ -41,16 +45,14 @@ export default function OnboardingPage() {
 
     const canProceed = () => {
         if (step === 0) return !!skill
-        if (step === 1) return Object.values(platforms).some(v => v.trim()) && !leetCodeError
+        if (step === 1) return Object.values(platforms).some(v => v.trim()) && !leetCodeError && !cfError
         return selectedCompanies.length > 0
     }
 
     const validateLeetCode = async () => {
         if (!platforms.leetcode.trim()) return
-
         setValidatingLeetCode(true)
         setLeetCodeError('')
-
         try {
             const result = await api.verifyLeetCodeUsername(platforms.leetcode)
             if (result.valid) {
@@ -68,23 +70,51 @@ export default function OnboardingPage() {
         }
     }
 
+    const validateCodeforces = async () => {
+        if (!platforms.codeforces.trim()) return
+        setValidatingCF(true)
+        setCfError('')
+        try {
+            const result = await api.verifyCodeforcesHandle(platforms.codeforces)
+            if (result.valid) {
+                setCfInfo(result.data)
+                setCfError('')
+            } else {
+                setCfError(result.error || 'Codeforces handle not found')
+                setCfInfo(null)
+            }
+        } catch (err) {
+            setCfError('Error validating Codeforces handle')
+            setCfInfo(null)
+        } finally {
+            setValidatingCF(false)
+        }
+    }
+
     const handleLeetCodeChange = (value) => {
         setPlatforms({ ...platforms, leetcode: value })
         setLeetCodeError('')
         setSubmissions([])
     }
 
+    const handleCFChange = (value) => {
+        setPlatforms({ ...platforms, codeforces: value })
+        setCfError('')
+        setCfInfo(null)
+    }
+
     const handleFinish = async () => {
-        // Add LeetCode to backend if username is provided and validated
+        // Link LeetCode if validated
         if (platforms.leetcode && !leetCodeError) {
-            try {
-                await api.addLeetCode(platforms.leetcode)
-            } catch (err) {
-                console.error('Failed to add LeetCode:', err)
-            }
+            try { await api.addLeetCode(platforms.leetcode) }
+            catch (err) { console.error('Failed to link LeetCode:', err) }
+        }
+        // Link Codeforces if validated
+        if (platforms.codeforces && !cfError) {
+            try { await api.addCodeforces(platforms.codeforces) }
+            catch (err) { console.error('Failed to link Codeforces:', err) }
         }
 
-        // Store all platform preferences
         localStorage.setItem('algoledger_platforms', JSON.stringify(platforms))
         navigate('/dashboard')
     }
@@ -157,49 +187,50 @@ export default function OnboardingPage() {
                                                 placeholder={p.placeholder}
                                                 value={platforms[p.key]}
                                                 onChange={e => {
-                                                    if (p.key === 'leetcode') {
-                                                        handleLeetCodeChange(e.target.value)
-                                                    } else {
-                                                        setPlatforms({ ...platforms, [p.key]: e.target.value })
-                                                    }
+                                                    if (p.key === 'leetcode') handleLeetCodeChange(e.target.value)
+                                                    else if (p.key === 'codeforces') handleCFChange(e.target.value)
+                                                    else setPlatforms({ ...platforms, [p.key]: e.target.value })
                                                 }}
                                                 style={{ flex: 1 }}
                                             />
                                             {p.key === 'leetcode' && platforms.leetcode && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-secondary"
-                                                    onClick={validateLeetCode}
-                                                    disabled={validatingLeetCode}
-                                                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}
-                                                >
+                                                <button type="button" className="btn btn-secondary"
+                                                    onClick={validateLeetCode} disabled={validatingLeetCode}
+                                                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}>
                                                     {validatingLeetCode ? '⏳' : '✓'} Verify
+                                                </button>
+                                            )}
+                                            {p.key === 'codeforces' && platforms.codeforces && (
+                                                <button type="button" className="btn btn-secondary"
+                                                    onClick={validateCodeforces} disabled={validatingCF}
+                                                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}>
+                                                    {validatingCF ? '⏳' : '✓'} Verify
                                                 </button>
                                             )}
                                         </div>
                                     </div>
 
-                                    {/* LeetCode error message */}
+                                    {/* LeetCode feedback */}
                                     {p.key === 'leetcode' && leetCodeError && (
-                                        <div style={{
-                                            color: '#dc2626',
-                                            fontSize: '12px',
-                                            marginTop: '6px',
-                                            marginLeft: '4px'
-                                        }}>
+                                        <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
                                             ⚠️ {leetCodeError}
                                         </div>
                                     )}
-
-                                    {/* LeetCode success - show recent submissions */}
                                     {p.key === 'leetcode' && submissions.length > 0 && (
-                                        <div style={{
-                                            color: '#16a34a',
-                                            fontSize: '12px',
-                                            marginTop: '6px',
-                                            marginLeft: '4px'
-                                        }}>
+                                        <div style={{ color: '#16a34a', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
                                             ✓ Found {submissions.length} recent submissions
+                                        </div>
+                                    )}
+
+                                    {/* Codeforces feedback */}
+                                    {p.key === 'codeforces' && cfError && (
+                                        <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
+                                            ⚠️ {cfError}
+                                        </div>
+                                    )}
+                                    {p.key === 'codeforces' && cfInfo && (
+                                        <div style={{ color: '#16a34a', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
+                                            ✓ {cfInfo.rank} · Rating: {cfInfo.rating} · Max: {cfInfo.maxRating}
                                         </div>
                                     )}
                                 </div>

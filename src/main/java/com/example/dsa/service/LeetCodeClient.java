@@ -86,9 +86,10 @@ public class LeetCodeClient {
               intermediate { tagName problemsSolved }
               fundamental { tagName problemsSolved }
             }
-            userCalendar(year: 2025) {
+            userCalendar {
               streak
               totalActiveDays
+              submissionCalendar
             }
           }
         }
@@ -106,6 +107,7 @@ public class LeetCodeClient {
     result.put("currentStreak", 0);
     result.put("longestStreak", 0);
     result.put("topics", new LinkedHashMap<String, Integer>());
+    result.put("calendar", new LinkedHashMap<String, Integer>());
 
     try {
       String raw = webClient.post()
@@ -133,11 +135,22 @@ public class LeetCodeClient {
         }
       }
 
-      // --- Streak ---
+      // --- Streak and Calendar ---
       JsonNode cal = user.path("userCalendar");
       if (!cal.isMissingNode()) {
         result.put("currentStreak", cal.path("streak").asInt(0));
         result.put("longestStreak", cal.path("totalActiveDays").asInt(0));
+
+        String calendarStr = cal.path("submissionCalendar").asText("{}");
+        try {
+          JsonNode calNode = mapper.readTree(calendarStr);
+          Map<String, Integer> calendarMap = new LinkedHashMap<>();
+          calNode.fields().forEachRemaining(entry -> {
+            calendarMap.put(entry.getKey(), entry.getValue().asInt());
+          });
+          result.put("calendar", calendarMap);
+        } catch (Exception e) {
+        }
       }
 
       // --- Topics ---
