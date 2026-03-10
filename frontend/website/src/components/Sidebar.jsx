@@ -5,6 +5,7 @@ const NAV_ITEMS = [
     { icon: '📋', label: 'Problems', path: '/problems' },
     { icon: '⚔️', label: 'Challenges', path: '/challenges' },
     { icon: '💡', label: 'Recommendations', path: '/recommendations' },
+    { icon: '🌐', label: 'Community', path: '/community' },
     { icon: '👤', label: 'Profile', path: '/profile' },
 ]
 

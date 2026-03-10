@@ -284,3 +284,38 @@ export async function finishChallenge(id) {
         return { success: false, error: data.error || 'Failed' }
     } catch (e) { return { success: false, error: e.message } }
 }
+
+/* ─────────────────────────────────────────────
+   COMMUNITY / POSTS APIs
+───────────────────────────────────────────── */
+
+export async function fetchFeed(page = 0, size = 10) {
+    return authFetchJson(`/api/posts?page=${page}&size=${size}`)
+}
+
+export async function fetchFeedByTopic(topic, page = 0, size = 10) {
+    return authFetchJson(`/api/posts/topic/${encodeURIComponent(topic)}?page=${page}&size=${size}`)
+}
+
+export async function fetchPost(id) {
+    return authFetchJson(`/api/posts/${id}`)
+}
+
+export async function createPost(title, topic, content) {
+    return authFetchJson('/api/posts', {
+        method: 'POST',
+        body: JSON.stringify({ title, topic, content }),
+    })
+}
+
+export async function toggleLike(id) {
+    return authFetchJson(`/api/posts/${id}/like`, { method: 'POST' })
+}
+
+export async function deletePost(id) {
+    return authFetchJson(`/api/posts/${id}`, { method: 'DELETE' })
+}
+
+export async function fetchMyPosts() {
+    return authFetchJson('/api/posts/mine')
+}

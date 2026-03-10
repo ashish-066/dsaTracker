@@ -9,6 +9,7 @@ import RecommendationsPage from './pages/RecommendationsPage'
 import ProfilePage from './pages/ProfilePage'
 import ChallengePage from './pages/ChallengePage'
 import ContestPage from './pages/ContestPage'
+import CommunityPage from './pages/CommunityPage'
 
 export default function App() {
     return (
@@ -24,6 +25,7 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/challenges" element={<ChallengePage />} />
                 <Route path="/contest/:id" element={<ContestPage />} />
+                <Route path="/community" element={<CommunityPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
