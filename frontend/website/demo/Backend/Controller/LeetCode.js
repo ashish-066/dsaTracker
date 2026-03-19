@@ -89,6 +89,7 @@ export const fetchUserExist = async (req, res) => {
                 username,
                 problemUrl: VERIFY_PROBLEM_URL,
                 problemSlug: VERIFY_PROBLEM_SLUG,
+                problemName: VERIFY_PROBLEM_NAME,
                 startTime: startTime // Client will send this back to us to verify
             },
         });
@@ -98,10 +99,10 @@ export const fetchUserExist = async (req, res) => {
     }
 };
 
-/**
- * 1.1) Validate Submission: Check if user submitted the specific problem after startTime
- * POST /check-submission { username, startTime }
- */
+// ──────────────────────────────────────────────────────────
+// 1.1) Validate Submission: Check if user submitted the specific problem after startTime
+// POST /check-submission { username, startTime }
+// ──────────────────────────────────────────────────────────
 export const checkSubmission = async (req, res) => {
     try {
         const { username, startTime } = req.body;
@@ -146,16 +147,26 @@ export const checkSubmission = async (req, res) => {
 
         if (validSubmission) {
             console.log("✅ Verification successful! Found match.");
+
+            // Fetch and save full data on successful verification
+            const leetcodeData = await fetchFullLeetCodeData(username);
+            if (leetcodeData) {
+                leetcodeData.verified = true;
+                leetcodeData.verifiedAt = new Date().toISOString();
+                saveToJSON(`leetcode_${username}.json`, leetcodeData);
+            }
+
             return res.status(200).json({
                 success: true,
                 message: "Verification successful!",
-                details: validSubmission
+                details: validSubmission,
+                data: leetcodeData
             });
         }
 
         return res.status(200).json({
             success: false,
-            message: "No recent submission found for 'Create Hello World Function'. Make sure you submitted it after clicking Verify."
+            message: `No recent submission found for '${VERIFY_PROBLEM_NAME}'. Make sure you submitted it after clicking Verify.`
         });
 
     } catch (error) {
@@ -165,26 +176,10 @@ export const checkSubmission = async (req, res) => {
 };
 
 // ──────────────────────────────────────────────────────────
-// 2) ADD: Fetch full LeetCode data and store as JSON
-// POST /add-leetcode  { username, email }
+// HELPER: Fetch full LeetCode data via GraphQL + REST APIs
 // ──────────────────────────────────────────────────────────
-export const AddLeetCodeAccount = async (req, res) => {
+async function fetchFullLeetCodeData(username) {
     try {
-        const { username, email } = req.body;
-
-        if (!username) {
-            return res.status(400).json({ message: 'Username is required' });
-        }
-
-        // Allow overwriting existing data (needed for refresh flow)
-        const existing = readFromJSON(`leetcode_${username}.json`);
-        if (existing) {
-            console.log(`♻️  Overwriting existing data for: ${username}`);
-        }
-
-        console.log(`📥 Fetching LeetCode data via GraphQL for: ${username}`);
-
-        // GraphQL Query for stats
         const gqlQuery = {
             query: `
                 query userCombinedStats($username: String!) {
@@ -206,12 +201,14 @@ export const AddLeetCodeAccount = async (req, res) => {
                         rating
                         globalRanking
                     }
+                    recentAcSubmissionList(username: $username, limit: 20) {
+                        title titleSlug timestamp lang
+                    }
                 }
             `,
             variables: { username }
         };
 
-        // Fetch data: GraphQL for main stats, REST for calendars (since they are easier that way)
         const [gqlRes, contestRes, submissionsRes2024, submissionsRes2025] = await Promise.all([
             axios.post('https://leetcode.com/graphql', gqlQuery).catch(() => null),
             axios.get(`${process.env.leetcode_api}/${username}/contest`).catch(() => null),
@@ -221,10 +218,9 @@ export const AddLeetCodeAccount = async (req, res) => {
 
         const gqlData = gqlRes?.data?.data;
         const matchedUser = gqlData?.matchedUser;
-        const contestRanking = gqlData?.userContestRanking;
-        let acceptanceRate = 0; // Initialize to avoid crash
+        const recentAc = gqlData?.recentAcSubmissionList || [];
+        const contestData = contestRes?.data || null;
 
-        // Map GraphQL response to our profileData structure
         let profileData = null;
         if (matchedUser) {
             const stats = matchedUser.submitStatsGlobal.acSubmissionNum;
@@ -234,38 +230,25 @@ export const AddLeetCodeAccount = async (req, res) => {
                 easySolved: stats.find(s => s.difficulty === 'Easy')?.count || 0,
                 mediumSolved: stats.find(s => s.difficulty === 'Medium')?.count || 0,
                 hardSolved: stats.find(s => s.difficulty === 'Hard')?.count || 0,
+                acceptanceRate: 0,
+                recentSubmissions: recentAc,
             };
         }
 
-        const contestData = contestRes?.data || null;
-        const submissionsData2024 = submissionsRes2024?.data || null;
-        const submissionsData2025 = submissionsRes2025?.data || null;
-
-        if (!profileData && !contestData && (!submissionsData2024 || !submissionsData2024.submissionCalendar) && (!submissionsData2025 || !submissionsData2025.submissionCalendar)) {
-            return res.status(400).json({ message: 'Failed to fetch user data from LeetCode APIs' });
-        }
-
-        // Parse submission calendars
         const parseCalendar = (data) => {
             if (!data?.submissionCalendar) return [];
             try {
                 return Object.entries(JSON.parse(data.submissionCalendar)).map(([date, submissions]) => ({
-                    date: Number(date),
-                    submissions,
+                    date: Number(date), submissions,
                 }));
-            } catch (e) {
-                console.error("❌ Error parsing submission calendar:", e.message);
-                return [];
-            }
+            } catch { return []; }
         };
 
-        const submissionCalendar2024 = parseCalendar(submissionsData2024);
-        const submissionCalendar2025 = parseCalendar(submissionsData2025);
+        const sub2024 = submissionsRes2024?.data || null;
+        const sub2025 = submissionsRes2025?.data || null;
 
-        // Build the stored document
-        const leetcodeData = {
+        return {
             username,
-            email: email || 'demo@test.com',
             fetchedAt: new Date().toISOString(),
             profile: profileData ? {
                 ranking: profileData.ranking,
@@ -273,28 +256,59 @@ export const AddLeetCodeAccount = async (req, res) => {
                 easySolved: profileData.easySolved,
                 mediumSolved: profileData.mediumSolved,
                 hardSolved: profileData.hardSolved,
-                acceptanceRate,
-                recentSubmissions: profileData.recentSubmissions || matchedUser?.recentSubmissionList || [],
+                acceptanceRate: profileData.acceptanceRate,
+                recentSubmissions: profileData.recentSubmissions,
             } : null,
             contests: contestData ? {
                 contestAttend: contestData.contestAttend,
                 contestRating: Math.floor(contestData.contestRating || 0),
                 contestParticipation: contestData.contestParticipation || [],
             } : null,
-            submissions_2024: submissionsData2024 ? {
-                activeYears: submissionsData2024.activeYears || [],
-                streak: submissionsData2024.streak || 0,
-                totalActiveDays: submissionsData2024.totalActiveDays || 0,
-                submissionCalendar: submissionCalendar2024,
+            submissions_2024: sub2024 ? {
+                activeYears: sub2024.activeYears || [],
+                streak: sub2024.streak || 0,
+                totalActiveDays: sub2024.totalActiveDays || 0,
+                submissionCalendar: parseCalendar(sub2024),
             } : null,
-            submissions_2025: submissionsData2025 ? {
-                activeYears: submissionsData2025.activeYears || [],
-                streak: submissionsData2025.streak || 0,
-                totalActiveDays: submissionsData2025.totalActiveDays || 0,
-                submissionCalendar: submissionCalendar2025,
+            submissions_2025: sub2025 ? {
+                activeYears: sub2025.activeYears || [],
+                streak: sub2025.streak || 0,
+                totalActiveDays: sub2025.totalActiveDays || 0,
+                submissionCalendar: parseCalendar(sub2025),
             } : null,
         };
+    } catch (error) {
+        console.error('❌ Error fetching full LeetCode data:', error.message);
+        return null;
+    }
+}
 
+// ──────────────────────────────────────────────────────────
+// 2) ADD: Fetch full LeetCode data and store as JSON
+// POST /add-leetcode  { username, email }
+// ──────────────────────────────────────────────────────────
+export const AddLeetCodeAccount = async (req, res) => {
+    try {
+        const { username, email } = req.body;
+
+        if (!username) {
+            return res.status(400).json({ message: 'Username is required' });
+        }
+
+        // Check if already stored
+        const existing = readFromJSON(`leetcode_${username}.json`);
+        if (existing) {
+            return res.status(400).json({ message: 'Leetcode account already exists in saved data' });
+        }
+
+        console.log(`📥 Fetching LeetCode data for: ${username}`);
+
+        const leetcodeData = await fetchFullLeetCodeData(username);
+        if (!leetcodeData) {
+            return res.status(400).json({ message: 'Failed to fetch user data from LeetCode APIs' });
+        }
+
+        leetcodeData.email = email || 'demo@test.com';
         const jsonPath = saveToJSON(`leetcode_${username}.json`, leetcodeData);
         console.log(`📄 Full LeetCode data for "${username}" saved to: ${jsonPath}`);
 
@@ -310,20 +324,16 @@ export const AddLeetCodeAccount = async (req, res) => {
 };
 
 // ──────────────────────────────────────────────────────────
-// 3) FETCH: Read stored data and return (+ optionally refresh from API)
+// 3) FETCH: Read stored data and return
 // GET /fetch/:username
 // ──────────────────────────────────────────────────────────
 export const fetchLeetCode = async (req, res) => {
     try {
         const { username } = req.params;
-
-        // Check if we already have data stored
         let storedData = readFromJSON(`leetcode_${username}.json`);
-
         if (!storedData) {
             return res.status(404).json({ message: `No stored data found for "${username}"` });
         }
-
         return res.status(200).json({
             message: 'LeetCode user data retrieved from JSON',
             data: storedData,
@@ -341,14 +351,10 @@ export const fetchLeetCode = async (req, res) => {
 export const fetchFromDB = async (req, res) => {
     try {
         const { leetid } = req.params;
-
-        // In demo mode, leetid IS the username
         const storedData = readFromJSON(`leetcode_${leetid}.json`);
-
         if (!storedData) {
             return res.status(400).json({ success: false, message: 'LeetCode user not found in JSON storage' });
         }
-
         return res.status(200).json({
             data: storedData,
             success: true,
@@ -368,11 +374,9 @@ export const fetchUserNameExists = async (req, res) => {
     try {
         const { leetid } = req.params;
         const storedData = readFromJSON(`leetcode_${leetid}.json`);
-
         if (!storedData) {
             return res.status(400).json({ success: false, message: 'LeetCode user not found' });
         }
-
         return res.status(200).json({
             data: storedData.username,
             success: true,
@@ -392,11 +396,9 @@ export const deleteLeetCodeUser = async (req, res) => {
     try {
         const { leetid } = req.params;
         const filePath = path.join(DATA_DIR, `leetcode_${leetid}.json`);
-
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ success: false, message: 'LeetCodeUser not found.' });
         }
-
         fs.unlinkSync(filePath);
         console.log(`🗑️  Deleted: ${filePath}`);
 
@@ -412,7 +414,7 @@ export const deleteLeetCodeUser = async (req, res) => {
 };
 
 // ──────────────────────────────────────────────────────────
-// 7) LIST: Show all stored users (bonus for demo)
+// 7) LIST: Show all stored users
 // GET /list-all
 // ──────────────────────────────────────────────────────────
 export const listAllUsers = async (req, res) => {

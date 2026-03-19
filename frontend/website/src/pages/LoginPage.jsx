@@ -16,6 +16,12 @@ export default function LoginPage() {
         try {
             const result = await api.login(form.email, form.password)
             if (result.success) {
+                // Bug Fix #4: Trigger sync immediately on login so the dashboard
+                // always shows fresh data rather than whatever was last cached in DB.
+                // We fire-and-forget (no await) so the user isn't blocked if sync is slow.
+                api.syncAllPlatforms().catch(err =>
+                    console.warn('[LoginPage] Post-login sync failed (non-blocking):', err)
+                )
                 setLoading(false)
                 navigate('/dashboard')
             } else {
@@ -57,7 +63,12 @@ export default function LoginPage() {
                 )}
 
                 {/* Google SSO */}
-                <button className="google-btn" style={{ marginBottom: 16 }}>
+                <button 
+                    type="button" 
+                    className="google-btn" 
+                    style={{ marginBottom: 16 }}
+                    onClick={() => alert("Google SSO is coming soon!")}
+                >
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                         <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4" />
                         <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853" />

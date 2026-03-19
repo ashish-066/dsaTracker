@@ -33,7 +33,10 @@ const readJSON = (filename) => {
     }
 };
 
+// ──────────────────────────────────────────────────────────
 // 1) Initiation: Check handle and return problem link
+// GET /check-handle/:handle
+// ──────────────────────────────────────────────────────────
 export const initiateVerify = async (req, res) => {
     try {
         const { handle } = req.params;
@@ -61,7 +64,10 @@ export const initiateVerify = async (req, res) => {
     }
 };
 
+// ──────────────────────────────────────────────────────────
 // 2) Validation: Check recent submissions
+// POST /check-submission { handle, startTime }
+// ──────────────────────────────────────────────────────────
 export const validateSubmission = async (req, res) => {
     try {
         const { handle, startTime } = req.body;
@@ -80,7 +86,20 @@ export const validateSubmission = async (req, res) => {
         );
 
         if (validMatch) {
-            return res.status(200).json({ success: true, message: 'Verified!', details: validMatch });
+            // Fetch and save full data on successful verification
+            const cfData = await fetchFullCodeforcesData(handle);
+            if (cfData) {
+                cfData.verified = true;
+                cfData.verifiedAt = new Date().toISOString();
+                saveJSON(`cf_${handle}.json`, cfData);
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Verified!',
+                details: validMatch,
+                data: cfData
+            });
         }
 
         return res.status(200).json({
@@ -92,26 +111,69 @@ export const validateSubmission = async (req, res) => {
     }
 };
 
-// 3) Store: Fetch and save as JSON
-export const addAccount = async (req, res) => {
+// ──────────────────────────────────────────────────────────
+// HELPER: Fetch full Codeforces data
+// ──────────────────────────────────────────────────────────
+async function fetchFullCodeforcesData(handle) {
     try {
-        const { handle } = req.body;
-
         const [infoRes, ratingRes, statusRes] = await Promise.all([
             axios.get(`https://codeforces.com/api/user.info?handles=${handle}`),
-            axios.get(`https://codeforces.com/api/user.rating?handle=${handle}`),
-            axios.get(`https://codeforces.com/api/user.status?handle=${handle}&from=1&count=1000`)
+            axios.get(`https://codeforces.com/api/user.rating?handle=${handle}`).catch(() => null),
+            axios.get(`https://codeforces.com/api/user.status?handle=${handle}&from=1&count=5000`).catch(() => null),
         ]);
 
         if (infoRes.data.status !== 'OK') throw new Error('Failed to fetch user info');
 
-        const userData = {
+        const submissions = statusRes?.data?.status === 'OK' ? statusRes.data.result : [];
+
+        // Deduplicate: only count unique accepted problems
+        const solvedSet = new Set();
+        const ratingDist = {};
+        const topicMap = {};
+        for (const sub of submissions) {
+            if (sub.verdict !== 'OK') continue;
+            const key = `${sub.problem.contestId}-${sub.problem.index}`;
+            if (solvedSet.has(key)) continue;
+            solvedSet.add(key);
+            const rating = sub.problem.rating;
+            if (rating) {
+                const bucket = Math.floor(rating / 400) * 400;
+                const label = `${bucket}-${bucket + 399}`;
+                ratingDist[label] = (ratingDist[label] || 0) + 1;
+            }
+            if (sub.problem.tags) {
+                for (const tag of sub.problem.tags) {
+                    topicMap[tag] = (topicMap[tag] || 0) + 1;
+                }
+            }
+        }
+
+        return {
             handle,
             fetchedAt: new Date().toISOString(),
             info: infoRes.data.result[0],
-            ratingHistory: ratingRes.data.status === 'OK' ? ratingRes.data.result : [],
-            recentSubmissions: statusRes.data.status === 'OK' ? statusRes.data.result.slice(0, 50) : []
+            solvedCount: solvedSet.size,
+            ratingDistribution: ratingDist,
+            topicDistribution: topicMap,
+            ratingHistory: ratingRes?.data?.status === 'OK' ? ratingRes.data.result : [],
+            recentSubmissions: submissions.slice(0, 50),
         };
+    } catch (error) {
+        console.error('❌ Error fetching full Codeforces data:', error.message);
+        return null;
+    }
+}
+
+// ──────────────────────────────────────────────────────────
+// 3) Store: Fetch and save as JSON
+// POST /add-cf { handle }
+// ──────────────────────────────────────────────────────────
+export const addAccount = async (req, res) => {
+    try {
+        const { handle } = req.body;
+
+        const userData = await fetchFullCodeforcesData(handle);
+        if (!userData) throw new Error('Failed to fetch user data');
 
         const jsonPath = saveJSON(`cf_${handle}.json`, userData);
         res.status(201).json({ success: true, message: 'Stored successfully', jsonPath, data: userData });
@@ -120,7 +182,10 @@ export const addAccount = async (req, res) => {
     }
 };
 
-// 4) Fetch
+// ──────────────────────────────────────────────────────────
+// 4) Fetch stored data
+// GET /fetch/:handle
+// ──────────────────────────────────────────────────────────
 export const fetchData = (req, res) => {
     const { handle } = req.params;
     const data = readJSON(`cf_${handle}.json`);
@@ -128,7 +193,10 @@ export const fetchData = (req, res) => {
     res.json({ success: true, data });
 };
 
+// ──────────────────────────────────────────────────────────
 // 5) Delete
+// DELETE /delete/:handle
+// ──────────────────────────────────────────────────────────
 export const deleteData = (req, res) => {
     const { handle } = req.params;
     const filePath = path.join(DATA_DIR, `cf_${handle}.json`);
@@ -139,7 +207,10 @@ export const deleteData = (req, res) => {
     res.status(404).json({ message: 'Not found' });
 };
 
-// 6) List
+// ──────────────────────────────────────────────────────────
+// 6) List all
+// GET /list-all
+// ──────────────────────────────────────────────────────────
 export const listAll = (req, res) => {
     const files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.json'));
     const handles = files.map(f => f.replace('cf_', '').replace('.json', ''));
