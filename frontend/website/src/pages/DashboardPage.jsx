@@ -51,7 +51,14 @@ export default function DashboardPage() {
     const [subs, setSubs] = useState([])
     const [fade, setFade] = useState(false)
 
-    useEffect(() => { if (!api.isAuthenticated()) { navigate('/login'); return }; load() }, [])
+    useEffect(() => {
+        if (!api.isAuthenticated()) { navigate('/login'); return }
+        load()
+        // Auto-poll every 5 minutes so counts stay fresh on the dashboard
+        // without requiring the user to click "Sync" manually.
+        const interval = setInterval(() => load(), 5 * 60 * 1000)
+        return () => clearInterval(interval)
+    }, [])
 
     async function load() {
         setLoading(true); setError(null)

@@ -1,162 +1,139 @@
 {
   "username": "rKT7SyTxg2",
-  "email": "demo@test.com",
-  "fetchedAt": "2026-02-25T16:35:26.272Z",
+  "fetchedAt": "2026-03-19T15:27:05.254Z",
   "profile": {
-    "ranking": 2897834,
-    "totalSolved": 37,
-    "easySolved": 31,
-    "mediumSolved": 5,
+    "ranking": 2810153,
+    "totalSolved": 39,
+    "easySolved": 32,
+    "mediumSolved": 6,
     "hardSolved": 1,
     "acceptanceRate": 0,
-    "recentSubmissions": []
-  },
-  "contests": {
-    "contestAttend": 10,
-    "contestRating": 1421,
-    "contestParticipation": [
+    "recentSubmissions": [
       {
-        "attended": true,
-        "rating": 1456.264,
-        "ranking": 17980,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 5282,
-        "contest": {
-          "title": "Biweekly Contest 163",
-          "startTime": 1755354600
-        }
+        "title": "Longest Substring Without Repeating Characters",
+        "titleSlug": "longest-substring-without-repeating-characters",
+        "timestamp": "1772822920",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1395.494,
-        "ranking": 27942,
-        "trendDirection": "DOWN",
-        "problemsSolved": 0,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 0,
-        "contest": {
-          "title": "Weekly Contest 463",
-          "startTime": 1755397800
-        }
+        "title": "Linked List Cycle",
+        "titleSlug": "linked-list-cycle",
+        "timestamp": "1772214423",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1389.188,
-        "ranking": 16984,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 771,
-        "contest": {
-          "title": "Weekly Contest 464",
-          "startTime": 1756002600
-        }
+        "title": "Add Two Numbers",
+        "titleSlug": "add-two-numbers",
+        "timestamp": "1772037316",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1388.126,
-        "ranking": 16013,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 2180,
-        "contest": {
-          "title": "Biweekly Contest 164",
-          "startTime": 1756564200
-        }
+        "title": "Binary Number with Alternating Bits",
+        "titleSlug": "binary-number-with-alternating-bits",
+        "timestamp": "1771950325",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1374.267,
-        "ranking": 17120,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 2915,
-        "contest": {
-          "title": "Weekly Contest 465",
-          "startTime": 1756607400
-        }
+        "title": "Regular Expression Matching",
+        "titleSlug": "regular-expression-matching",
+        "timestamp": "1771944192",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1355.85,
-        "ranking": 18076,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 4697,
-        "contest": {
-          "title": "Weekly Contest 469",
-          "startTime": 1759026600
-        }
+        "title": "Two Sum",
+        "titleSlug": "two-sum",
+        "timestamp": "1767567727",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1339.889,
-        "ranking": 17855,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 3010,
-        "contest": {
-          "title": "Weekly Contest 470",
-          "startTime": 1759631400
-        }
+        "title": "Symmetric Tree",
+        "titleSlug": "symmetric-tree",
+        "timestamp": "1766426640",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1324.472,
-        "ranking": 20737,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 4084,
-        "contest": {
-          "title": "Weekly Contest 471",
-          "startTime": 1760236200
-        }
+        "title": "Invert Binary Tree",
+        "titleSlug": "invert-binary-tree",
+        "timestamp": "1766425759",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1320.701,
-        "ranking": 16238,
-        "trendDirection": "DOWN",
-        "problemsSolved": 1,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 2398,
-        "contest": {
-          "title": "Weekly Contest 472",
-          "startTime": 1760841000
-        }
+        "title": "Two Sum",
+        "titleSlug": "two-sum",
+        "timestamp": "1765766536",
+        "lang": "java"
       },
       {
-        "attended": true,
-        "rating": 1421.617,
-        "ranking": 1996,
-        "trendDirection": "UP",
-        "problemsSolved": 3,
-        "totalProblems": 4,
-        "finishTimeInSeconds": 4918,
-        "contest": {
-          "title": "Weekly Contest 477",
-          "startTime": 1763865000
-        }
+        "title": "Concatenate Non-Zero Digits and Multiply by Sum II",
+        "titleSlug": "concatenate-non-zero-digits-and-multiply-by-sum-ii",
+        "timestamp": "1763869618",
+        "lang": "java"
+      },
+      {
+        "title": "Find Maximum Balanced XOR Subarray Length",
+        "titleSlug": "find-maximum-balanced-xor-subarray-length",
+        "timestamp": "1763868535",
+        "lang": "java"
+      },
+      {
+        "title": "Concatenate Non-Zero Digits and Multiply by Sum I",
+        "titleSlug": "concatenate-non-zero-digits-and-multiply-by-sum-i",
+        "timestamp": "1763868073",
+        "lang": "java"
+      },
+      {
+        "title": "Shuffle the Array",
+        "titleSlug": "shuffle-the-array",
+        "timestamp": "1762189510",
+        "lang": "java"
+      },
+      {
+        "title": "Smallest Missing Multiple of K",
+        "titleSlug": "smallest-missing-multiple-of-k",
+        "timestamp": "1760843398",
+        "lang": "java"
+      },
+      {
+        "title": "Sum of Elements With Frequency Divisible by K",
+        "titleSlug": "sum-of-elements-with-frequency-divisible-by-k",
+        "timestamp": "1760239984",
+        "lang": "java"
+      },
+      {
+        "title": "Compute Alternating Sum",
+        "titleSlug": "compute-alternating-sum",
+        "timestamp": "1759634410",
+        "lang": "java"
+      },
+      {
+        "title": "Compute Decimal Representation",
+        "titleSlug": "compute-decimal-representation",
+        "timestamp": "1759030097",
+        "lang": "java"
+      },
+      {
+        "title": "Restore Finishing Order",
+        "titleSlug": "restore-finishing-order",
+        "timestamp": "1756610315",
+        "lang": "java"
+      },
+      {
+        "title": "Find The Least Frequent Digit",
+        "titleSlug": "find-the-least-frequent-digit",
+        "timestamp": "1756566080",
+        "lang": "java"
+      },
+      {
+        "title": "Fibonacci Number",
+        "titleSlug": "fibonacci-number",
+        "timestamp": "1756321200",
+        "lang": "java"
       }
     ]
   },
-  "submissions_2024": {
-    "activeYears": [],
-    "streak": 0,
-    "totalActiveDays": 0,
-    "submissionCalendar": []
-  },
-  "submissions_2025": {
-    "activeYears": [],
-    "streak": 0,
-    "totalActiveDays": 0,
-    "submissionCalendar": []
-  }
+  "contests": null,
+  "submissions_2024": null,
+  "submissions_2025": null,
+  "verified": true,
+  "verifiedAt": "2026-03-19T15:27:05.254Z"
 }

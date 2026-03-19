@@ -12,28 +12,18 @@ import {
     checkSubmission,
 } from '../Controller/LeetCode.js';
 
-// Phase 1: Initiation
+// ── Submission-based Verification ──
+// Step 1: Check username exists + get problem link + startTime
 router.get('/check-username/:username', fetchUserExist);
-
-// Phase 2: Validation
+// Step 2: Verify user submitted that problem after startTime
 router.post('/check-submission', checkSubmission);
 
-// Add LeetCode account (fetch + save to JSON)
+// ── Data CRUD ──
 router.post('/add-leetcode', AddLeetCodeAccount);
-
-// Fetch stored data (from JSON)
 router.get('/fetch/:username/', fetchLeetCode);
-
-// Fetch from stored JSON by id
 router.get('/fetch-from-db/:leetid', fetchFromDB);
-
-// Check if username exists in stored data
 router.get('/fetch-user-name-exist/:leetid', fetchUserNameExists);
-
-// Delete stored user data
 router.delete('/delete-leetcode/:leetid', deleteLeetCodeUser);
-
-// List all stored users (demo bonus)
 router.get('/list-all', listAllUsers);
 
 export default router;

@@ -1,3 +1,12 @@
+/**
+ * OnboardingPage.jsx
+ * ──────────────────
+ * Multi-step onboarding with submission-based account verification.
+ *
+ * LeetCode: User submits "Create Hello World Function" to prove ownership.
+ * Codeforces: User submits "4A - Watermelon" to prove ownership.
+ */
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as api from '../services/api'
@@ -16,26 +25,33 @@ const COMPANIES = [
     'Goldman Sachs', 'DE Shaw',
 ]
 
+const PLATFORM_CONFIG = [
+    { key: 'leetcode', label: 'LeetCode', color: '#FFA116', placeholder: 'e.g. rahul_codes' },
+    { key: 'codeforces', label: 'Codeforces', color: '#1890FF', placeholder: 'e.g. rahul_cf' },
+]
+
 export default function OnboardingPage() {
     const navigate = useNavigate()
     const [step, setStep] = useState(0)
     const [skill, setSkill] = useState(null)
-    const [platforms, setPlatforms] = useState({ leetcode: '', codeforces: '', gfg: '' })
     const [selectedCompanies, setSelectedCompanies] = useState([])
 
-    // LeetCode validation
-    const [validatingLeetCode, setValidatingLeetCode] = useState(false)
-    const [leetCodeError, setLeetCodeError] = useState('')
-    const [submissions, setSubmissions] = useState([])
-
-    // Codeforces validation
-    const [validatingCF, setValidatingCF] = useState(false)
-    const [cfError, setCfError] = useState('')
-    const [cfInfo, setCfInfo] = useState(null)
+    // Platform verification state
+    // status: 'idle' | 'pending' | 'checking' | 'verified'
+    // pending = problem link shown, waiting for user to submit
+    // checking = polling/checking submission
+    const [platformState, setPlatformState] = useState({
+        leetcode: { username: '', status: 'idle', problemUrl: null, problemName: null, startTime: null, message: '', loading: false },
+        codeforces: { username: '', status: 'idle', problemUrl: null, problemName: null, startTime: null, message: '', loading: false },
+    })
 
     useEffect(() => {
         if (!api.isAuthenticated()) { navigate('/login') }
     }, [navigate])
+
+    const updatePlatform = (key, updates) => {
+        setPlatformState(prev => ({ ...prev, [key]: { ...prev[key], ...updates } }))
+    }
 
     const toggleCompany = c => {
         setSelectedCompanies(prev =>
@@ -43,79 +59,106 @@ export default function OnboardingPage() {
         )
     }
 
+    const hasVerified = Object.values(platformState).some(p => p.status === 'verified')
+
     const canProceed = () => {
         if (step === 0) return !!skill
-        if (step === 1) return Object.values(platforms).some(v => v.trim()) && !leetCodeError && !cfError
+        if (step === 1) return hasVerified
         return selectedCompanies.length > 0
     }
 
-    const validateLeetCode = async () => {
-        if (!platforms.leetcode.trim()) return
-        setValidatingLeetCode(true)
-        setLeetCodeError('')
+    // ── Step 1: Initiate Verification — check username/handle, get problem link ──
+    const handleInitiate = async (platformKey) => {
+        const ps = platformState[platformKey]
+        if (!ps.username.trim()) {
+            updatePlatform(platformKey, { message: 'Please enter a username first.' })
+            return
+        }
+
+        updatePlatform(platformKey, { loading: true, message: '' })
+
         try {
-            const result = await api.verifyLeetCodeUsername(platforms.leetcode)
-            if (result.valid) {
-                setSubmissions(result.data?.submissions || [result.data])
-                setLeetCodeError('')
+            let result
+            if (platformKey === 'leetcode') {
+                result = await api.initiateLeetCodeVerification(ps.username.trim())
             } else {
-                setLeetCodeError(result.error || 'LeetCode username not found')
-                setSubmissions([])
+                result = await api.initiateCodeforcesVerification(ps.username.trim())
             }
-        } catch (err) {
-            setLeetCodeError('Error validating LeetCode username')
-            setSubmissions([])
-        } finally {
-            setValidatingLeetCode(false)
+
+            if (result.success) {
+                const d = result.data
+                updatePlatform(platformKey, {
+                    status: 'pending',
+                    problemUrl: d.problemUrl,
+                    problemName: platformKey === 'leetcode' ? d.problemName : '4A - Watermelon',
+                    startTime: d.startTime,
+                    loading: false,
+                    message: '',
+                })
+            } else {
+                updatePlatform(platformKey, {
+                    loading: false,
+                    message: result.message || 'Username / handle not found.',
+                })
+            }
+        } catch (e) {
+            updatePlatform(platformKey, {
+                loading: false,
+                message: 'Network error. Is the backend running on port 4000?',
+            })
         }
     }
 
-    const validateCodeforces = async () => {
-        if (!platforms.codeforces.trim()) return
-        setValidatingCF(true)
-        setCfError('')
+    // ── Step 2: Check Submission ──
+    const handleCheckSubmission = async (platformKey) => {
+        const ps = platformState[platformKey]
+        updatePlatform(platformKey, { loading: true, message: '', status: 'checking' })
+
         try {
-            const result = await api.verifyCodeforcesHandle(platforms.codeforces)
-            if (result.valid) {
-                setCfInfo(result.data)
-                setCfError('')
+            let result
+            if (platformKey === 'leetcode') {
+                result = await api.checkLeetCodeSubmission(ps.username.trim(), ps.startTime)
             } else {
-                setCfError(result.error || 'Codeforces handle not found')
-                setCfInfo(null)
+                result = await api.checkCodeforcesSubmission(ps.username.trim(), ps.startTime)
             }
-        } catch (err) {
-            setCfError('Error validating Codeforces handle')
-            setCfInfo(null)
-        } finally {
-            setValidatingCF(false)
+
+            if (result.success) {
+                updatePlatform(platformKey, {
+                    status: 'verified',
+                    loading: false,
+                    message: '✅ Verified successfully!',
+                })
+                api.savePlatformVerified(platformKey, ps.username.trim(), true, new Date().toISOString())
+            } else {
+                updatePlatform(platformKey, {
+                    status: 'pending',   // keep the problem link visible
+                    loading: false,
+                    message: result.message || 'Submission not found yet. Try again after submitting.',
+                })
+            }
+        } catch (e) {
+            updatePlatform(platformKey, {
+                status: 'pending',
+                loading: false,
+                message: 'Network error during check.',
+            })
         }
     }
 
-    const handleLeetCodeChange = (value) => {
-        setPlatforms({ ...platforms, leetcode: value })
-        setLeetCodeError('')
-        setSubmissions([])
-    }
-
-    const handleCFChange = (value) => {
-        setPlatforms({ ...platforms, codeforces: value })
-        setCfError('')
-        setCfInfo(null)
+    // ── Reset a platform back to idle ──
+    const handleReset = (platformKey) => {
+        updatePlatform(platformKey, {
+            status: 'idle', problemUrl: null, problemName: null, startTime: null, message: '', loading: false,
+        })
     }
 
     const handleFinish = async () => {
-        // Link LeetCode if validated
-        if (platforms.leetcode && !leetCodeError) {
-            try { await api.addLeetCode(platforms.leetcode) }
-            catch (err) { console.error('Failed to link LeetCode:', err) }
+        for (const [key, ps] of Object.entries(platformState)) {
+            if (ps.status === 'verified' && ps.username.trim()) {
+                try { await api.linkPlatform(key, ps.username.trim()) }
+                catch (err) { console.error(`Failed to link ${key}:`, err) }
+            }
         }
-        // Link Codeforces if validated
-        if (platforms.codeforces && !cfError) {
-            try { await api.addCodeforces(platforms.codeforces) }
-            catch (err) { console.error('Failed to link Codeforces:', err) }
-        }
-
-        localStorage.setItem('algoledger_platforms', JSON.stringify(platforms))
         navigate('/dashboard')
     }
 
@@ -163,81 +206,141 @@ export default function OnboardingPage() {
                     </>
                 )}
 
-                {/* Step 1 — Platforms */}
+                {/* Step 1 — Platforms with Submission-based Verification */}
                 {step === 1 && (
                     <>
-                        <h2 className="onb-title">Connect your platforms</h2>
-                        <p className="onb-sub">Add your usernames so we can pull your problem history automatically.</p>
-                        <div className="platform-inputs">
-                            {[
-                                { key: 'leetcode', label: 'LeetCode', color: '#FFA116', placeholder: 'rahul_codes' },
-                                { key: 'codeforces', label: 'Codeforces', color: '#1890FF', placeholder: 'rahul_cf' },
-                                { key: 'gfg', label: 'GeeksforGeeks', color: '#22C55E', placeholder: 'rahul_gfg' },
-                            ].map(p => (
-                                <div key={p.key}>
-                                    <div className="platform-input-row">
-                                        <div className="platform-label" style={{ color: p.color }}>
-                                            {p.label}
-                                        </div>
-                                        <div style={{ display: 'flex', gap: 8, flex: 1 }}>
-                                            <input
-                                                id={`platform-${p.key}`}
-                                                type="text"
-                                                className="input-field"
-                                                placeholder={p.placeholder}
-                                                value={platforms[p.key]}
-                                                onChange={e => {
-                                                    if (p.key === 'leetcode') handleLeetCodeChange(e.target.value)
-                                                    else if (p.key === 'codeforces') handleCFChange(e.target.value)
-                                                    else setPlatforms({ ...platforms, [p.key]: e.target.value })
-                                                }}
-                                                style={{ flex: 1 }}
-                                            />
-                                            {p.key === 'leetcode' && platforms.leetcode && (
-                                                <button type="button" className="btn btn-secondary"
-                                                    onClick={validateLeetCode} disabled={validatingLeetCode}
-                                                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}>
-                                                    {validatingLeetCode ? '⏳' : '✓'} Verify
-                                                </button>
+                        <h2 className="onb-title">Verify your platforms</h2>
+                        <p className="onb-sub">Prove account ownership by solving a quick problem. We'll check your recent submissions.</p>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 16 }}>
+                            {PLATFORM_CONFIG.map(p => {
+                                const ps = platformState[p.key]
+                                return (
+                                    <div key={p.key} style={{
+                                        padding: 16, borderRadius: 12,
+                                        border: ps.status === 'verified' ? '2px solid #22C55E' : '1px solid var(--border)',
+                                        background: ps.status === 'verified' ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
+                                    }}>
+                                        {/* Header */}
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                                            <span style={{ fontWeight: 700, color: p.color, fontSize: 15 }}>{p.label}</span>
+                                            {ps.status === 'verified' && (
+                                                <span style={{
+                                                    padding: '3px 10px', borderRadius: 99, fontSize: 12, fontWeight: 700,
+                                                    background: 'rgba(34,197,94,0.15)', color: '#22C55E',
+                                                }}>✓ Verified</span>
                                             )}
-                                            {p.key === 'codeforces' && platforms.codeforces && (
-                                                <button type="button" className="btn btn-secondary"
-                                                    onClick={validateCodeforces} disabled={validatingCF}
-                                                    style={{ padding: '8px 16px', whiteSpace: 'nowrap' }}>
-                                                    {validatingCF ? '⏳' : '✓'} Verify
-                                                </button>
+                                            {(ps.status === 'pending' || ps.status === 'checking') && (
+                                                <span style={{
+                                                    padding: '3px 10px', borderRadius: 99, fontSize: 12, fontWeight: 700,
+                                                    background: 'rgba(245,158,11,0.15)', color: '#F59E0B',
+                                                }}>⏳ Pending</span>
                                             )}
                                         </div>
+
+                                        {/* Idle: username input + Link button */}
+                                        {ps.status === 'idle' && (
+                                            <div style={{ display: 'flex', gap: 8 }}>
+                                                <input
+                                                    id={`platform-${p.key}`}
+                                                    type="text"
+                                                    className="input-field"
+                                                    placeholder={p.placeholder}
+                                                    value={ps.username}
+                                                    onChange={e => updatePlatform(p.key, { username: e.target.value })}
+                                                    style={{ flex: 1 }}
+                                                    disabled={ps.loading}
+                                                />
+                                                <button
+                                                    className="btn btn-primary btn-sm"
+                                                    onClick={() => handleInitiate(p.key)}
+                                                    disabled={ps.loading || !ps.username.trim()}
+                                                    style={{ whiteSpace: 'nowrap' }}
+                                                >
+                                                    {ps.loading ? '⏳...' : '🔗 Link'}
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {/* Pending: show problem to solve + Check Submission button */}
+                                        {(ps.status === 'pending' || ps.status === 'checking') && ps.problemUrl && (
+                                            <div style={{ marginTop: 8 }}>
+                                                <div style={{
+                                                    background: 'var(--bg-tertiary)', borderRadius: 8,
+                                                    padding: 12, fontSize: 13, marginBottom: 10,
+                                                    border: '1px solid var(--border-subtle, var(--border))',
+                                                }}>
+                                                    <div style={{ fontWeight: 700, marginBottom: 6, color: 'var(--text-primary)' }}>
+                                                        Solve this problem to verify your account:
+                                                    </div>
+                                                    <div style={{ color: 'var(--text-secondary)', marginBottom: 4 }}>
+                                                        1. Open the problem link below and submit any solution (any language)
+                                                    </div>
+                                                    <div style={{ color: 'var(--text-secondary)', marginBottom: 8 }}>
+                                                        2. Come back here and click "Check Submission"
+                                                    </div>
+                                                    <a
+                                                        href={ps.problemUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            display: 'inline-block',
+                                                            padding: '6px 12px', borderRadius: 6,
+                                                            background: 'rgba(99,102,241,0.1)',
+                                                            color: '#6366F1', fontWeight: 700,
+                                                            fontSize: 13, textDecoration: 'none',
+                                                        }}
+                                                    >
+                                                        🔗 {ps.problemName || 'Open Problem'}
+                                                    </a>
+                                                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8 }}>
+                                                        ⚠️ You must submit after clicking "Link" — we check submissions from that moment onward.
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ display: 'flex', gap: 8 }}>
+                                                    <button
+                                                        className="btn btn-primary btn-sm"
+                                                        onClick={() => handleCheckSubmission(p.key)}
+                                                        disabled={ps.loading}
+                                                        style={{ flex: 1 }}
+                                                    >
+                                                        {ps.loading ? '⏳ Checking...' : '✓ Check Submission'}
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-secondary btn-sm"
+                                                        onClick={() => handleReset(p.key)}
+                                                        disabled={ps.loading}
+                                                    >
+                                                        ↩ Reset
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Verified */}
+                                        {ps.status === 'verified' && (
+                                            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+                                                @{ps.username} — account ownership confirmed
+                                            </div>
+                                        )}
+
+                                        {/* Error / info messages */}
+                                        {ps.message && (
+                                            <div style={{
+                                                marginTop: 8, fontSize: 12, fontWeight: 600,
+                                                color: ps.status === 'verified' ? '#22C55E' : '#EF4444',
+                                            }}>
+                                                {ps.message}
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {/* LeetCode feedback */}
-                                    {p.key === 'leetcode' && leetCodeError && (
-                                        <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
-                                            ⚠️ {leetCodeError}
-                                        </div>
-                                    )}
-                                    {p.key === 'leetcode' && submissions.length > 0 && (
-                                        <div style={{ color: '#16a34a', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
-                                            ✓ Found {submissions.length} recent submissions
-                                        </div>
-                                    )}
-
-                                    {/* Codeforces feedback */}
-                                    {p.key === 'codeforces' && cfError && (
-                                        <div style={{ color: '#dc2626', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
-                                            ⚠️ {cfError}
-                                        </div>
-                                    )}
-                                    {p.key === 'codeforces' && cfInfo && (
-                                        <div style={{ color: '#16a34a', fontSize: 12, marginTop: 6, marginLeft: 4 }}>
-                                            ✓ {cfInfo.rank} · Rating: {cfInfo.rating} · Max: {cfInfo.maxRating}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
+
                         <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 12 }}>
-                            ✓ Add at least one platform to continue
+                            ✓ Verify at least one platform to continue
                         </p>
                     </>
                 )}

@@ -1,9 +1,9 @@
 {
   "handle": "ashishkaranam06",
-  "fetchedAt": "2026-02-25T16:58:26.880Z",
+  "fetchedAt": "2026-03-19T15:29:26.882Z",
   "info": {
     "contribution": 0,
-    "lastOnlineTimeSeconds": 1771984840,
+    "lastOnlineTimeSeconds": 1773934135,
     "rating": 610,
     "friendOfCount": 0,
     "titlePhoto": "https://userpic.codeforces.org/no-title.jpg",
@@ -13,6 +13,20 @@
     "avatar": "https://userpic.codeforces.org/no-avatar.jpg",
     "registrationTimeSeconds": 1730038388,
     "maxRank": "newbie"
+  },
+  "solvedCount": 13,
+  "ratingDistribution": {
+    "800-1199": 13
+  },
+  "topicDistribution": {
+    "implementation": 6,
+    "strings": 3,
+    "greedy": 3,
+    "math": 5,
+    "*special": 1,
+    "brute force": 3,
+    "constructive algorithms": 2,
+    "number theory": 1
   },
   "ratingHistory": [
     {
@@ -35,6 +49,41 @@
     }
   ],
   "recentSubmissions": [
+    {
+      "id": 367384679,
+      "contestId": 4,
+      "creationTimeSeconds": 1773934152,
+      "relativeTimeSeconds": 2147483647,
+      "problem": {
+        "contestId": 4,
+        "index": "A",
+        "name": "Watermelon",
+        "type": "PROGRAMMING",
+        "rating": 800,
+        "tags": [
+          "brute force",
+          "math"
+        ]
+      },
+      "author": {
+        "contestId": 4,
+        "participantId": 196903929,
+        "members": [
+          {
+            "handle": "ashishkaranam06"
+          }
+        ],
+        "participantType": "PRACTICE",
+        "ghost": false,
+        "startTimeSeconds": 1268395200
+      },
+      "programmingLanguage": "Python 3",
+      "verdict": "WRONG_ANSWER",
+      "testset": "TESTS",
+      "passedTestCount": 0,
+      "timeConsumedMillis": 30,
+      "memoryConsumedBytes": 0
+    },
     {
       "id": 364204283,
       "contestId": 4,
@@ -1362,5 +1411,7 @@
       "timeConsumedMillis": 61,
       "memoryConsumedBytes": 0
     }
-  ]
+  ],
+  "verified": true,
+  "verifiedAt": "2026-03-19T15:29:26.882Z"
 }

@@ -63,6 +63,104 @@ export function hasLinkedPlatforms() {
     return Object.keys(getLinkedPlatforms()).length > 0
 }
 
+/** Save a single platform with verification status */
+export function savePlatformVerified(platform, username, verified, verifiedAt) {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+    data[platform] = { username, verified, verifiedAt }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+}
+
+/**
+ * Get full platform data including verification status.
+ * Returns { leetcode: { username, verified, verifiedAt }, ... }
+ */
+export function getLinkedPlatformsFull() {
+    try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
+        const result = {}
+        for (const [k, v] of Object.entries(data)) {
+            if (typeof v === 'string' && v.trim()) {
+                result[k] = { username: v.trim(), verified: false, verifiedAt: null }
+            } else if (typeof v === 'object' && v?.username) {
+                result[k] = { username: v.username, verified: !!v.verified, verifiedAt: v.verifiedAt || null }
+            }
+        }
+        return result
+    } catch { return {} }
+}
+
+/* ── Demo Backend (port 4000) — Verification API calls ── */
+
+const DEMO_API_BASE = 'http://localhost:4000/server'
+
+/**
+ * Step 1 — LeetCode: Check username exists + get problem link + startTime
+ * GET /check-username/:username
+ */
+export async function initiateLeetCodeVerification(username) {
+    const res = await fetch(`${DEMO_API_BASE}/leetcode/check-username/${encodeURIComponent(username)}`)
+    return res.json()
+}
+
+/**
+ * Step 2 — LeetCode: Check if user submitted 'Create Hello World Function' after startTime
+ * POST /check-submission { username, startTime }
+ */
+export async function checkLeetCodeSubmission(username, startTime) {
+    const res = await fetch(`${DEMO_API_BASE}/leetcode/check-submission`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, startTime }),
+    })
+    return res.json()
+}
+
+/**
+ * Step 1 — Codeforces: Check handle exists + get problem link + startTime
+ * GET /check-handle/:handle
+ */
+export async function initiateCodeforcesVerification(handle) {
+    const res = await fetch(`${DEMO_API_BASE}/codeforces/check-handle/${encodeURIComponent(handle)}`)
+    return res.json()
+}
+
+/**
+ * Step 2 — Codeforces: Check if user submitted '4A - Watermelon' after startTime
+ * POST /check-submission { handle, startTime }
+ */
+export async function checkCodeforcesSubmission(handle, startTime) {
+    const res = await fetch(`${DEMO_API_BASE}/codeforces/check-submission`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handle, startTime }),
+    })
+    return res.json()
+}
+
+/* ── Demo Backend — LeetCode Data API calls ── */
+
+export async function deleteLeetCode(username) {
+    const res = await fetch(`${DEMO_API_BASE}/leetcode/delete-leetcode/${username}`, { method: 'DELETE' })
+    return res.json()
+}
+
+export async function fetchLeetCode(username) {
+    const res = await fetch(`${DEMO_API_BASE}/leetcode/fetch/${username}`)
+    return res.json()
+}
+
+/* ── Demo Backend — Codeforces Data API calls ── */
+
+export async function deleteCodeforces(handle) {
+    const res = await fetch(`${DEMO_API_BASE}/codeforces/delete/${handle}`, { method: 'DELETE' })
+    return res.json()
+}
+
+export async function fetchCodeforces(handle) {
+    const res = await fetch(`${DEMO_API_BASE}/codeforces/fetch/${handle}`)
+    return res.json()
+}
+
 /* ── Authentication API calls ── */
 
 /** Register a new user */
@@ -78,19 +176,23 @@ export async function register(name, email, password) {
 
 /** Login user and get JWT token */
 export async function login(email, password) {
-    const res = await fetch(`${API_BASE}/auth/generateToken`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: email, password }),
-    })
-    if (res.ok) {
-        const token = await res.text()
-        setJWTToken(token)
-        setUserEmail(email)
-        return { success: true, token, email }
-    } else {
-        const error = await res.text()
-        return { success: false, error: error || 'Invalid credentials' }
+    try {
+        const res = await fetch(`${API_BASE}/auth/generateToken`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: email, password }),
+        })
+        if (res.ok) {
+            const token = await res.text()
+            setJWTToken(token)
+            setUserEmail(email)
+            return { success: true, token, email }
+        } else {
+            const error = await res.text()
+            return { success: false, error: error || 'Invalid email or password' }
+        }
+    } catch (err) {
+        return { success: false, error: 'Cannot connect to server. Please ensure the backend is running.' }
     }
 }
 
@@ -115,6 +217,10 @@ export async function linkPlatform(platform, username) {
         platforms[platform] = username
         savePlatforms(platforms)
         return { success: true, data }
+    }
+    // 409 = this coding account is already owned by another user
+    if (res.status === 409) {
+        return { success: false, conflict: true, error: data.error || 'This account is already linked to another user.' }
     }
     return { success: false, error: data.error || 'Failed to link platform' }
 }
