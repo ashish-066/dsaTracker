@@ -17,8 +17,7 @@ public class CodeforcesController {
     @GetMapping("/user/{handle}")
     public Map<String, Object> getUserInfo(@PathVariable String handle) {
         Map<String, Object> info = codeforcesClient.fetchUserInfo(handle);
-        boolean exists = !"unrated".equals(info.get("rank")) || (int) info.get("rating") > 0
-                || codeforcesClient.handleExists(handle);
+        boolean exists = info.containsKey("friendOfCount");
         info.put("handle", handle);
         info.put("exists", exists);
         return info;

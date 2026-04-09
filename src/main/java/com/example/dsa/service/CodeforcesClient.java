@@ -26,20 +26,7 @@ public class CodeforcesClient {
                 .build();
     }
 
-    /** Check if a Codeforces handle exists */
-    public boolean handleExists(String handle) {
-        try {
-            String raw = webClient.get()
-                    .uri("/user.info?handles={handle}", handle)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            JsonNode root = mapper.readTree(raw);
-            return "OK".equals(root.path("status").asText());
-        } catch (Exception e) {
-            return false;
-        }
-    }
+
 
     /**
      * Fetch user info: rating, maxRating, rank, maxRank, contribution
