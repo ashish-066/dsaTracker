@@ -463,25 +463,69 @@ export async function verifyCodeforcesHandle(handle) {
 
 /* ── Dashboard data (served from DB, synced from real platform APIs) ── */
 
+/*
+ * Request coalescer for widely-read endpoints.
+ *
+ * Sidebar, TopBar, and whatever page is mounted all read dashboard data
+ * at roughly the same moment on every navigation. Without coalescing that
+ * fans out to 3 parallel requests per navigation — painfully obvious on
+ * a free-tier backend with cold-start latency. This cache:
+ *
+ *   1) dedupes *concurrent* calls — three callers in the same tick share
+ *      one in-flight promise and therefore one network round-trip,
+ *   2) holds the resolved value for {@code TTL_MS} so repeat calls within
+ *      the window don't even issue a request.
+ *
+ * TTL is deliberately short (30s): fresh enough that sync actions still
+ * feel responsive, long enough that tab-switching doesn't re-fetch.
+ */
+const TTL_MS = 30_000
+const _cache = new Map() // key -> { fetchedAt, value, inflight? }
+
+function cachedFetch(key, fetcher) {
+    const now = Date.now()
+    const entry = _cache.get(key)
+    if (entry) {
+        if (entry.inflight) return entry.inflight
+        if (now - entry.fetchedAt < TTL_MS) return Promise.resolve(entry.value)
+    }
+    const inflight = fetcher().then(value => {
+        _cache.set(key, { fetchedAt: Date.now(), value })
+        return value
+    }).catch(err => {
+        // Don't poison the cache with errors — next caller retries.
+        _cache.delete(key)
+        throw err
+    })
+    _cache.set(key, { ...(entry || {}), inflight })
+    return inflight
+}
+
+/** Invalidate the coalescer — call after sync/mutation so next read is fresh. */
+export function invalidateDashboardCache() {
+    _cache.delete('dashboard')
+    _cache.delete('calendar')
+}
+
 /**
  * Fetch dashboard stats for the logged-in user.
  * Returns: { totalSolved, easySolved, mediumSolved, hardSolved,
  *            currentStreak, longestStreak, platforms[], topics[], linkedPlatforms[] }
  */
-export async function fetchDashboardData() {
-    const res = await authFetch('/api/platforms/dashboard')
-    if (res.ok) {
-        return { success: true, data: await res.json() }
-    }
-    return { success: false, error: `HTTP ${res.status}` }
+export function fetchDashboardData() {
+    return cachedFetch('dashboard', async () => {
+        const res = await authFetch('/api/platforms/dashboard')
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: `HTTP ${res.status}` }
+    })
 }
 
-export async function fetchCalendarData() {
-    const res = await authFetch('/api/platforms/calendar')
-    if (res.ok) {
-        return { success: true, data: await res.json() }
-    }
-    return { success: false, error: `HTTP ${res.status}` }
+export function fetchCalendarData() {
+    return cachedFetch('calendar', async () => {
+        const res = await authFetch('/api/platforms/calendar')
+        if (res.ok) return { success: true, data: await res.json() }
+        return { success: false, error: `HTTP ${res.status}` }
+    })
 }
 
 /**
@@ -489,6 +533,9 @@ export async function fetchCalendarData() {
  */
 export async function syncAllPlatforms() {
     const res = await authFetch('/api/platforms/sync', { method: 'POST' })
+    // Sync mutates platform stats server-side, so the cached dashboard/calendar
+    // are stale. Invalidate so the next read fetches fresh.
+    invalidateDashboardCache()
     if (res.ok) {
         return { success: true, data: await res.json() }
     }
