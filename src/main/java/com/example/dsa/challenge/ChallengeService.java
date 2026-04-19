@@ -4,12 +4,16 @@ import com.example.dsa.platform.PlatformAccountRepository;
 import com.example.dsa.platform.TopicStats;
 import com.example.dsa.platform.TopicStatsRepository;
 import com.example.dsa.platform.UserSolvedProblemRepository;
+import com.example.dsa.recommendation.ProblemFetchService;
 import com.example.dsa.user.UserInfo;
 import com.example.dsa.user.UserInfoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -17,6 +21,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChallengeService {
+
+    private static final Logger log = LoggerFactory.getLogger(ChallengeService.class);
+
+    /** How far back we look when excluding a user's previous contest problems. */
+    private static final int CONTEST_HISTORY_WINDOW_DAYS = 30;
+
+    /** Problems older than this get pruned from contest_problem_history. Window
+     *  is larger than the exclusion window on purpose — gives a safety margin
+     *  if we ever want to expand. */
+    private static final int CONTEST_HISTORY_RETENTION_DAYS = 60;
 
     /* ── Contest configuration ── */
     private static final Map<ContestType, int[]> PROBLEM_COUNTS = Map.of(
@@ -39,6 +53,8 @@ public class ChallengeService {
     private final PlatformAccountRepository platformAccountRepo;
     private final TopicStatsRepository topicStatsRepo;
     private final UserSolvedProblemRepository solvedProblemRepo;
+    private final ContestProblemHistoryRepository historyRepo;
+    private final ProblemFetchService fetchService;
 
     public ChallengeService(ChallengeRepository challengeRepo,
             ChallengeProblemRepository cpRepo,
@@ -47,7 +63,9 @@ public class ChallengeService {
             UserInfoRepository userInfoRepo,
             PlatformAccountRepository platformAccountRepo,
             TopicStatsRepository topicStatsRepo,
-            UserSolvedProblemRepository solvedProblemRepo) {
+            UserSolvedProblemRepository solvedProblemRepo,
+            ContestProblemHistoryRepository historyRepo,
+            ProblemFetchService fetchService) {
         this.challengeRepo = challengeRepo;
         this.cpRepo = cpRepo;
         this.caRepo = caRepo;
@@ -56,6 +74,8 @@ public class ChallengeService {
         this.platformAccountRepo = platformAccountRepo;
         this.topicStatsRepo = topicStatsRepo;
         this.solvedProblemRepo = solvedProblemRepo;
+        this.historyRepo = historyRepo;
+        this.fetchService = fetchService;
     }
 
     /* ── 1. Create challenge ── */
@@ -133,6 +153,13 @@ public class ChallengeService {
         Set<String> opponentSolved   = solvedProblemRepo.findAllSlugsByUserId(opponentNumId);
         Set<String> excludedSlugs = new HashSet<>(challengerSolved);
         excludedSlugs.addAll(opponentSolved);
+
+        // Also exclude anything either participant has seen in a contest
+        // within the last 30 days, so repeat duels don't hand back the
+        // same three problems on day two.
+        Instant historyCutoff = Instant.now().minus(CONTEST_HISTORY_WINDOW_DAYS, ChronoUnit.DAYS);
+        excludedSlugs.addAll(historyRepo.findSlugsByUserEmailSince(challengerEmail, historyCutoff));
+        excludedSlugs.addAll(historyRepo.findSlugsByUserEmailSince(opponentEmail, historyCutoff));
 
         // Find shared weak topics (both users have stats; sort by combined solved count asc)
         List<String> sharedWeakTopics = findSharedWeakTopics(challengerNumId, opponentNumId);
@@ -334,6 +361,10 @@ public class ChallengeService {
         String[] diffs = { "easy", "medium", "hard" };
         int order = 1;
 
+        // Collect every slug actually selected so we can write contest-history
+        // rows in one batch at the end (one row per participant × slug).
+        List<String> selectedSlugs = new ArrayList<>();
+
         for (int i = 0; i < diffs.length; i++) {
             int needed = counts[i];
             if (needed == 0) continue;
@@ -352,8 +383,64 @@ public class ChallengeService {
                 cp.setProblemUrl(p.getProblemUrl());
                 cp.setProblemOrder(order++);
                 cpRepo.save(cp);
+                selectedSlugs.add(p.getTitleSlug());
+
+                // Once a slug is in this contest, nothing else in the same
+                // contest should pick it too — add to the exclusion set
+                // going into the next difficulty loop iteration.
+                excludedSlugs.add(p.getTitleSlug());
             }
         }
+
+        // Record contest-history rows so future contests by either
+        // participant exclude these slugs for the next 30 days.
+        recordContestHistory(challengeId, selectedSlugs);
+    }
+
+    /**
+     * Write {@link ContestProblemHistory} rows for both participants of the
+     * challenge we just populated. Uniqueness constraint on
+     * (user_email, title_slug) means re-recording a slug is a safe no-op —
+     * we silently skip on a DataIntegrityViolation and keep going.
+     */
+    private void recordContestHistory(Long challengeId, List<String> slugs) {
+        if (slugs.isEmpty()) return;
+        Challenge c = challengeRepo.findById(challengeId).orElse(null);
+        if (c == null) return;
+
+        Instant now = Instant.now();
+        List<ContestProblemHistory> toSave = new ArrayList<>();
+        for (String who : new String[] { c.getChallengerId(), c.getOpponentId() }) {
+            if (who == null || who.isBlank()) continue;
+            for (String slug : slugs) {
+                if (slug == null || slug.isBlank()) continue;
+                if (historyRepo.existsByUserEmailAndTitleSlug(who, slug)) continue;
+                ContestProblemHistory h = new ContestProblemHistory(who, slug);
+                h.setSeenAt(now);
+                toSave.add(h);
+            }
+        }
+        if (!toSave.isEmpty()) {
+            try {
+                historyRepo.saveAll(toSave);
+            } catch (Exception e) {
+                // Unique-constraint race or any other write failure — contest
+                // creation already succeeded, history is best-effort.
+                log.warn("[contest-history] save failed for challenge {}: {}", challengeId, e.toString());
+            }
+        }
+    }
+
+    /**
+     * Nightly prune of contest history older than the retention window.
+     * Matches the cadence of the reminder-email pruner (one cleanup window).
+     */
+    @Scheduled(cron = "0 30 3 * * *")
+    @Transactional
+    public void pruneContestHistory() {
+        Instant cutoff = Instant.now().minus(CONTEST_HISTORY_RETENTION_DAYS, ChronoUnit.DAYS);
+        long removed = historyRepo.deleteBySeenAtBefore(cutoff);
+        if (removed > 0) log.info("Pruned {} expired contest-history row(s)", removed);
     }
 
     private List<Problem> pickProblems(int needed, String diff, Set<String> excluded,
@@ -361,7 +448,7 @@ public class ChallengeService {
         Set<Long> pickedIds = new HashSet<>();
         List<Problem> result = new ArrayList<>();
 
-        // Pass 1: topic-aware, platform-filtered, excluding solved
+        // Pass 1: topic-aware, platform-filtered, respecting every exclusion.
         for (String topic : weakTopics) {
             if (result.size() >= needed) break;
             List<Problem> pool = platforms.isEmpty()
@@ -375,7 +462,7 @@ public class ChallengeService {
             }
         }
 
-        // Pass 2: any topic, platform-filtered, excluding solved
+        // Pass 2: any topic, platform-filtered, respecting every exclusion.
         if (result.size() < needed) {
             List<Problem> pool = platforms.isEmpty()
                     ? problemRepo.findRandomByDifficulty(diff)
@@ -388,20 +475,65 @@ public class ChallengeService {
             }
         }
 
-        // Pass 3: last resort — any problem on common platforms (may be previously solved)
+        // Pass 3: the DB pool is too thin for this request (probably a niche
+        // topic × difficulty combo, or both players have exhausted a lot).
+        // Live-fetch from LeetCode + Codeforces, persist any brand-new rows
+        // back into the pool (so future picks benefit), and retry selection
+        // with all exclusions still in force. No more "last-resort" pass
+        // that handed back already-solved problems.
         if (result.size() < needed) {
-            List<Problem> pool = platforms.isEmpty()
-                    ? problemRepo.findRandomByDifficulty(diff)
-                    : problemRepo.findRandomByPlatformsAndDifficulty(platforms, diff);
-            for (Problem p : pool) {
-                if (result.size() >= needed) break;
-                if (pickedIds.add(p.getId())) {
-                    result.add(p);
-                }
-            }
+            result.addAll(pickViaLiveFetch(
+                    needed - result.size(), diff, excluded, pickedIds, weakTopics, platforms));
         }
 
         return result;
+    }
+
+    /**
+     * Live-fetch fallback for {@link #pickProblems}. Walks the user's weak
+     * topics, hits LeetCode + Codeforces via {@link ProblemFetchService},
+     * saves any new problems back to the DB (so the pool grows), filters
+     * out excluded slugs, and returns up to {@code needed} more problems.
+     */
+    private List<Problem> pickViaLiveFetch(int needed, String diff,
+                                           Set<String> excluded, Set<Long> pickedIds,
+                                           List<String> weakTopics, List<String> platforms) {
+        List<String> resolvedPlatforms = platforms.isEmpty()
+                ? List.of("leetcode", "codeforces") : platforms;
+        List<String> topicsToTry = weakTopics.isEmpty()
+                ? List.of("arrays", "strings", "dp", "graphs", "trees") : weakTopics;
+        String capDiff = diff == null ? "Medium"
+                : Character.toUpperCase(diff.charAt(0)) + diff.substring(1).toLowerCase();
+
+        List<Problem> chosen = new ArrayList<>();
+        for (String topic : topicsToTry) {
+            if (chosen.size() >= needed) break;
+            List<Problem> live;
+            try {
+                live = fetchService.mergedForPlatforms(topic, capDiff, List.of(), resolvedPlatforms);
+            } catch (Exception e) {
+                log.warn("[pickProblems] live fetch failed for {}/{}: {}", topic, capDiff, e.toString());
+                continue;
+            }
+            for (Problem p : live) {
+                if (chosen.size() >= needed) break;
+                String slug = p.getTitleSlug();
+                if (slug == null || slug.isBlank()) continue;
+                if (excluded.contains(slug)) continue;
+
+                // Persist new problems so the pool keeps growing organically.
+                // Already-existing ones get loaded so we use the DB row's
+                // generated id in ChallengeProblem later.
+                Problem persisted = problemRepo.findByTitleSlug(slug).orElseGet(() -> {
+                    p.setDifficulty(capDiff);
+                    return problemRepo.save(p);
+                });
+                if (pickedIds.add(persisted.getId())) {
+                    chosen.add(persisted);
+                }
+            }
+        }
+        return chosen;
     }
 
     private void expireIfNeeded(Challenge c) {
