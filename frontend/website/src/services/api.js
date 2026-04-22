@@ -19,6 +19,9 @@ export function setUsername(u) { if (u) localStorage.setItem('jwt_username', u);
 export function getUsername() { return localStorage.getItem('jwt_username') || '' }
 
 export function clearAuth() {
+    // Wipe the dashboard cache FIRST — we need the email still in storage
+    // so clearAllCache() can build the per-user prefix.
+    try { clearAllCache() } catch { /* ignore */ }
     localStorage.removeItem('jwt_token')
     localStorage.removeItem('jwt_email')
     localStorage.removeItem('jwt_name')
@@ -464,47 +467,120 @@ export async function verifyCodeforcesHandle(handle) {
 /* ── Dashboard data (served from DB, synced from real platform APIs) ── */
 
 /*
- * Request coalescer for widely-read endpoints.
+ * ─── Persistent client-side cache ─────────────────────────────────────────
  *
- * Sidebar, TopBar, and whatever page is mounted all read dashboard data
- * at roughly the same moment on every navigation. Without coalescing that
- * fans out to 3 parallel requests per navigation — painfully obvious on
- * a free-tier backend with cold-start latency. This cache:
+ * Dashboard data (stats, calendar heatmap, recent submissions) is expensive
+ * on the backend — a cold-started free-tier instance plus live-sync against
+ * LeetCode / Codeforces APIs can take several seconds per call. Re-paying
+ * that cost on every page load (or every tab-switch) is what was making the
+ * post-onboarding "welcome to your dashboard" moment feel slow.
  *
- *   1) dedupes *concurrent* calls — three callers in the same tick share
- *      one in-flight promise and therefore one network round-trip,
- *   2) holds the resolved value for {@code TTL_MS} so repeat calls within
- *      the window don't even issue a request.
+ * The contract now:
+ *   - First read after login  → fetch from server, store in localStorage.
+ *   - Every subsequent read   → served instantly from localStorage.
+ *   - User clicks "Sync"      → invalidate cache + force a fresh fetch.
+ *   - User logs out           → cache wiped (see clearAuth).
  *
- * TTL is deliberately short (30s): fresh enough that sync actions still
- * feel responsive, long enough that tab-switching doesn't re-fetch.
+ * In-memory `inflight` Map still dedupes concurrent callers in the same
+ * tick so Sidebar + TopBar + page don't each hit the same endpoint thrice.
+ *
+ * Cache keys are scoped per-user (via the JWT email) so switching accounts
+ * can't leak another user's numbers onto the page.
  */
-const TTL_MS = 30_000
-const _cache = new Map() // key -> { fetchedAt, value, inflight? }
+const _inflight = new Map() // key -> Promise (dedup concurrent callers)
 
-function cachedFetch(key, fetcher) {
-    const now = Date.now()
-    const entry = _cache.get(key)
-    if (entry) {
-        if (entry.inflight) return entry.inflight
-        if (now - entry.fetchedAt < TTL_MS) return Promise.resolve(entry.value)
-    }
-    const inflight = fetcher().then(value => {
-        _cache.set(key, { fetchedAt: Date.now(), value })
-        return value
-    }).catch(err => {
-        // Don't poison the cache with errors — next caller retries.
-        _cache.delete(key)
-        throw err
-    })
-    _cache.set(key, { ...(entry || {}), inflight })
-    return inflight
+function _cacheKey(key) {
+    const email = getUserEmail() || 'anon'
+    return `algoledger:cache:${email}:${key}`
+}
+function _readPersisted(key) {
+    try {
+        const raw = localStorage.getItem(_cacheKey(key))
+        if (!raw) return null
+        return JSON.parse(raw) // { fetchedAt, value }
+    } catch { return null }
+}
+function _writePersisted(key, value) {
+    try {
+        localStorage.setItem(
+            _cacheKey(key),
+            JSON.stringify({ fetchedAt: Date.now(), value })
+        )
+    } catch { /* quota exceeded — degrade gracefully */ }
+}
+function _removePersisted(key) {
+    try { localStorage.removeItem(_cacheKey(key)) } catch { /* ignore */ }
 }
 
-/** Invalidate the coalescer — call after sync/mutation so next read is fresh. */
+/**
+ * Persistent cached fetch.
+ *   - forceRefresh=true → always hit the network, refresh the cache.
+ *   - otherwise        → return cached value if present; else fetch once.
+ */
+function cachedFetch(key, fetcher, { forceRefresh = false } = {}) {
+    if (!forceRefresh) {
+        const persisted = _readPersisted(key)
+        if (persisted) return Promise.resolve(persisted.value)
+        const pending = _inflight.get(key)
+        if (pending) return pending
+    }
+    const p = fetcher()
+        .then(value => {
+            _writePersisted(key, value)
+            _inflight.delete(key)
+            return value
+        })
+        .catch(err => {
+            // Don't poison the cache with errors — next caller retries.
+            _inflight.delete(key)
+            throw err
+        })
+    _inflight.set(key, p)
+    return p
+}
+
+/** Timestamp (ms since epoch) of the cached entry, or null if not cached. */
+export function getCacheTimestamp(key) {
+    const entry = _readPersisted(key)
+    return entry?.fetchedAt ?? null
+}
+
+/** Most recent sync time across dashboard + calendar + submissions, or null. */
+export function getLastSyncedAt() {
+    const stamps = [
+        getCacheTimestamp('dashboard'),
+        getCacheTimestamp('calendar'),
+        getCacheTimestamp('submissions'),
+    ].filter(Boolean)
+    return stamps.length ? Math.min(...stamps) : null
+}
+
+/** Invalidate cached dashboard data — call on sync/logout so the next read is fresh. */
 export function invalidateDashboardCache() {
-    _cache.delete('dashboard')
-    _cache.delete('calendar')
+    _removePersisted('dashboard')
+    _removePersisted('calendar')
+    _removePersisted('submissions')
+    _inflight.delete('dashboard')
+    _inflight.delete('calendar')
+    _inflight.delete('submissions')
+}
+
+/**
+ * Nuke every cache key for the current user. Called from clearAuth() so
+ * logging out doesn't leave stale numbers in storage.
+ */
+export function clearAllCache() {
+    try {
+        const email = getUserEmail() || 'anon'
+        const prefix = `algoledger:cache:${email}:`
+        const doomed = []
+        for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i)
+            if (k && k.startsWith(prefix)) doomed.push(k)
+        }
+        doomed.forEach(k => localStorage.removeItem(k))
+    } catch { /* ignore */ }
+    _inflight.clear()
 }
 
 /**
@@ -512,29 +588,28 @@ export function invalidateDashboardCache() {
  * Returns: { totalSolved, easySolved, mediumSolved, hardSolved,
  *            currentStreak, longestStreak, platforms[], topics[], linkedPlatforms[] }
  */
-export function fetchDashboardData() {
+export function fetchDashboardData(opts) {
     return cachedFetch('dashboard', async () => {
         const res = await authFetch('/api/platforms/dashboard')
         if (res.ok) return { success: true, data: await res.json() }
         return { success: false, error: `HTTP ${res.status}` }
-    })
+    }, opts)
 }
 
-export function fetchCalendarData() {
+export function fetchCalendarData(opts) {
     return cachedFetch('calendar', async () => {
         const res = await authFetch('/api/platforms/calendar')
         if (res.ok) return { success: true, data: await res.json() }
         return { success: false, error: `HTTP ${res.status}` }
-    })
+    }, opts)
 }
 
 /**
  * Force-sync all linked platforms from their live APIs → update DB → return fresh stats.
+ * Invalidates the client cache so the next read fetches the freshly-synced data.
  */
 export async function syncAllPlatforms() {
     const res = await authFetch('/api/platforms/sync', { method: 'POST' })
-    // Sync mutates platform stats server-side, so the cached dashboard/calendar
-    // are stale. Invalidate so the next read fetches fresh.
     invalidateDashboardCache()
     if (res.ok) {
         return { success: true, data: await res.json() }
@@ -558,17 +633,19 @@ export async function fetchAllPlatformData() {
 }
 
 
-export async function fetchLeetCodeSubmissions(username) {
-    try {
-        const res = await fetch(`${API_BASE}/api/leetcode/submissions/${encodeURIComponent(username)}`)
-        if (res.ok) {
-            const data = await res.json()
-            return { success: true, data: data.submissions || [] }
+export function fetchLeetCodeSubmissions(username, opts) {
+    return cachedFetch('submissions', async () => {
+        try {
+            const res = await fetch(`${API_BASE}/api/leetcode/submissions/${encodeURIComponent(username)}`)
+            if (res.ok) {
+                const data = await res.json()
+                return { success: true, data: data.submissions || [] }
+            }
+            return { success: false, error: 'Failed to fetch' }
+        } catch (e) {
+            return { success: false, error: e.message }
         }
-        return { success: false, error: 'Failed to fetch' }
-    } catch (e) {
-        return { success: false, error: e.message }
-    }
+    }, opts)
 }
 
 /* ─────────────────────────────────────────────

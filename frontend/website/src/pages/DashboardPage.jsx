@@ -144,36 +144,83 @@ function Trend({ val }) {
 export default function DashboardPage() {
     const navigate = useNavigate()
     const [dash, setDash] = useState(null)
-    const [loading, setLoading] = useState(true)
+    // Start loading=false when the cache already has a dashboard entry —
+    // we can hydrate from localStorage in the first paint and skip the spinner.
+    const [loading, setLoading] = useState(() => api.getCacheTimestamp('dashboard') == null)
     const [syncing, setSyncing] = useState(false)
     const [error, setError] = useState(null)
     const [hm, setHm] = useState([])
     const [subs, setSubs] = useState([])
     const [fade, setFade] = useState(false)
+    const [lastSynced, setLastSynced] = useState(api.getLastSyncedAt())
 
     useEffect(() => {
         if (!api.isAuthenticated()) { navigate('/login'); return }
-        load()
-        const interval = setInterval(() => load(), 5 * 60 * 1000)
-        return () => clearInterval(interval)
+        // Load from cache (or network if cache is empty). We no longer auto-
+        // refresh on an interval — data only re-fetches when the user clicks
+        // Sync, which is the explicit contract we want.
+        load({ force: false })
     }, [])
 
-    async function load() {
-        setLoading(true); setError(null)
-        const r = await api.fetchDashboardData()
+    /**
+     * Load dashboard data.
+     *   force=false → cache-first (instant if data is already stored)
+     *   force=true  → bypass cache, hit the network, refresh cache
+     * Only shows the loading spinner when there is literally nothing to show.
+     */
+    async function load({ force = false } = {}) {
+        const hadCache = api.getCacheTimestamp('dashboard') != null
+        if (!hadCache) setLoading(true)
+        setError(null)
+
+        const opts = force ? { forceRefresh: true } : undefined
+        const r = await api.fetchDashboardData(opts)
         if (r.success) {
             setDash(r.data)
-            const cal = await api.fetchCalendarData()
+            const cal = await api.fetchCalendarData(opts)
             setHm(buildHeatmap(cal.success ? cal.data : {}))
             const lc = r.data.linkedPlatforms?.find(p => p.platform === 'leetcode')
             if (lc) {
-                const rec = await api.fetchLeetCodeSubmissions(lc.username)
+                const rec = await api.fetchLeetCodeSubmissions(lc.username, opts)
                 if (rec.success) setSubs(rec.data)
+            } else {
+                setSubs([])
             }
-        } else setError(r.error)
+        } else {
+            setError(r.error)
+        }
         setLoading(false)
+        setLastSynced(api.getLastSyncedAt())
         setTimeout(() => setFade(true), 60)
     }
+
+    async function handleSync() {
+        setSyncing(true)
+        try {
+            await api.syncAllPlatforms()   // hits server + invalidates local cache
+            await load({ force: true })    // refills cache with fresh data
+        } finally {
+            setSyncing(false)
+        }
+    }
+
+    // "2m ago" / "just now" helper for the Sync chip.
+    function syncedLabel(ts) {
+        if (!ts) return 'never synced'
+        const s = Math.max(0, Math.floor((Date.now() - ts) / 1000))
+        if (s < 30)     return 'just now'
+        if (s < 60)     return `${s}s ago`
+        if (s < 3600)   return `${Math.floor(s / 60)}m ago`
+        if (s < 86400)  return `${Math.floor(s / 3600)}h ago`
+        return `${Math.floor(s / 86400)}d ago`
+    }
+
+    // Re-render the "X ago" label every 30 seconds so it stays honest while the
+    // user is looking at the dashboard — still without firing any network calls.
+    useEffect(() => {
+        const id = setInterval(() => setLastSynced(api.getLastSyncedAt()), 30_000)
+        return () => clearInterval(id)
+    }, [])
 
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })
 
@@ -319,8 +366,14 @@ export default function DashboardPage() {
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                                         {linked.map(p => { const m = PMETA[p.platform] || {}; return (<span key={p.platform} style={{ fontSize: 12, padding: '5px 12px', borderRadius: 20, fontWeight: 600, background: `${m.color}18`, color: m.color, border: `1px solid ${m.color}2e` }}>{m.icon} @{p.username}</span>) })}
+                                        <span
+                                            title={lastSynced ? new Date(lastSynced).toLocaleString() : 'Not synced yet'}
+                                            style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', opacity: 0.85, display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 10px', background: 'rgba(15,23,42,.5)', border: '1px dashed rgba(229,166,83,.22)', borderRadius: 10, letterSpacing: '.02em' }}>
+                                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: lastSynced ? '#22C55E' : '#64748B', boxShadow: lastSynced ? '0 0 6px rgba(34,197,94,.55)' : 'none' }} />
+                                            synced&nbsp;<span style={{ color: 'var(--text)' }}>{syncedLabel(lastSynced)}</span>
+                                        </span>
                                         <button
-                                            onClick={async () => { setSyncing(true); await api.syncAllPlatforms(); await load(); setSyncing(false) }}
+                                            onClick={handleSync}
                                             disabled={syncing}
                                             style={{ background: syncing ? 'rgba(229,166,83,.12)' : 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: syncing ? '#9F8FE3' : '#fff', border: '1px solid rgba(229,166,83,.28)', padding: '9px 18px', borderRadius: 11, fontSize: 13, fontWeight: 700, cursor: 'pointer', transition: 'all .25s' }}>
                                             {syncing ? '⏳ Syncing…' : '↻ Sync'}

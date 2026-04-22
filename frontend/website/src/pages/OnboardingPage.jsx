@@ -157,12 +157,22 @@ export default function OnboardingPage() {
     }
 
     const handleFinish = async () => {
-        for (const [key, ps] of Object.entries(platformState)) {
-            if (ps.status === 'verified' && ps.username.trim()) {
-                try { await api.linkPlatform(key, ps.username.trim()) }
-                catch (err) { console.error(`Failed to link ${key}:`, err) }
-            }
-        }
+        // Run every linkPlatform call in parallel — they're independent server-side
+        // and the old sequential loop was adding whole seconds on accounts with
+        // multiple verified platforms (each POST triggers a backend sync).
+        const linkJobs = Object.entries(platformState)
+            .filter(([, ps]) => ps.status === 'verified' && ps.username.trim())
+            .map(([key, ps]) =>
+                api.linkPlatform(key, ps.username.trim())
+                    .catch(err => { console.error(`Failed to link ${key}:`, err); return null })
+            )
+        await Promise.all(linkJobs)
+
+        // Any cached dashboard data from before linking is now stale (new
+        // platforms just got attached). Wipe it so the dashboard mounts
+        // with a fresh fetch exactly once, then caches.
+        try { api.invalidateDashboardCache() } catch { /* ignore */ }
+
         navigate('/dashboard')
     }
 
