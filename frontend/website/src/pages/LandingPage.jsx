@@ -315,6 +315,144 @@ function useReveal() {
     }, [])
 }
 
+// ── Tiny syntax highlighter for the code-terminal lines ──────────────────
+// Not a full parser — just enough regex tokenization to colour the JS-ish
+// snippets we're typing: keywords, strings, numbers, comments, class
+// identifiers (PascalCase), and the arrow/check/pop symbols.
+const HL_RE = new RegExp(
+    [
+        '("[^"]*"|\'[^\']*\'|`[^`]*`)',                                 // strings
+        '(\\/\\/.*)',                                                   // comments
+        '(\\b(?:import|from|const|let|var|function|return|while|for|of|in|class|new|if|else|break|continue|try|catch|async|await|this)\\b)', // keywords
+        '(\\b[A-Z][A-Za-z0-9_]*\\b)',                                   // Types / constants (PascalCase + ALL_CAPS)
+        '(\\b\\d+(?:\\.\\d+)?\\b)',                                     // numbers
+        '(→|✓|↪|⚡)',                                                   // symbols we emit
+    ].join('|'),
+    'g',
+)
+function hl(line) {
+    if (!line) return null
+    const out = []
+    let last = 0
+    let m
+    let k = 0
+    HL_RE.lastIndex = 0
+    while ((m = HL_RE.exec(line)) !== null) {
+        if (m.index > last) {
+            out.push(line.slice(last, m.index))
+        }
+        const cls =
+            m[1] ? 'ml-tk-s'  :
+            m[2] ? 'ml-tk-c'  :
+            m[3] ? 'ml-tk-k'  :
+            m[4] ? 'ml-tk-t'  :
+            m[5] ? 'ml-tk-n'  :
+            m[6] ? 'ml-tk-sym': ''
+        out.push(<span key={k++} className={cls}>{m[0]}</span>)
+        last = HL_RE.lastIndex
+    }
+    if (last < line.length) out.push(line.slice(last))
+    return out
+}
+
+// ── Feature sequence: drives the terminal typewriter AND the stack popping
+// When the section enters the viewport we play a sequence:
+//   1. type a small JS program into the terminal (imports, Stack setup, loop)
+//   2. for each feature: type a `stack.pop() → "title"` line, then fire the
+//      matching stack element up and out of the cylinder's mouth
+//   3. finish with a summary line + switch the badge from "running" → "ready"
+// All state drives React re-renders so the terminal + stack stay in sync.
+function useFeatureSequence(sectionRef, features) {
+    const [lines, setLines]       = useState([])   // finalised lines in the terminal
+    const [active, setActive]     = useState('')   // line currently being typed
+    const [popped, setPopped]     = useState(0)    // how many feature cards have popped out
+    const [done, setDone]         = useState(false)
+
+    useEffect(() => {
+        const section = sectionRef.current
+        if (!section) return
+        let cancelled = false
+        let triggered = false
+
+        // No IntersectionObserver → just show everything immediately
+        if (!('IntersectionObserver' in window)) {
+            const t = setTimeout(() => {
+                if (cancelled) return
+                setLines(['$ node loadFeatures.js', '> all ' + features.length + ' features running ⚡'])
+                setPopped(features.length)
+                setDone(true)
+            }, 0)
+            return () => { cancelled = true; clearTimeout(t) }
+        }
+
+        const wait = (ms) => new Promise(res => setTimeout(res, ms))
+
+        // Type `text` character by character into `active`, then commit to `lines`.
+        // Batches several characters per frame so long lines don't drag.
+        async function type(text, speed = 6, step = 2) {
+            for (let i = step; i <= text.length; i += step) {
+                if (cancelled) return
+                setActive(text.slice(0, i))
+                const ch = text[i - 1]
+                await wait(/[,.;:]/.test(ch) ? speed * 2 : speed)
+            }
+            if (cancelled) return
+            setLines(prev => [...prev, text])
+            setActive('')
+        }
+
+        async function run() {
+            await wait(140)
+            await type('$ node features.js', 7, 1)
+            await wait(180)
+            await type("import { Stack } from './ds/Stack'", 6, 2)
+            await wait(90)
+            await type('const stack = Stack.from(FEATURES)', 6, 2)
+            await wait(120)
+            await type('while (!stack.isEmpty()) {', 6, 2)
+            await wait(60)
+            await type('  mount(stack.pop())', 6, 2)
+            await wait(60)
+            await type('}', 10, 1)
+            await wait(200)
+
+            for (let i = 0; i < features.length; i++) {
+                if (cancelled) return
+                const n = i + 1
+                await type(
+                    '  → "' + features[i].title + '"   [' + n + '/' + features.length + ']',
+                    6, 2
+                )
+                // fire the card out of the stack's top
+                setPopped(n)
+                await wait(180)
+            }
+
+            await wait(160)
+            await type('✓ stack drained — ' + features.length + ' features running ⚡', 7, 2)
+            if (!cancelled) setDone(true)
+        }
+
+        const io = new IntersectionObserver((entries) => {
+            for (const e of entries) {
+                if (e.isIntersecting && !triggered) {
+                    triggered = true
+                    run()
+                    io.disconnect()
+                }
+            }
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.18 })
+        io.observe(section)
+
+        return () => {
+            cancelled = true
+            io.disconnect()
+        }
+    }, [sectionRef, features])
+
+    return { lines, active, popped, done }
+}
+
 // ── Sticky nav shadow on scroll ───────────────────────────────────────────
 function useScrolled(threshold = 12) {
     const [scrolled, setScrolled] = useState(false)
@@ -330,8 +468,11 @@ function useScrolled(threshold = 12) {
 export default function LandingPage() {
     const navigate = useNavigate()
     const heroRef = useRef(null)
+    const featuresRef = useRef(null)
     const scrolled = useScrolled()
     useReveal()
+    const { lines: termLines, active: termActive, popped: poppedCount, done: seqDone } =
+        useFeatureSequence(featuresRef, FEATURES)
 
     // FAQ accordion state — single-open behaviour
     const [openFaq, setOpenFaq] = useState(0)
@@ -574,38 +715,181 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* ── FEATURES ── */}
-            <section className="ml-features" id="features">
+            {/* ── FEATURES (Terminal + Card Stack) ── */}
+            <section className="ml-features" id="features" ref={featuresRef}>
                 <div className="ml-section-eyebrow ml-reveal">what's inside</div>
                 <h2 className="ml-section-title ml-reveal">
                     Stuff you'll <span className="ml-italic">actually</span> use.
                 </h2>
                 <p className="ml-section-sub ml-reveal">
-                    No gimmicks. No "AI-powered synergy." Just the handful of things
-                    that genuinely move the needle on placement prep.
+                    Watch it write itself. Each feature pops out of the stack as the
+                    script runs — no gimmicks, no "AI-powered synergy," just the handful
+                    of things that genuinely move the needle on placement prep.
                 </p>
 
-                <div className="ml-features-grid">
-                    {FEATURES.map((f, i) => (
-                        <div
-                            key={f.title}
-                            className="ml-fcard ml-reveal"
-                            style={{
-                                '--accent': f.color,
-                                '--tape': f.tape,
-                                transform: `rotate(${i % 2 === 0 ? -0.8 : 0.8}deg)`,
-                                transitionDelay: `${(i % 3) * 0.07}s`,
-                            }}
-                        >
-                            <div className="ml-fcard-tape" />
-                            <CornerPeel color={f.color} style={{ position: 'absolute', top: 0, right: 0, opacity: 0.9 }} />
-                            <div className="ml-fcard-sticker">{f.sticker}</div>
-                            <div className="ml-fcard-title">{f.title}</div>
-                            <div className="ml-fcard-tag">{f.tag}</div>
-                            <div className="ml-fcard-desc">{f.desc}</div>
-                            <div className="ml-fcard-glow" />
+                <div className="ml-feat-split">
+
+                    {/* ── LEFT: a tiny terminal that writes + runs live ── */}
+                    <div className="ml-term-wrap ml-reveal">
+                        <div className="ml-term-window">
+                            <div className="ml-term-bar">
+                                <span className="ml-term-dot ml-term-dot-r" />
+                                <span className="ml-term-dot ml-term-dot-y" />
+                                <span className="ml-term-dot ml-term-dot-g" />
+                                <span className="ml-term-title">~/algoledger — loadFeatures.js</span>
+                                <span className={`ml-term-run ${seqDone ? 'ml-term-run-done' : ''}`}>
+                                    <span className="ml-term-run-dot" />
+                                    {seqDone ? 'ready' : 'running'}
+                                </span>
+                            </div>
+                            <pre className="ml-term-body">
+                                {termLines.map((l, i) => {
+                                    const t = l.trimStart()
+                                    // Prompt + output lines get a single flat colour;
+                                    // actual code lines get full token highlighting.
+                                    const isPrompt = t.startsWith('$')
+                                    const isOk     = t.startsWith('✓')
+                                    const isPop    = t.startsWith('→') || t.startsWith('↪')
+                                    const cls =
+                                        'ml-term-line' +
+                                        (isPrompt ? ' ml-term-prompt' : '') +
+                                        (isOk     ? ' ml-term-ok'     : '') +
+                                        (isPop    ? ' ml-term-pop'    : '')
+                                    return (
+                                        <div key={i} className={cls}>
+                                            {hl(l)}
+                                        </div>
+                                    )
+                                })}
+                                {(!seqDone || termActive) && (
+                                    <div className="ml-term-line ml-term-line-active">
+                                        {hl(termActive)}
+                                        <span className="ml-term-caret">▍</span>
+                                    </div>
+                                )}
+                            </pre>
                         </div>
-                    ))}
+
+                        <div className="ml-term-cap">
+                            <span className="ml-term-cap-k">
+                                <span className="ml-term-cap-dot" />
+                                features.loaded
+                            </span>
+                            <span className="ml-term-cap-v">
+                                {poppedCount}
+                                <span className="ml-term-cap-d">/{FEATURES.length}</span>
+                            </span>
+                        </div>
+
+                        {/* ── Feature stack — proper DSA stack visual inside a cylinder.
+                               Elements sit bottom-up (FEATURES[N-1] at the bottom, FEATURES[0]
+                               at the top = next-to-pop). As poppedCount grows, top items rise
+                               up out of the cylinder mouth and disappear. */}
+                        <div className="ml-fstack" aria-hidden="true">
+                            <div className="ml-fstack-heading">
+                                <Squiggle width={54} color="#E5A653" />
+                                <span>feature stack</span>
+                            </div>
+
+                            <div className="ml-fstack-tube">
+                                {/* TOP → arrow pointing at the current top of the stack */}
+                                <div
+                                    className="ml-fstack-top-arrow"
+                                    data-empty={poppedCount >= FEATURES.length ? 'true' : 'false'}
+                                >
+                                    top&nbsp;<span className="ml-fstack-top-arrow-tip">→</span>
+                                </div>
+
+                                {/* Mouth (top ellipse / opening) */}
+                                <div className="ml-fstack-mouth">
+                                    <div className="ml-fstack-mouth-inner" />
+                                    <div className="ml-fstack-mouth-glare" />
+                                </div>
+
+                                {/* Body — the cylinder walls */}
+                                <div className="ml-fstack-body">
+                                    <div className="ml-fstack-shine" />
+                                    <div className="ml-fstack-shine ml-fstack-shine-r" />
+
+                                    {/* Stack elements anchored to the bottom */}
+                                    <div className="ml-fstack-items">
+                                        {FEATURES.map((f, i) => {
+                                            // depth-from-bottom: FEATURES[N-1] → 0 (bottom),
+                                            // FEATURES[0] → N-1 (top of stack).
+                                            const depth = FEATURES.length - 1 - i
+                                            const taken = i < poppedCount
+                                            return (
+                                                <div
+                                                    key={f.title}
+                                                    className="ml-fstack-item"
+                                                    data-taken={taken ? 'true' : 'false'}
+                                                    style={{
+                                                        '--s-accent': f.color,
+                                                        '--s-depth':  depth,
+                                                        '--s-index':  i,
+                                                    }}
+                                                >
+                                                    <span className="ml-fstack-item-num">{FEATURES.length - i}</span>
+                                                    <span className="ml-fstack-item-emoji">{f.sticker}</span>
+                                                    <span className="ml-fstack-item-bar" />
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Base (closed bottom) */}
+                                <div className="ml-fstack-base" />
+
+                                {/* Ambient glow underneath */}
+                                <div className="ml-fstack-glow" />
+                            </div>
+
+                            {/* Caption under the cylinder */}
+                            <div className="ml-fstack-caption">
+                                <span className="ml-fstack-caption-k">size</span>
+                                <span className="ml-fstack-caption-v">
+                                    {FEATURES.length - poppedCount}
+                                    <span className="ml-fstack-caption-d">/{FEATURES.length}</span>
+                                </span>
+                                <span className="ml-fstack-caption-bar" />
+                                <span className="ml-fstack-caption-k">
+                                    {poppedCount >= FEATURES.length ? 'empty' : 'LIFO'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── RIGHT: popped cards land here, one after the other ── */}
+                    <div className="ml-feat-stage">
+                        <div className="ml-pop-list">
+                            {FEATURES.map((f, i) => (
+                                <div
+                                    key={f.title}
+                                    className="ml-stack-card"
+                                    data-stack-in={i < poppedCount ? 'true' : 'false'}
+                                    style={{
+                                        '--accent': f.color,
+                                        '--tape':   f.tape,
+                                        '--card-index': i,
+                                        '--card-rot': `${([-1.4, 0.9, -0.6, 1.1, -1.0, 0.7])[i] ?? 0}deg`,
+                                    }}
+                                >
+                                    <div className="ml-fcard-tape" />
+                                    <CornerPeel color={f.color} style={{ position:'absolute', top:0, right:0, opacity:0.9 }} />
+                                    <div className="ml-fcard-sticker">{f.sticker}</div>
+                                    <div className="ml-fcard-title">{f.title}</div>
+                                    <div className="ml-fcard-tag">{f.tag}</div>
+                                    <div className="ml-fcard-desc">{f.desc}</div>
+                                    <div className="ml-fcard-glow" />
+                                    <div className="ml-stack-badge">
+                                        {i + 1}&thinsp;/&thinsp;{FEATURES.length}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
@@ -1340,37 +1624,596 @@ const ML_CSS = `
     max-width: 560px; margin: 0 auto 48px;
 }
 
-/* ── Feature cards ── */
-.ml-features-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 34px 26px;
-    margin-top: 20px;
+/* ══════════════════════════════════════════════════════════════════════════
+   FEATURES — Terminal (writing + running) on left, physical Card Stack on right
+   ══════════════════════════════════════════════════════════════════════════
+   Layout:
+     .ml-feat-split
+       .ml-term-wrap                ← left column
+         .ml-term-window            ← macOS-style code-editor window
+         .ml-term-cap               ← "features.loaded N/M" chip
+         .ml-fstack                 ← DSA-style cylindrical stack (feature stack)
+       .ml-feat-stage               ← right column
+         .ml-pop-list               ← grid of popped-out feature cards
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.ml-feat-split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 40px;
     text-align: left;
+    align-items: start;
+    margin-top: 28px;
 }
-.ml-fcard {
+@media (max-width: 980px) {
+    .ml-feat-split { grid-template-columns: 1fr; gap: 48px; }
+}
+
+/* ════════ Terminal (left column) ════════ */
+.ml-term-wrap {
+    position: sticky;
+    top: 92px;
+    align-self: start;
+}
+@media (max-width: 980px) {
+    .ml-term-wrap { position: static; top: auto; }
+}
+.ml-term-window {
+    background:
+        radial-gradient(circle at 20% -10%, rgba(229,166,83,0.08), transparent 60%),
+        linear-gradient(180deg, #0e1322 0%, #070a14 100%);
+    border: 1px solid rgba(229, 166, 83, 0.22);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 40px 90px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 0 80px rgba(229,166,83,0.08);
+    backdrop-filter: blur(8px);
+}
+.ml-term-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 14px;
+    background: linear-gradient(180deg, rgba(28,36,58,0.9), rgba(20,26,42,0.95));
+    border-bottom: 1px solid rgba(229,166,83,0.14);
+}
+.ml-term-dot {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.25) inset;
+}
+.ml-term-dot-r { background: #ff5f56; }
+.ml-term-dot-y { background: #ffbd2e; }
+.ml-term-dot-g { background: #27c93f; }
+.ml-term-title {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    opacity: 0.72;
+    margin-left: 10px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+.ml-term-run {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 10.5px;
+    color: var(--amber);
+    background: rgba(229,166,83,0.12);
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(229,166,83,0.26);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.ml-term-run-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px rgba(229,166,83,0.7);
+    animation: ml-term-pulse 1s ease-in-out infinite;
+}
+.ml-term-run-done {
+    color: var(--sage);
+    background: rgba(136,192,163,0.12);
+    border-color: rgba(136,192,163,0.32);
+}
+.ml-term-run-done .ml-term-run-dot {
+    background: var(--sage);
+    box-shadow: 0 0 8px rgba(136,192,163,0.7);
+    animation: none;
+}
+@keyframes ml-term-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+.ml-term-body {
+    margin: 0;
+    padding: 20px 20px 24px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: #b2bfd8;
+    white-space: pre-wrap;
+    min-height: 260px;
+    max-height: 360px;
+    overflow: hidden;
+    background:
+        repeating-linear-gradient(
+            180deg,
+            rgba(255,255,255,0.008) 0,
+            rgba(255,255,255,0.008) 22px,
+            transparent 22px,
+            transparent 44px
+        ),
+        linear-gradient(180deg, rgba(7,10,20,0.4), rgba(4,6,12,0.55));
+}
+.ml-term-line {
+    display: block;
+    color: #9eaecb;
+    opacity: 0;
+    transform: translateY(4px);
+    animation: ml-term-line-in 0.25s ease-out forwards;
+}
+@keyframes ml-term-line-in {
+    to { opacity: 1; transform: translateY(0); }
+}
+.ml-term-prompt { color: var(--amber); font-weight: 700; }
+.ml-term-info   { color: #89c0ff; }
+.ml-term-pop    { color: #f0d9b4; }
+.ml-term-ok     { color: var(--sage); }
+.ml-term-line-active {
+    color: var(--ink);
+    opacity: 1;
+    animation: none;
+}
+
+/* ── Token colours (syntax highlighter spans) ── */
+.ml-tk-s   { color: #E5B67A;  }                       /* strings       — warm amber */
+.ml-tk-c   { color: #6c7794;  font-style: italic; }   /* comments      — muted slate */
+.ml-tk-k   { color: #D88BA8;  font-weight: 600;  }    /* keywords      — rose */
+.ml-tk-t   { color: #89C0FF;  }                       /* Types / ALLCAPS — blue */
+.ml-tk-n   { color: #B9E5C4;  }                       /* numbers       — mint */
+.ml-tk-sym { color: var(--amber); font-weight: 800; } /* → ✓ ↪ ⚡       — amber */
+
+/* Inside prompt/pop/ok lines we want the line's single colour to win — */
+/* the token spans inherit from the line instead of overriding it.       */
+.ml-term-prompt .ml-tk-s,
+.ml-term-prompt .ml-tk-c,
+.ml-term-prompt .ml-tk-k,
+.ml-term-prompt .ml-tk-t,
+.ml-term-prompt .ml-tk-n,
+.ml-term-pop    .ml-tk-k,
+.ml-term-pop    .ml-tk-n,
+.ml-term-pop    .ml-tk-t,
+.ml-term-ok     .ml-tk-k,
+.ml-term-ok     .ml-tk-t { color: inherit; }
+/* …but keep the string + symbol colours even on those lines so
+   the title quotes and the → ✓ glyphs still pop out. */
+.ml-term-caret {
+    display: inline-block;
+    color: var(--amber);
+    animation: ml-term-caret 1.05s steps(1) infinite;
+    margin-left: 1px;
+    font-weight: 800;
+}
+@keyframes ml-term-caret {
+    0%, 49%  { opacity: 1; }
+    50%,100% { opacity: 0; }
+}
+
+/* Tiny status chip below the terminal */
+.ml-term-cap {
+    margin-top: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px;
+    padding: 11px 16px;
+    background: rgba(18, 23, 39, 0.72);
+    border: 1px dashed rgba(229,166,83,0.28);
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+}
+.ml-term-cap-k { display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.04em; opacity: 0.85; }
+.ml-term-cap-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--sage);
+    box-shadow: 0 0 8px rgba(136,192,163,0.7);
+}
+.ml-term-cap-v { color: var(--amber); font-weight: 800; font-size: 14px; }
+.ml-term-cap-d { color: var(--ink-faint); margin-left: 1px; font-weight: 500; }
+
+/* ════════ Feature stack — DSA-style cylindrical stack under the terminal ════════
+   Visual: a tube (ellipse top + cylinder body + ellipse base) with feature
+   elements stacked inside, bottom-up. Top element pops first (LIFO).
+   Elements rise up and out through the mouth as poppedCount grows.        */
+
+.ml-fstack {
     position: relative;
-    background: linear-gradient(180deg, rgba(21,27,45,0.85), rgba(13,17,28,0.9));
+    margin-top: 26px;
+    padding: 18px 6px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ml-fstack-heading {
+    align-self: flex-start;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: 'Caveat', cursive;
+    font-size: 20px; font-weight: 700;
+    color: var(--amber);
+    transform: rotate(-3deg);
+    margin-bottom: 8px;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+.ml-fstack-heading svg { transform: translateY(2px); opacity: 0.85; }
+
+.ml-fstack-tube {
+    position: relative;
+    width: 210px;
+    margin: 22px auto 10px;
+}
+
+/* "top →" annotation pointing at the opening */
+.ml-fstack-top-arrow {
+    position: absolute;
+    top: 2px;
+    left: -74px;
+    font-family: 'Caveat', cursive;
+    font-size: 18px; font-weight: 700;
+    color: var(--amber);
+    opacity: 0.9;
+    transform: rotate(-6deg);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    z-index: 6;
+    transition: opacity 0.4s ease;
+}
+.ml-fstack-top-arrow[data-empty="true"] { opacity: 0.35; }
+.ml-fstack-top-arrow-tip { font-size: 22px; font-weight: 800; }
+
+/* Mouth — top ellipse, the opening */
+.ml-fstack-mouth {
+    position: relative;
+    width: 100%;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(
+        ellipse at 42% 35%,
+        rgba(46,60,95,0.96) 0%,
+        rgba(18,24,42,0.98) 65%
+    );
+    border: 2px solid rgba(229,166,83,0.65);
+    box-shadow:
+        0 -6px 22px rgba(229,166,83,0.18),
+        inset 0 5px 16px rgba(0,0,0,0.6),
+        inset 0 -2px 8px rgba(229,166,83,0.1);
+    z-index: 5;
+    overflow: hidden;
+    animation: ml-fstack-pulse 2.6s ease-in-out infinite;
+}
+.ml-fstack-mouth-inner {
+    position: absolute;
+    inset: 7px 14px;
+    border-radius: 50%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(5,7,14,0.96) 0%,
+        rgba(13,17,30,0.88) 70%
+    );
+    box-shadow: inset 0 4px 14px rgba(0,0,0,0.92);
+}
+.ml-fstack-mouth-glare {
+    position: absolute;
+    top: 6px; left: 20%; width: 28%; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    filter: blur(2.5px);
+    z-index: 2;
+}
+@keyframes ml-fstack-pulse {
+    0%, 100% {
+        box-shadow:
+            0 -6px 22px rgba(229,166,83,0.18),
+            inset 0 5px 16px rgba(0,0,0,0.6),
+            inset 0 -2px 8px rgba(229,166,83,0.1);
+    }
+    50% {
+        box-shadow:
+            0 -10px 32px rgba(229,166,83,0.4),
+            inset 0 5px 16px rgba(0,0,0,0.6),
+            inset 0 -2px 8px rgba(229,166,83,0.2),
+            0 0 0 2px rgba(229,166,83,0.22);
+    }
+}
+/* Stop pulsing once stack is empty */
+.ml-fstack-tube:has(.ml-fstack-top-arrow[data-empty="true"]) .ml-fstack-mouth {
+    animation: none;
+}
+
+/* Cylinder body — tube walls */
+.ml-fstack-body {
+    position: relative;
+    width: 100%;
+    height: 236px;
+    margin-top: -2px;
+    background: linear-gradient(
+        90deg,
+        rgba(10,14,26,0.97)  0%,
+        rgba(22,30,52,0.88) 16%,
+        rgba(34,46,76,0.72) 42%,
+        rgba(38,52,85,0.68) 50%,
+        rgba(34,46,76,0.72) 58%,
+        rgba(22,30,52,0.88) 84%,
+        rgba(10,14,26,0.97) 100%
+    );
+    border-left:  2px solid rgba(229,166,83,0.42);
+    border-right: 2px solid rgba(229,166,83,0.42);
+    overflow: hidden;
+    z-index: 3;
+}
+
+.ml-fstack-shine {
+    position: absolute;
+    top: 0; left: 14%; width: 9%; height: 100%;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.08) 0%,
+        rgba(255,255,255,0.03) 60%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+.ml-fstack-shine-r {
+    left: auto; right: 14%;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.04) 0%,
+        transparent 100%
+    );
+}
+
+/* Items container — inside the cylinder, items positioned absolutely */
+.ml-fstack-items {
+    position: absolute;
+    inset: 12px 14px 14px;
+}
+
+/* Each stacked element — a horizontal bar-ish block */
+.ml-fstack-item {
+    position: absolute;
+    left: 0; right: 0;
+    /* bottom-up: --s-depth 0 = bottom. 32px per row. */
+    bottom: calc(var(--s-depth, 0) * 32px);
+    height: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 10px;
+    border-radius: 7px;
+    background:
+        linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--s-accent) 32%, rgba(10,14,26,0.9)) 0%,
+            color-mix(in srgb, var(--s-accent) 14%, rgba(10,14,26,0.9)) 60%,
+            color-mix(in srgb, var(--s-accent) 32%, rgba(10,14,26,0.9)) 100%
+        );
+    border: 1px solid color-mix(in srgb, var(--s-accent) 55%, transparent);
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 -1px 0 color-mix(in srgb, var(--s-accent) 22%, transparent) inset;
+    transition:
+        opacity 0.45s ease,
+        transform 0.8s cubic-bezier(.22, 1.45, .38, 1);
+    will-change: transform, opacity;
+}
+/* top element gets a little extra glow */
+.ml-fstack-item:not([data-taken="true"]) + .ml-fstack-item:not([data-taken="true"]),
+.ml-fstack-items .ml-fstack-item:not([data-taken="true"]):last-of-type {
+    /* handled below */
+}
+.ml-fstack-items .ml-fstack-item:not([data-taken="true"]):first-of-type {
+    box-shadow:
+        0 2px 10px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 0 18px color-mix(in srgb, var(--s-accent) 35%, transparent);
+}
+
+.ml-fstack-item-num {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 10px; font-weight: 700;
+    color: color-mix(in srgb, var(--s-accent) 70%, var(--ink));
+    background: rgba(0,0,0,0.35);
+    padding: 1px 6px;
+    border-radius: 5px;
+    min-width: 16px; text-align: center;
+    letter-spacing: 0.03em;
+}
+.ml-fstack-item-emoji {
+    font-size: 14px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+}
+.ml-fstack-item-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--s-accent) 60%, transparent),
+        color-mix(in srgb, var(--s-accent) 20%, transparent)
+    );
+    opacity: 0.75;
+}
+
+/* When an item is popped → rise up + out of the cylinder mouth */
+.ml-fstack-item[data-taken="true"] {
+    opacity: 0;
+    transform:
+        translateY(calc(-42px - var(--s-depth, 0) * 32px))
+        scale(0.85)
+        rotate(-4deg);
+}
+
+/* Base — closed bottom ellipse */
+.ml-fstack-base {
+    width: 100%;
+    height: 30px;
+    margin-top: -1px;
+    border-radius: 50%;
+    background: linear-gradient(
+        180deg,
+        rgba(18,24,42,0.98) 0%,
+        rgba(10,14,26,0.99) 100%
+    );
+    border: 2px solid rgba(229,166,83,0.3);
+    box-shadow:
+        0 14px 38px rgba(0,0,0,0.6),
+        inset 0 -3px 10px rgba(0,0,0,0.55);
+    z-index: 2;
+    position: relative;
+}
+
+/* Ambient glow pool under the tube */
+.ml-fstack-glow {
+    position: absolute;
+    bottom: -24px; left: 50%;
+    transform: translateX(-50%);
+    width: 80%; height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(229,166,83,0.3) 0%,
+        transparent 72%
+    );
+    filter: blur(12px);
+    pointer-events: none;
+}
+
+/* Monospace caption under the cylinder */
+.ml-fstack-caption {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 8px 14px;
+    background: rgba(18, 23, 39, 0.7);
+    border: 1px dashed rgba(229,166,83,0.24);
+    border-radius: 10px;
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+}
+.ml-fstack-caption-k { opacity: 0.75; }
+.ml-fstack-caption-v { color: var(--amber); font-weight: 800; font-size: 13px; }
+.ml-fstack-caption-d { color: var(--ink-faint); font-weight: 500; }
+.ml-fstack-caption-bar {
+    width: 1px; height: 12px;
+    background: rgba(229,166,83,0.26);
+}
+
+/* Mobile tweaks */
+@media (max-width: 980px) {
+    .ml-fstack { margin-top: 18px; }
+    .ml-fstack-tube { width: 190px; }
+    .ml-fstack-body { height: 220px; }
+    .ml-fstack-top-arrow { left: -66px; font-size: 16px; }
+}
+
+/* ════════ Stage (right column: only the popped-cards grid now) ════════ */
+.ml-feat-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── List of cards that have popped out of the stack ── */
+.ml-pop-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* equal-height rows so every card lines up regardless of copy length */
+    grid-auto-rows: 1fr;
+    gap: 18px 16px;
+    perspective: 1200px;
+    perspective-origin: 10% -20%;
+}
+@media (max-width: 620px) { .ml-pop-list { grid-template-columns: 1fr; } }
+
+/* ── Individual feature card ── */
+.ml-stack-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(21,27,45,0.93), rgba(13,17,28,0.96));
     border: 1px solid var(--edge-soft);
     border-radius: 20px;
-    padding: 42px 22px 22px;
-    transition: transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s, border-color 0.25s;
+    padding: 28px 22px 26px;
+    min-height: 262px;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+    text-align: left;
+
+    /* ── PRE-ANIMATION: tiny, rotated, sitting where the pile is (top-left) ── */
+    opacity: 0;
+    transform-origin: top left;
+    transform:
+        translate3d(-220px, -180px, 0)
+        scale(0.38)
+        rotate(calc(-18deg + var(--card-rot, 0deg)));
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    transition:
+        opacity   0.45s ease,
+        transform 0.9s  cubic-bezier(.22, 1.5, .38, 1),
+        box-shadow 0.4s ease,
+        border-color 0.3s;
+    will-change: opacity, transform;
+    z-index: calc(10 - var(--card-index, 0));
 }
-.ml-fcard:hover {
-    transform: rotate(0deg) translateY(-6px) !important;
-    box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+
+/* ── POST-ANIMATION: card has popped out and sits in the grid ── */
+.ml-stack-card[data-stack-in="true"] {
+    opacity: 1;
+    transform:
+        translate3d(0, 0, 0)
+        scale(1)
+        rotate(var(--card-rot, 0deg));
+    box-shadow:
+        0 18px 50px rgba(0,0,0,0.42),
+        0 0 0 1px rgba(237,228,206,0.04) inset;
+}
+
+/* Hover: straighten + lift + accent glow */
+.ml-stack-card[data-stack-in="true"]:hover {
+    transform: translate3d(0, -8px, 0) scale(1.015) rotate(0deg);
     border-color: var(--accent);
+    box-shadow:
+        0 28px 72px rgba(0,0,0,0.55),
+        0 0 0 1.5px var(--accent) inset,
+        0 0 60px color-mix(in srgb, var(--accent) 22%, transparent);
+    z-index: 30;
 }
+.ml-stack-card[data-stack-in="true"]:hover .ml-fcard-glow { opacity: 1; }
+.ml-stack-card[data-stack-in="true"]:hover .ml-fcard-sticker {
+    transform: rotate(-2deg) scale(1.18);
+}
+
+/* ── Card sub-elements ── */
 .ml-fcard-tape {
     position: absolute;
     top: -10px; left: 50%;
     transform: translateX(-50%) rotate(-3deg);
-    width: 86px; height: 22px;
+    width: 82px; height: 20px;
     background-image: repeating-linear-gradient(
-        135deg,
-        transparent 0 6px,
-        rgba(255,255,255,0.12) 6px 12px
+        135deg, transparent 0 6px, rgba(255,255,255,0.12) 6px 12px
     );
     background-color: var(--tape);
     opacity: 0.38;
@@ -1378,30 +2221,49 @@ const ML_CSS = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 .ml-fcard-sticker {
-    font-size: 36px;
+    font-size: 32px;
     display: inline-block;
     transform: rotate(-6deg);
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.45));
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    line-height: 1;
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
 }
 .ml-fcard-title {
     font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700; font-size: 20px;
-    color: var(--ink); margin-bottom: 4px;
+    font-weight: 700; font-size: 19px;
+    line-height: 1.2;
+    color: var(--ink); margin-bottom: 3px;
 }
 .ml-fcard-tag {
     font-family: 'Caveat', cursive;
-    font-size: 17px; font-weight: 600;
+    font-size: 16px; font-weight: 600;
     color: var(--accent);
-    margin-bottom: 12px;
+    line-height: 1.3;
+    margin-bottom: 10px;
 }
-.ml-fcard-desc { font-size: 14.5px; line-height: 1.6; color: var(--ink-mute); }
+.ml-fcard-desc {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-mute);
+    flex: 1;
+}
 .ml-fcard-glow {
     position: absolute; inset: 0; border-radius: 20px;
-    background: radial-gradient(circle at bottom right, color-mix(in srgb, var(--accent) 18%, transparent), transparent 65%);
+    background: radial-gradient(
+        circle at bottom right,
+        color-mix(in srgb, var(--accent) 20%, transparent),
+        transparent 65%
+    );
     opacity: 0; transition: opacity 0.3s; pointer-events: none;
 }
-.ml-fcard:hover .ml-fcard-glow { opacity: 1; }
+.ml-stack-badge {
+    position: absolute; bottom: 11px; right: 14px;
+    font-family: 'Caveat', cursive;
+    font-size: 13px; font-weight: 700;
+    color: var(--accent); opacity: 0.55;
+    letter-spacing: 0.05em;
+}
 
 /* ── How it works ── */
 .ml-how-grid {
