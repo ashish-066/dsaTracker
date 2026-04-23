@@ -492,16 +492,34 @@ function WriteEditor({ onCancel, onPublished }) {
         return () => window.removeEventListener('keydown', onKey)
     }, [onCancel])
 
-    // Auto-grow textarea — preserve window scroll position around the reflow
-    // so the page doesn't hop up/down while the user is typing.
-    // (Setting height:auto before measuring scrollHeight is what used to
-    //  cause the visible "boing".)
+    // Auto-grow textarea — grow-only while the user types.
+    //
+    // The old "set height:auto then read scrollHeight" trick was the real
+    // source of the bouncing: that intermediate auto height briefly shrinks
+    // the textarea on every keystroke, which races the browser's
+    // cursor-into-view scroll and produces the jitter.
+    //
+    // Instead we only GROW when new content overflows the current height,
+    // and defer the rare shrink (on deletion) to a requestAnimationFrame
+    // with scroll-position restoration, so it can't jerk the page either.
     function autoResize(el) {
         if (!el) return
-        const sy = window.scrollY
-        el.style.height = 'auto'
-        el.style.height = el.scrollHeight + 'px'
-        if (window.scrollY !== sy) window.scrollTo(0, sy)
+        // Typing: scrollHeight > clientHeight means text just wrapped past
+        // the current box. Just bump the height — no reset, no bounce.
+        if (el.scrollHeight > el.clientHeight) {
+            el.style.height = el.scrollHeight + 'px'
+            return
+        }
+        // Deletion / paste-shorter: schedule a quiet remeasure so any page
+        // scroll the browser triggers during reflow is snapped back.
+        requestAnimationFrame(() => {
+            if (!el.isConnected) return
+            const sy = window.scrollY
+            el.style.height = 'auto'
+            const h = el.scrollHeight
+            el.style.height = h + 'px'
+            if (window.scrollY !== sy) window.scrollTo(0, sy)
+        })
     }
 
     // ── Apply a formatting fn to the body textarea ──
