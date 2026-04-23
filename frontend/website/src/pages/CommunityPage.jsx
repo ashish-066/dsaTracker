@@ -492,11 +492,16 @@ function WriteEditor({ onCancel, onPublished }) {
         return () => window.removeEventListener('keydown', onKey)
     }, [onCancel])
 
-    // Auto-grow textarea
+    // Auto-grow textarea — preserve window scroll position around the reflow
+    // so the page doesn't hop up/down while the user is typing.
+    // (Setting height:auto before measuring scrollHeight is what used to
+    //  cause the visible "boing".)
     function autoResize(el) {
         if (!el) return
+        const sy = window.scrollY
         el.style.height = 'auto'
         el.style.height = el.scrollHeight + 'px'
+        if (window.scrollY !== sy) window.scrollTo(0, sy)
     }
 
     // ── Apply a formatting fn to the body textarea ──
@@ -611,13 +616,12 @@ function WriteEditor({ onCancel, onPublished }) {
                         {words > 0 && <span style={{ fontSize: 11, color: '#475569' }}>{words} words · {mins} min read</span>}
                     </div>
 
-                    {/* Title */}
+                    {/* Title — no length cap, write as long as you want. */}
                     <textarea
                         value={form.title}
                         onChange={e => { setForm(f => ({ ...f, title: e.target.value })); autoResize(e.target) }}
                         placeholder="Your post title…"
                         rows={1}
-                        maxLength={200}
                         style={{
                             width: '100%', background: 'transparent', border: 'none', outline: 'none',
                             fontSize: 30, fontWeight: 900, color: '#F8FAFC', lineHeight: 1.3,
@@ -711,9 +715,8 @@ const MD_CSS = `
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     backdrop-filter: blur(6px);
-    position: sticky;
-    top: 0;
-    z-index: 4;
+    /* NB: deliberately NOT sticky — sticky + an auto-growing textarea below
+       was forcing the viewport to jump as lines wrapped while typing. */
 }
 .md-tb-btn {
     min-width: 32px;
