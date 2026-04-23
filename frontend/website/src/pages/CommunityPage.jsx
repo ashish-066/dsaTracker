@@ -477,6 +477,29 @@ function mdInsertAt(ta, snippet) {
     }
 }
 
+// Code block — the opening ``` must sit at the START of its own line or the
+// markdown parser won't recognise the fence. This helper guarantees that
+// regardless of where the cursor is when the user clicks the toolbar button.
+function mdCodeBlock(ta, lang = '', placeholder = 'code') {
+    const start = ta.selectionStart
+    const end   = ta.selectionEnd
+    const v     = ta.value
+    const sel   = v.slice(start, end) || placeholder
+
+    // Prepend a newline if the cursor isn't already at a line start.
+    const needLead = start > 0 && v[start - 1] !== '\n'
+    // Append a newline if the next char isn't already a newline or EOF.
+    const needTrail = end < v.length && v[end] !== '\n'
+
+    const before = (needLead ? '\n' : '') + '```' + lang + '\n'
+    const after  = '\n```' + (needTrail ? '\n' : '')
+
+    const next = v.slice(0, start) + before + sel + after + v.slice(end)
+    const selStart = start + before.length
+    const selEnd   = selStart + sel.length
+    return { value: next, selStart, selEnd }
+}
+
 // ─── Write editor (full page, not a modal) ────────────────────────────────────
 function WriteEditor({ onCancel, onPublished }) {
     const [form, setForm] = useState({ title: '', topic: 'arrays', content: '' })
@@ -556,16 +579,16 @@ function WriteEditor({ onCancel, onPublished }) {
         { id: 'h2',    label: 'H2',  title: 'Heading 2',      apply: ta => mdLinePrefix(ta, '## ') },
         { id: 'h3',    label: 'H3',  title: 'Heading 3',      apply: ta => mdLinePrefix(ta, '### ') },
         { id: 'sep1',  separator: true },
-        { id: 'b',     label: 'B',   title: 'Bold  (Ctrl+B)', bold: true,   apply: ta => mdWrap(ta, '**', '**', 'bold text') },
+        { id: 'b',     label: 'B',   title: 'Bold  (Ctrl+B)',   bold: true,   apply: ta => mdWrap(ta, '**', '**', 'bold text') },
         { id: 'i',     label: 'I',   title: 'Italic  (Ctrl+I)', italic: true, apply: ta => mdWrap(ta, '*', '*', 'italic') },
-        { id: 'code',  label: '</>', title: 'Inline code',    mono: true,  apply: ta => mdWrap(ta, '`', '`', 'code') },
         { id: 'sep2',  separator: true },
         { id: 'link',  label: '🔗',  title: 'Link  (Ctrl+K)',   apply: ta => mdWrap(ta, '[', '](https://)', 'link text') },
         { id: 'ul',    label: '• List',   title: 'Bulleted list', apply: ta => mdLinePrefix(ta, '- ') },
         { id: 'ol',    label: '1. List',  title: 'Numbered list', apply: ta => mdLinePrefix(ta, '1. ') },
         { id: 'quote', label: '“ ”', title: 'Quote',          apply: ta => mdLinePrefix(ta, '> ') },
         { id: 'sep3',  separator: true },
-        { id: 'block', label: '{ }', title: 'Code block',    mono: true,  apply: ta => mdWrap(ta, '```\n', '\n```\n', 'code') },
+        // Single unambiguous code button — always produces a ```fenced``` block.
+        { id: 'code',  label: '</>', title: 'Code block  (```)', mono: true, apply: ta => mdCodeBlock(ta) },
         { id: 'hr',    label: '—',   title: 'Divider',        apply: ta => mdInsertAt(ta, '\n\n---\n\n') },
     ]
 
@@ -702,7 +725,7 @@ Link:            [read more](https://…)"
                     <div className="md-hint">
                         <span><strong className="md-hint-k">**bold**</strong></span>
                         <span><em className="md-hint-k">*italic*</em></span>
-                        <span><code className="md-hint-k">`code`</code></span>
+                        <span><code className="md-hint-k">```code```</code></span>
                         <span><span className="md-hint-k"># Heading</span></span>
                         <span><span className="md-hint-k">- list</span></span>
                         <span><span className="md-hint-k">&gt; quote</span></span>
