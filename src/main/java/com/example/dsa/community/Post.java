@@ -17,13 +17,15 @@ public class Post {
     @Column(name = "author_name", length = 120)
     private String authorName;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 500)
     private String title;
 
     @Column(nullable = false, length = 80)
     private String topic;
 
-    @Column(nullable = false, length = 1200)
+    // TEXT instead of VARCHAR(1200) — lets users write real blog posts
+    // (Postgres TEXT is effectively unlimited, up to ~1GB per row).
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "like_count")

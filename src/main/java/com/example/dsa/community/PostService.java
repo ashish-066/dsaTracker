@@ -39,8 +39,7 @@ public class PostService {
             throw new IllegalArgumentException("Title is required");
         if (req.getContent() == null || req.getContent().isBlank())
             throw new IllegalArgumentException("Content is required");
-        if (req.getContent().length() > 1200)
-            throw new IllegalArgumentException("Content must be under 1200 characters");
+        // No length cap — the column is now TEXT, so users can write full-length posts.
 
         UserInfo user = userRepo.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
