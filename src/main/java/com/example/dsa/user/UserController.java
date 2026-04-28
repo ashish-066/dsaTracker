@@ -37,14 +37,26 @@ public class UserController {
 
     /* ───────────── Auth-cookie helpers ─────────────
      *
-     * The JWT lives in an HttpOnly, SameSite=Lax cookie now — JavaScript
-     * on the page literally cannot read it, so an XSS attack can't steal
-     * the token, and DevTools' Storage tab won't show it either.
+     * The JWT lives in an HttpOnly cookie — JavaScript on the page literally
+     * cannot read it, so an XSS attack can't steal the token, and DevTools'
+     * Storage tab won't show it either.
      *
-     * Secure flag is conditional on the request being served over HTTPS
-     * (directly or behind an X-Forwarded-Proto reverse proxy). Local HTTP
-     * dev still works without HTTPS; production uses HTTPS, so the cookie
-     * gets the Secure flag automatically.
+     * SameSite policy is environment-dependent:
+     *
+     *   HTTPS request  →  SameSite=None; Secure
+     *     The frontend and backend usually live on different domains in
+     *     production (e.g. app.algoledger.com + api.algoledger.com, or even
+     *     algoledger.vercel.app + algoledger-api.onrender.com). For browsers
+     *     to send the cookie on those cross-site fetch requests, the cookie
+     *     MUST be SameSite=None and Secure. SameSite=Lax silently drops
+     *     cookies on cross-site subresource requests — which would manifest
+     *     exactly as "I'm logged in but the dashboard is empty."
+     *
+     *   HTTP request   →  SameSite=Lax (no Secure)
+     *     Browsers reject SameSite=None cookies that aren't marked Secure,
+     *     and Secure cookies don't work over plain HTTP. Local dev runs on
+     *     HTTP localhost where frontend and backend are same-site anyway,
+     *     so Lax works.
      */
     private static final String JWT_COOKIE_NAME = "jwt";
     private static final long   JWT_COOKIE_MAX_AGE_SECONDS = 7L * 24 * 60 * 60; // 7 days
@@ -55,26 +67,27 @@ public class UserController {
         return fwd != null && fwd.equalsIgnoreCase("https");
     }
 
-    private static void setAuthCookie(HttpServletRequest request, HttpServletResponse response, String token) {
-        ResponseCookie cookie = ResponseCookie.from(JWT_COOKIE_NAME, token)
+    private static ResponseCookie buildJwtCookie(HttpServletRequest request, String value, long maxAge) {
+        boolean secure = isSecureRequest(request);
+        // None+Secure for HTTPS (cross-site prod), Lax for HTTP (local dev).
+        String sameSite = secure ? "None" : "Lax";
+        return ResponseCookie.from(JWT_COOKIE_NAME, value == null ? "" : value)
                 .httpOnly(true)
-                .secure(isSecureRequest(request))
-                .sameSite("Lax")
+                .secure(secure)
+                .sameSite(sameSite)
                 .path("/")
-                .maxAge(JWT_COOKIE_MAX_AGE_SECONDS)
+                .maxAge(maxAge)
                 .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    private static void setAuthCookie(HttpServletRequest request, HttpServletResponse response, String token) {
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                buildJwtCookie(request, token, JWT_COOKIE_MAX_AGE_SECONDS).toString());
     }
 
     private static void clearAuthCookie(HttpServletRequest request, HttpServletResponse response) {
-        ResponseCookie cookie = ResponseCookie.from(JWT_COOKIE_NAME, "")
-                .httpOnly(true)
-                .secure(isSecureRequest(request))
-                .sameSite("Lax")
-                .path("/")
-                .maxAge(0)
-                .build();
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                buildJwtCookie(request, "", 0).toString());
     }
 
     @GetMapping("/welcome")
