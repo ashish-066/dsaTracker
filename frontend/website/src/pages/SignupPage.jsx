@@ -75,9 +75,12 @@ export default function SignupPage() {
         setLoading(false)
         if (!r.ok) { setError(r.error || 'Could not send verification code'); return }
 
-        // Backend with verification-disabled flag returns a JWT on step 1 —
-        // skip OTP entirely and drop straight into onboarding.
-        if (r.data?.token) {
+        // Backend with the verification-disabled flag completes signup in
+        // step 1 — it creates the account, sets the auth cookie, and signals
+        // the fast-path with `verificationSkipped: true`. (We used to check
+        // `r.data.token` here, but the JWT lives in an HttpOnly cookie now
+        // and is no longer echoed in the response body.)
+        if (r.data?.verificationSkipped) {
             api.syncAllPlatforms().catch(() => {})
             navigate('/onboarding')
             return
