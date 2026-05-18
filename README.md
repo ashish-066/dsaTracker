@@ -64,6 +64,3 @@ A full-stack application designed to track your Data Structures and Algorithms (
 - `/src/main/java/com/example/dsa/`: Core Spring Boot backend source code.
   - Contains modular packages: `auth`, `challenge`, `community`, `notifications`, `platform`, `recommendation`, `social`, and `user`.
 - `/frontend/website/`: Modern React-based frontend application.
-
-## Deployment
-For detailed deployment steps (including Docker instructions), please refer to the `DEPLOY.md` and `Dockerfile` provided in the repository root.
