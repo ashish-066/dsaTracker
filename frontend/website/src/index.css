@@ -2529,9 +2529,11 @@ body::before {
 }
 
 .ml-contact-left {
-  max-width: 540px;
-
-  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  max-width: 560px;
 }
 
 .ml-contact-left .ml-section-sub {

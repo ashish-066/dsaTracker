@@ -1201,26 +1201,6 @@ export default function LandingPage() {
                             send us a message and the AlgoSprint team will get back to you.
                         </p>
 
-                        <div className="ml-contact-pills">
-
-                            <div className="ml-contact-pill">
-                                ⚡ Usually replies within 24 hrs
-                            </div>
-
-                            <div className="ml-contact-pill">
-                                🚀 Open-source friendly
-                            </div>
-
-                            <div className="ml-contact-pill">
-                                💬 Feature requests welcome
-                            </div>
-
-                            <div className="ml-contact-pill">
-                                🤝 Collaboration friendly
-                            </div>
-
-                        </div>
-
                     </div>
 
                     {/* RIGHT */}
