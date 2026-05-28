@@ -24,75 +24,75 @@ import toast from "react-hot-toast";
  */
 
 const FEATURES = [
-    {
-        sticker: '🔗',
-        title: 'All platforms, one profile',
-        tag: 'LeetCode + Codeforces + GFG, merged',
-        desc: 'Solve anywhere — we pull every submission into one unified profile. No more tab-hopping, no more three different dashboards lying to each other.',
-        color: '#9F8FE3',
-        tape: '#9F8FE3',
-    },
-    {
-        sticker: '🔥',
-        title: 'Cross-platform streaks',
-        tag: 'a day counts no matter where you solved',
-        desc: 'Solved on LeetCode Monday, Codeforces Tuesday, GFG Wednesday? That\'s a 3-day streak. Timezone-aware, reminder-backed, impossible to fake.',
-        color: '#E5A653',
-        tape: '#E5A653',
-    },
-    {
-        sticker: '📊',
-        title: 'Merged analytics',
-        tag: 'not vanity metrics',
-        desc: 'Topic coverage and difficulty splits rolled up across every linked platform. The stuff an interviewer actually asks — in one place, honest.',
-        color: '#88C0A3',
-        tape: '#88C0A3',
-    },
-    {
-        sticker: '⚔️',
-        title: 'Contest mode',
-        tag: 'race your friends, not a leaderboard',
-        desc: 'Challenge a friend to a timed 3-problem sprint on real LeetCode / Codeforces problems. Fullscreen lock, live scoreboard, bragging rights on the line.',
-        color: '#D88BA8',
-        tape: '#D88BA8',
-    },
-    {
-        sticker: '🤖',
-        title: 'Smart recs',
-        tag: 'pointed at your weakest platform',
-        desc: "Daily pick based on what you keep avoiding — on whichever platform your coverage is worst. Fix graphs on LeetCode, lift your Codeforces rating, close the gap.",
-        color: '#9F8FE3',
-        tape: '#9F8FE3',
-    },
-    {
-        sticker: '📧',
-        title: 'Honest nudges',
-        tag: 'only when you actually slipped',
-        desc: "Reminder emails that check your live submissions on every linked platform first. If you solved anything today, anywhere, we shut up. Most tools don't bother.",
-        color: '#E5A653',
-        tape: '#E5A653',
-    },
+  {
+    sticker: '🔗',
+    title: 'All platforms, one profile',
+    tag: 'LeetCode + Codeforces + GFG, merged',
+    desc: 'Solve anywhere — we pull every submission into one unified profile. No more tab-hopping, no more three different dashboards lying to each other.',
+    color: '#9F8FE3',
+    tape: '#9F8FE3',
+  },
+  {
+    sticker: '🔥',
+    title: 'Cross-platform streaks',
+    tag: 'a day counts no matter where you solved',
+    desc: 'Solved on LeetCode Monday, Codeforces Tuesday, GFG Wednesday? That\'s a 3-day streak. Timezone-aware, reminder-backed, impossible to fake.',
+    color: '#E5A653',
+    tape: '#E5A653',
+  },
+  {
+    sticker: '📊',
+    title: 'Merged analytics',
+    tag: 'not vanity metrics',
+    desc: 'Topic coverage and difficulty splits rolled up across every linked platform. The stuff an interviewer actually asks — in one place, honest.',
+    color: '#88C0A3',
+    tape: '#88C0A3',
+  },
+  {
+    sticker: '⚔️',
+    title: 'Contest mode',
+    tag: 'race your friends, not a leaderboard',
+    desc: 'Challenge a friend to a timed 3-problem sprint on real LeetCode / Codeforces problems. Fullscreen lock, live scoreboard, bragging rights on the line.',
+    color: '#D88BA8',
+    tape: '#D88BA8',
+  },
+  {
+    sticker: '🤖',
+    title: 'Smart recs',
+    tag: 'pointed at your weakest platform',
+    desc: "Daily pick based on what you keep avoiding — on whichever platform your coverage is worst. Fix graphs on LeetCode, lift your Codeforces rating, close the gap.",
+    color: '#9F8FE3',
+    tape: '#9F8FE3',
+  },
+  {
+    sticker: '📧',
+    title: 'Honest nudges',
+    tag: 'only when you actually slipped',
+    desc: "Reminder emails that check your live submissions on every linked platform first. If you solved anything today, anywhere, we shut up. Most tools don't bother.",
+    color: '#E5A653',
+    tape: '#E5A653',
+  },
 ]
 
 const HOW_STEPS = [
-    {
-        n: '01',
-        title: 'Link your handles',
-        desc: "Drop your LeetCode username and/or Codeforces handle. Takes a minute. We verify you own them with a tiny challenge problem — no passwords, ever.",
-        accent: '#9F8FE3',
-    },
-    {
-        n: '02',
-        title: 'Keep solving like you already do',
-        desc: "Submit on the real sites. We watch the fresh submissions feed and pull them in — you don't have to log anything twice.",
-        accent: '#88C0A3',
-    },
-    {
-        n: '03',
-        title: 'Actually improve',
-        desc: "Daily recs target your weak topics. Contest mode rounds up friends. Reminders catch you when you slip. Offer letter eventually drops.",
-        accent: '#E5A653',
-    },
+  {
+    n: '01',
+    title: 'Link your handles',
+    desc: "Drop your LeetCode username and/or Codeforces handle. Takes a minute. We verify you own them with a tiny challenge problem — no passwords, ever.",
+    accent: '#9F8FE3',
+  },
+  {
+    n: '02',
+    title: 'Keep solving like you already do',
+    desc: "Submit on the real sites. We watch the fresh submissions feed and pull them in — you don't have to log anything twice.",
+    accent: '#88C0A3',
+  },
+  {
+    n: '03',
+    title: 'Actually improve',
+    desc: "Daily recs target your weak topics. Contest mode rounds up friends. Reminders catch you when you slip. Offer letter eventually drops.",
+    accent: '#E5A653',
+  },
 ]
 
 
@@ -100,164 +100,164 @@ const HOW_STEPS = [
 // Three reasons cross-platform practice actually builds a stronger coder —
 // no outcome numbers, no fake claims, just the mechanism.
 const GROWTH_PILLARS = [
-    {
-        sticker: '🌐',
-        title: 'Breadth',
-        tag: 'every platform, one view',
-        desc: "Most grinders sandbag on one site and neglect the other two. A unified profile forces honest practice across LeetCode, Codeforces, and GFG.",
-        accent: '#9F8FE3',
-    },
-    {
-        sticker: '🔬',
-        title: 'Depth',
-        tag: "see what you've been avoiding",
-        desc: "Topic-level analytics expose the subjects you've been skipping. You can't fix a weak spot you can't see — we make it impossible to hide from.",
-        accent: '#88C0A3',
-    },
-    {
-        sticker: '♾️',
-        title: 'Consistency',
-        tag: 'streaks that hold you accountable',
-        desc: "Cross-platform streaks, honest reminders when you've actually slipped, and friend contests that make daily practice social instead of lonely.",
-        accent: '#E5A653',
-    },
+  {
+    sticker: '🌐',
+    title: 'Breadth',
+    tag: 'every platform, one view',
+    desc: "Most grinders sandbag on one site and neglect the other two. A unified profile forces honest practice across LeetCode, Codeforces, and GFG.",
+    accent: '#9F8FE3',
+  },
+  {
+    sticker: '🔬',
+    title: 'Depth',
+    tag: "see what you've been avoiding",
+    desc: "Topic-level analytics expose the subjects you've been skipping. You can't fix a weak spot you can't see — we make it impossible to hide from.",
+    accent: '#88C0A3',
+  },
+  {
+    sticker: '♾️',
+    title: 'Consistency',
+    tag: 'streaks that hold you accountable',
+    desc: "Cross-platform streaks, honest reminders when you've actually slipped, and friend contests that make daily practice social instead of lonely.",
+    accent: '#E5A653',
+  },
 ]
 
 // Founders — drop matching portrait files into /public/team/ and the section
 // below picks them up automatically. Keep images portrait-oriented; the card
 // grayscales + crops at display time so raw colour photos are fine.
 const FOUNDERS = [
-    {
-        slug: 'ashish',
-        name: 'Ashish Karanam',
-        role: 'FOUNDER & DEVELOPER',
-        tags: ['Architecture', 'Full-stack'],
-        image: '/team/ashish.jpg',
-    },
-    {
-        slug: 'sreehith',
-        name: 'Sreehith Varma Kankipati',
-        role: 'FOUNDER & DEVELOPER',
-        tags: ['Development', 'AI'],
-        image: '/team/sreehith.jpg',
-    },
+  {
+    slug: 'ashish',
+    name: 'Ashish Karanam',
+    role: 'FOUNDER & DEVELOPER',
+    tags: ['Architecture', 'Full-stack'],
+    image: '/team/ashish.jpg',
+  },
+  {
+    slug: 'sreehith',
+    name: 'Sreehith Varma Kankipati',
+    role: 'FOUNDER & DEVELOPER',
+    tags: ['Development', 'AI'],
+    image: '/team/sreehith.jpg',
+  },
 ]
 
 const FAQS = [
-    {
-        q: "Wait, so you don't need my LeetCode password?",
-        a: "Never. We verify ownership with a tiny proof-of-handle challenge (solve one specific easy problem, we see it on the public submissions feed, done). After that we only read public data. Your credentials stay with LeetCode.",
-    },
-    {
-        q: 'How often does my data sync?',
-        a: "On-demand when you open the dashboard, and automatically every time you visit. The reminder system checks live submissions right before sending — so if you just solved something, it won't yell at you for being 'inactive'.",
-    },
-    {
-        q: 'Does it work with platforms other than LeetCode and Codeforces?',
-        a: "GeeksforGeeks is on the way. HackerRank, AtCoder, and CSES are further out on the roadmap — if you need one of them sooner, ping us and it'll probably jump the queue.",
-    },
-    {
-        q: 'What happens to my streak if I travel across timezones?',
-        a: "Your streak follows the timezone you picked in Profile → Notifications. Pick one, forget about it. We do the math so a red-eye flight doesn't accidentally nuke 40 days of progress.",
-    },
-    {
-        q: "I'm a placement aspirant with literally no money. Is it really free?",
-        a: "Yes — AlgoSprint is completely free to use. All features are available at no cost. No tiers, no paywalls, no hidden charges.",
-    },
+  {
+    q: "Wait, so you don't need my LeetCode password?",
+    a: "Never. We verify ownership with a tiny proof-of-handle challenge (solve one specific easy problem, we see it on the public submissions feed, done). After that we only read public data. Your credentials stay with LeetCode.",
+  },
+  {
+    q: 'How often does my data sync?',
+    a: "On-demand when you open the dashboard, and automatically every time you visit. The reminder system checks live submissions right before sending — so if you just solved something, it won't yell at you for being 'inactive'.",
+  },
+  {
+    q: 'Does it work with platforms other than LeetCode and Codeforces?',
+    a: "GeeksforGeeks is on the way. HackerRank, AtCoder, and CSES are further out on the roadmap — if you need one of them sooner, ping us and it'll probably jump the queue.",
+  },
+  {
+    q: 'What happens to my streak if I travel across timezones?',
+    a: "Your streak follows the timezone you picked in Profile → Notifications. Pick one, forget about it. We do the math so a red-eye flight doesn't accidentally nuke 40 days of progress.",
+  },
+  {
+    q: "I'm a placement aspirant with literally no money. Is it really free?",
+    a: "Yes — AlgoSprint is completely free to use. All features are available at no cost. No tiers, no paywalls, no hidden charges.",
+  },
 ]
 
 // ── Tiny doodles (inline SVG, all stroke-based) ────────────────────────────
 function Sparkle({ size = 18, color = '#E5A653', style }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style} aria-hidden>
-            <path d="M12 2 L13.5 9.5 L21 11 L13.5 12.5 L12 20 L10.5 12.5 L3 11 L10.5 9.5 Z"
-                fill={color} opacity="0.9" />
-        </svg>
-    )
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style} aria-hidden>
+      <path d="M12 2 L13.5 9.5 L21 11 L13.5 12.5 L12 20 L10.5 12.5 L3 11 L10.5 9.5 Z"
+        fill={color} opacity="0.9" />
+    </svg>
+  )
 }
 function Star({ size = 14, color = '#D88BA8', style }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={style} aria-hidden>
-            <path d="M12 2 L14.5 8.5 L21 9.3 L16 14 L17.5 20.8 L12 17 L6.5 20.8 L8 14 L3 9.3 L9.5 8.5 Z" />
-        </svg>
-    )
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={style} aria-hidden>
+      <path d="M12 2 L14.5 8.5 L21 9.3 L16 14 L17.5 20.8 L12 17 L6.5 20.8 L8 14 L3 9.3 L9.5 8.5 Z" />
+    </svg>
+  )
 }
 function Squiggle({ width = 80, color = '#9F8FE3', style }) {
-    return (
-        <svg width={width} height="14" viewBox="0 0 80 14" fill="none" style={style} aria-hidden>
-            <path d="M2 10 Q 10 2, 20 7 T 40 7 T 60 7 T 78 7"
-                stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none" />
-        </svg>
-    )
+  return (
+    <svg width={width} height="14" viewBox="0 0 80 14" fill="none" style={style} aria-hidden>
+      <path d="M2 10 Q 10 2, 20 7 T 40 7 T 60 7 T 78 7"
+        stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none" />
+    </svg>
+  )
 }
 function Heart({ size = 14, color = '#D88BA8', style }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={style} aria-hidden>
-            <path d="M12 21s-7-4.5-9.5-9.5C.5 7 4 3 8 4.5c1.5.5 3 2 4 3.5 1-1.5 2.5-3 4-3.5 4-1.5 7.5 2.5 5.5 7C19 16.5 12 21 12 21z" />
-        </svg>
-    )
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={style} aria-hidden>
+      <path d="M12 21s-7-4.5-9.5-9.5C.5 7 4 3 8 4.5c1.5.5 3 2 4 3.5 1-1.5 2.5-3 4-3.5 4-1.5 7.5 2.5 5.5 7C19 16.5 12 21 12 21z" />
+    </svg>
+  )
 }
 function CurvyArrow({ style, color = '#E5A653' }) {
-    return (
-        <svg width="110" height="80" viewBox="0 0 110 80" fill="none" style={style} aria-hidden>
-            <path d="M5 10 Q 50 5, 80 40 T 95 68" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none" />
-            <path d="M85 62 L95 68 L89 78" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        </svg>
-    )
+  return (
+    <svg width="110" height="80" viewBox="0 0 110 80" fill="none" style={style} aria-hidden>
+      <path d="M5 10 Q 50 5, 80 40 T 95 68" stroke={color} strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M85 62 L95 68 L89 78" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  )
 }
 
 // Cute mascot — warm-toned for the new palette
 function BookMascot({ size = 120, style }) {
-    return (
-        <svg width={size} height={size * 0.85} viewBox="0 0 140 120" fill="none" style={style} aria-hidden>
-            <defs>
-                <linearGradient id="mlPage" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#F5EBD6" />
-                    <stop offset="100%" stopColor="#E5A653" />
-                </linearGradient>
-                <linearGradient id="mlSpine" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#B87333" />
-                    <stop offset="100%" stopColor="#7A4D1F" />
-                </linearGradient>
-                <filter id="mlGlow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="5" result="b" />
-                    <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-            </defs>
-            <ellipse cx="70" cy="108" rx="44" ry="5" fill="#E5A653" opacity="0.25" />
-            <g filter="url(#mlGlow)">
-                <path d="M10 30 Q 10 22, 18 22 L68 22 Q 70 24, 70 30 L70 100 Q 68 102, 60 102 L18 102 Q 10 102, 10 94 Z" fill="url(#mlPage)" stroke="#B87333" strokeWidth="2" />
-                <path d="M130 30 Q 130 22, 122 22 L72 22 Q 70 24, 70 30 L70 100 Q 72 102, 80 102 L122 102 Q 130 102, 130 94 Z" fill="url(#mlPage)" stroke="#B87333" strokeWidth="2" />
-                <rect x="68" y="22" width="4" height="80" fill="url(#mlSpine)" />
-                <line x1="20" y1="42" x2="60" y2="42" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
-                <line x1="20" y1="52" x2="55" y2="52" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
-                <line x1="80" y1="42" x2="120" y2="42" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
-                <line x1="80" y1="52" x2="115" y2="52" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
-                <circle cx="36" cy="72" r="4" fill="#1C1608" />
-                <circle cx="104" cy="72" r="4" fill="#1C1608" />
-                <circle cx="37" cy="71" r="1.3" fill="#fff" />
-                <circle cx="105" cy="71" r="1.3" fill="#fff" />
-                <path d="M48 82 Q 70 92, 92 82" stroke="#1C1608" strokeWidth="2" strokeLinecap="round" fill="none" />
-                <circle cx="30" cy="82" r="3.5" fill="#D88BA8" opacity="0.55" />
-                <circle cx="110" cy="82" r="3.5" fill="#D88BA8" opacity="0.55" />
-            </g>
-            <path d="M123 18 L125 12 L127 18 L133 20 L127 22 L125 28 L123 22 L117 20 Z" fill="#E5A653" opacity="0.95" />
-        </svg>
-    )
+  return (
+    <svg width={size} height={size * 0.85} viewBox="0 0 140 120" fill="none" style={style} aria-hidden>
+      <defs>
+        <linearGradient id="mlPage" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#F5EBD6" />
+          <stop offset="100%" stopColor="#E5A653" />
+        </linearGradient>
+        <linearGradient id="mlSpine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#B87333" />
+          <stop offset="100%" stopColor="#7A4D1F" />
+        </linearGradient>
+        <filter id="mlGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="5" result="b" />
+          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+      <ellipse cx="70" cy="108" rx="44" ry="5" fill="#E5A653" opacity="0.25" />
+      <g filter="url(#mlGlow)">
+        <path d="M10 30 Q 10 22, 18 22 L68 22 Q 70 24, 70 30 L70 100 Q 68 102, 60 102 L18 102 Q 10 102, 10 94 Z" fill="url(#mlPage)" stroke="#B87333" strokeWidth="2" />
+        <path d="M130 30 Q 130 22, 122 22 L72 22 Q 70 24, 70 30 L70 100 Q 72 102, 80 102 L122 102 Q 130 102, 130 94 Z" fill="url(#mlPage)" stroke="#B87333" strokeWidth="2" />
+        <rect x="68" y="22" width="4" height="80" fill="url(#mlSpine)" />
+        <line x1="20" y1="42" x2="60" y2="42" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
+        <line x1="20" y1="52" x2="55" y2="52" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
+        <line x1="80" y1="42" x2="120" y2="42" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
+        <line x1="80" y1="52" x2="115" y2="52" stroke="#B87333" strokeWidth="1.2" opacity="0.5" strokeLinecap="round" />
+        <circle cx="36" cy="72" r="4" fill="#1C1608" />
+        <circle cx="104" cy="72" r="4" fill="#1C1608" />
+        <circle cx="37" cy="71" r="1.3" fill="#fff" />
+        <circle cx="105" cy="71" r="1.3" fill="#fff" />
+        <path d="M48 82 Q 70 92, 92 82" stroke="#1C1608" strokeWidth="2" strokeLinecap="round" fill="none" />
+        <circle cx="30" cy="82" r="3.5" fill="#D88BA8" opacity="0.55" />
+        <circle cx="110" cy="82" r="3.5" fill="#D88BA8" opacity="0.55" />
+      </g>
+      <path d="M123 18 L125 12 L127 18 L133 20 L127 22 L125 28 L123 22 L117 20 Z" fill="#E5A653" opacity="0.95" />
+    </svg>
+  )
 }
 
 // Corner "peel" accent applied to feature cards — a folded sticker edge.
 function CornerPeel({ color = '#E5A653', style }) {
-    return (
-        <svg width="32" height="32" viewBox="0 0 32 32" style={style} aria-hidden>
-            <path d="M0 0 L32 0 L32 18 Q 24 20, 16 24 Q 8 28, 0 32 Z"
-                fill="transparent" />
-            <path d="M32 18 Q 24 20, 16 24 Q 8 28, 0 32 L0 22 Q 8 22, 16 18 Q 24 14, 32 14 Z"
-                fill={color} opacity="0.18" />
-            <path d="M32 18 Q 24 20, 16 24 Q 8 28, 0 32"
-                stroke={color} strokeWidth="1" fill="none" opacity="0.45" />
-        </svg>
-    )
+  return (
+    <svg width="32" height="32" viewBox="0 0 32 32" style={style} aria-hidden>
+      <path d="M0 0 L32 0 L32 18 Q 24 20, 16 24 Q 8 28, 0 32 Z"
+        fill="transparent" />
+      <path d="M32 18 Q 24 20, 16 24 Q 8 28, 0 32 L0 22 Q 8 22, 16 18 Q 24 14, 32 14 Z"
+        fill={color} opacity="0.18" />
+      <path d="M32 18 Q 24 20, 16 24 Q 8 28, 0 32"
+        stroke={color} strokeWidth="1" fill="none" opacity="0.45" />
+    </svg>
+  )
 }
 
 // ── IntersectionObserver-based reveal hook ─────────────────────────────────
@@ -266,24 +266,24 @@ function CornerPeel({ color = '#E5A653', style }) {
 // accidentally wipe out the revealed state. React doesn't manage attributes
 // it doesn't know about, so data-revealed survives re-renders.
 function useReveal() {
-    useEffect(() => {
-        const els = document.querySelectorAll('.ml-reveal')
-        const mark = (el) => el.setAttribute('data-revealed', 'true')
-        if (!('IntersectionObserver' in window) || els.length === 0) {
-            els.forEach(mark)
-            return
+  useEffect(() => {
+    const els = document.querySelectorAll('.ml-reveal')
+    const mark = (el) => el.setAttribute('data-revealed', 'true')
+    if (!('IntersectionObserver' in window) || els.length === 0) {
+      els.forEach(mark)
+      return
+    }
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          mark(e.target)
+          io.unobserve(e.target)
         }
-        const io = new IntersectionObserver((entries) => {
-            for (const e of entries) {
-                if (e.isIntersecting) {
-                    mark(e.target)
-                    io.unobserve(e.target)
-                }
-            }
-        }, { rootMargin: '-8% 0px', threshold: 0.05 })
-        els.forEach(el => io.observe(el))
-        return () => io.disconnect()
-    }, [])
+      }
+    }, { rootMargin: '-8% 0px', threshold: 0.05 })
+    els.forEach(el => io.observe(el))
+    return () => io.disconnect()
+  }, [])
 }
 
 // ── Tiny syntax highlighter for the code-terminal lines ──────────────────
@@ -291,39 +291,39 @@ function useReveal() {
 // snippets we're typing: keywords, strings, numbers, comments, class
 // identifiers (PascalCase), and the arrow/check/pop symbols.
 const HL_RE = new RegExp(
-    [
-        '("[^"]*"|\'[^\']*\'|`[^`]*`)',                                 // strings
-        '(\\/\\/.*)',                                                   // comments
-        '(\\b(?:import|from|const|let|var|function|return|while|for|of|in|class|new|if|else|break|continue|try|catch|async|await|this)\\b)', // keywords
-        '(\\b[A-Z][A-Za-z0-9_]*\\b)',                                   // Types / constants (PascalCase + ALL_CAPS)
-        '(\\b\\d+(?:\\.\\d+)?\\b)',                                     // numbers
-        '(→|✓|↪|⚡)',                                                   // symbols we emit
-    ].join('|'),
-    'g',
+  [
+    '("[^"]*"|\'[^\']*\'|`[^`]*`)',                                 // strings
+    '(\\/\\/.*)',                                                   // comments
+    '(\\b(?:import|from|const|let|var|function|return|while|for|of|in|class|new|if|else|break|continue|try|catch|async|await|this)\\b)', // keywords
+    '(\\b[A-Z][A-Za-z0-9_]*\\b)',                                   // Types / constants (PascalCase + ALL_CAPS)
+    '(\\b\\d+(?:\\.\\d+)?\\b)',                                     // numbers
+    '(→|✓|↪|⚡)',                                                   // symbols we emit
+  ].join('|'),
+  'g',
 )
 function hl(line) {
-    if (!line) return null
-    const out = []
-    let last = 0
-    let m
-    let k = 0
-    HL_RE.lastIndex = 0
-    while ((m = HL_RE.exec(line)) !== null) {
-        if (m.index > last) {
-            out.push(line.slice(last, m.index))
-        }
-        const cls =
-            m[1] ? 'ml-tk-s' :
-                m[2] ? 'ml-tk-c' :
-                    m[3] ? 'ml-tk-k' :
-                        m[4] ? 'ml-tk-t' :
-                            m[5] ? 'ml-tk-n' :
-                                m[6] ? 'ml-tk-sym' : ''
-        out.push(<span key={k++} className={cls}>{m[0]}</span>)
-        last = HL_RE.lastIndex
+  if (!line) return null
+  const out = []
+  let last = 0
+  let m
+  let k = 0
+  HL_RE.lastIndex = 0
+  while ((m = HL_RE.exec(line)) !== null) {
+    if (m.index > last) {
+      out.push(line.slice(last, m.index))
     }
-    if (last < line.length) out.push(line.slice(last))
-    return out
+    const cls =
+      m[1] ? 'ml-tk-s' :
+        m[2] ? 'ml-tk-c' :
+          m[3] ? 'ml-tk-k' :
+            m[4] ? 'ml-tk-t' :
+              m[5] ? 'ml-tk-n' :
+                m[6] ? 'ml-tk-sym' : ''
+    out.push(<span key={k++} className={cls}>{m[0]}</span>)
+    last = HL_RE.lastIndex
+  }
+  if (last < line.length) out.push(line.slice(last))
+  return out
 }
 
 // ── Feature sequence: drives the terminal typewriter AND the stack popping
@@ -334,993 +334,1034 @@ function hl(line) {
 //   3. finish with a summary line + switch the badge from "running" → "ready"
 // All state drives React re-renders so the terminal + stack stay in sync.
 function useFeatureSequence(sectionRef, features) {
-    const [lines, setLines] = useState([])   // finalised lines in the terminal
-    const [active, setActive] = useState('')   // line currently being typed
-    const [popped, setPopped] = useState(0)    // how many feature cards have popped out
-    const [done, setDone] = useState(false)
+  const [lines, setLines] = useState([])   // finalised lines in the terminal
+  const [active, setActive] = useState('')   // line currently being typed
+  const [popped, setPopped] = useState(0)    // how many feature cards have popped out
+  const [done, setDone] = useState(false)
 
-    useEffect(() => {
-        const section = sectionRef.current
-        if (!section) return
-        let cancelled = false
-        let triggered = false
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    let cancelled = false
+    let triggered = false
 
-        // No IntersectionObserver → just show everything immediately
-        if (!('IntersectionObserver' in window)) {
-            const t = setTimeout(() => {
-                if (cancelled) return
-                setLines(['$ node loadFeatures.js', '> all ' + features.length + ' features running ⚡'])
-                setPopped(features.length)
-                setDone(true)
-            }, 0)
-            return () => { cancelled = true; clearTimeout(t) }
+    // No IntersectionObserver → just show everything immediately
+    if (!('IntersectionObserver' in window)) {
+      const t = setTimeout(() => {
+        if (cancelled) return
+        setLines(['$ node loadFeatures.js', '> all ' + features.length + ' features running ⚡'])
+        setPopped(features.length)
+        setDone(true)
+      }, 0)
+      return () => { cancelled = true; clearTimeout(t) }
+    }
+
+    const wait = (ms) => new Promise(res => setTimeout(res, ms))
+
+    // Type `text` character by character into `active`, then commit to `lines`.
+    // Batches several characters per frame so long lines don't drag.
+    async function type(text, speed = 6, step = 2) {
+      for (let i = step; i <= text.length; i += step) {
+        if (cancelled) return
+        setActive(text.slice(0, i))
+        const ch = text[i - 1]
+        await wait(/[,.;:]/.test(ch) ? speed * 2 : speed)
+      }
+      if (cancelled) return
+      setLines(prev => [...prev, text])
+      setActive('')
+    }
+
+    async function run() {
+      await wait(140)
+      await type('$ node features.js', 7, 1)
+      await wait(180)
+      await type("import { Stack } from './ds/Stack'", 6, 2)
+      await wait(90)
+      await type('const stack = Stack.from(FEATURES)', 6, 2)
+      await wait(120)
+      await type('while (!stack.isEmpty()) {', 6, 2)
+      await wait(60)
+      await type('  mount(stack.pop())', 6, 2)
+      await wait(60)
+      await type('}', 10, 1)
+      await wait(200)
+
+      for (let i = 0; i < features.length; i++) {
+        if (cancelled) return
+        const n = i + 1
+        await type(
+          '  → "' + features[i].title + '"   [' + n + '/' + features.length + ']',
+          6, 2
+        )
+        // fire the card out of the stack's top
+        setPopped(n)
+        await wait(180)
+      }
+
+      await wait(160)
+      await type('✓ stack drained — ' + features.length + ' features running ⚡', 7, 2)
+      if (!cancelled) setDone(true)
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && !triggered) {
+          triggered = true
+          run()
+          io.disconnect()
         }
+      }
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.18 })
+    io.observe(section)
 
-        const wait = (ms) => new Promise(res => setTimeout(res, ms))
+    return () => {
+      cancelled = true
+      io.disconnect()
+    }
+  }, [sectionRef, features])
 
-        // Type `text` character by character into `active`, then commit to `lines`.
-        // Batches several characters per frame so long lines don't drag.
-        async function type(text, speed = 6, step = 2) {
-            for (let i = step; i <= text.length; i += step) {
-                if (cancelled) return
-                setActive(text.slice(0, i))
-                const ch = text[i - 1]
-                await wait(/[,.;:]/.test(ch) ? speed * 2 : speed)
-            }
-            if (cancelled) return
-            setLines(prev => [...prev, text])
-            setActive('')
-        }
-
-        async function run() {
-            await wait(140)
-            await type('$ node features.js', 7, 1)
-            await wait(180)
-            await type("import { Stack } from './ds/Stack'", 6, 2)
-            await wait(90)
-            await type('const stack = Stack.from(FEATURES)', 6, 2)
-            await wait(120)
-            await type('while (!stack.isEmpty()) {', 6, 2)
-            await wait(60)
-            await type('  mount(stack.pop())', 6, 2)
-            await wait(60)
-            await type('}', 10, 1)
-            await wait(200)
-
-            for (let i = 0; i < features.length; i++) {
-                if (cancelled) return
-                const n = i + 1
-                await type(
-                    '  → "' + features[i].title + '"   [' + n + '/' + features.length + ']',
-                    6, 2
-                )
-                // fire the card out of the stack's top
-                setPopped(n)
-                await wait(180)
-            }
-
-            await wait(160)
-            await type('✓ stack drained — ' + features.length + ' features running ⚡', 7, 2)
-            if (!cancelled) setDone(true)
-        }
-
-        const io = new IntersectionObserver((entries) => {
-            for (const e of entries) {
-                if (e.isIntersecting && !triggered) {
-                    triggered = true
-                    run()
-                    io.disconnect()
-                }
-            }
-        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.18 })
-        io.observe(section)
-
-        return () => {
-            cancelled = true
-            io.disconnect()
-        }
-    }, [sectionRef, features])
-
-    return { lines, active, popped, done }
+  return { lines, active, popped, done }
 }
 
 // ── Sticky nav shadow on scroll ───────────────────────────────────────────
 function useScrolled(threshold = 12) {
-    const [scrolled, setScrolled] = useState(false)
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > threshold)
-        onScroll()
-        window.addEventListener('scroll', onScroll, { passive: true })
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [threshold])
-    return scrolled
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > threshold)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [threshold])
+  return scrolled
 }
 
 export default function LandingPage() {
-    const navigate = useNavigate()
-    const heroRef = useRef(null)
-    const featuresRef = useRef(null)
-    const scrolled = useScrolled()
-    useReveal()
-    const { lines: termLines, active: termActive, popped: poppedCount, done: seqDone } =
-        useFeatureSequence(featuresRef, FEATURES)
+  const navigate = useNavigate()
+  const heroRef = useRef(null)
+  const featuresRef = useRef(null)
+  const scrolled = useScrolled()
+  useReveal()
+  const { lines: termLines, active: termActive, popped: poppedCount, done: seqDone } =
+    useFeatureSequence(featuresRef, FEATURES)
 
-    // FAQ accordion state — single-open behaviour
-    const [openFaq, setOpenFaq] = useState(0)
+  // FAQ accordion state — single-open behaviour
+  const [openFaq, setOpenFaq] = useState(0)
 
-    // Gentle parallax tilt on the dashboard mock
-    useEffect(() => {
-        const hero = heroRef.current
-        if (!hero) return
-        const handle = (e) => {
-            const r = hero.getBoundingClientRect()
-            const x = ((e.clientX - r.left) / r.width - 0.5) * 10
-            const y = ((e.clientY - r.top) / r.height - 0.5) * 8
-            hero.style.setProperty('--rx', `${-y}deg`)
-            hero.style.setProperty('--ry', `${x}deg`)
-        }
-        hero.addEventListener('mousemove', handle)
-        return () => hero.removeEventListener('mousemove', handle)
-    }, [])
+  // Gentle parallax tilt on the dashboard mock
+  useEffect(() => {
+    const hero = heroRef.current
+    if (!hero) return
+    const handle = (e) => {
+      const r = hero.getBoundingClientRect()
+      const x = ((e.clientX - r.left) / r.width - 0.5) * 10
+      const y = ((e.clientY - r.top) / r.height - 0.5) * 8
+      hero.style.setProperty('--rx', `${-y}deg`)
+      hero.style.setProperty('--ry', `${x}deg`)
+    }
+    hero.addEventListener('mousemove', handle)
+    return () => hero.removeEventListener('mousemove', handle)
+  }, [])
 
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showNavbar, setShowNavbar] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(
+    localStorage.getItem('theme') || 'dark'
+  );
+  useEffect(() => {
+    document.body.className =
+      theme === 'light'
+        ? 'light-theme'
+        : '';
 
-    useEffect(() => {
-        let lastScrollY = window.scrollY;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+  const [showNavbar, setShowNavbar] = useState(true);
 
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY < lastScrollY) {
-                setShowNavbar(true);
-            } else {
-                setShowNavbar(false);
-            }
-            if (currentScrollY < 80) {
-                setShowNavbar(true);
-            }
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
 
-            lastScrollY = currentScrollY;
-        };
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY < lastScrollY) {
+        setShowNavbar(true);
+      } else {
+        setShowNavbar(false);
+      }
+      if (currentScrollY < 80) {
+        setShowNavbar(true);
+      }
 
-        window.addEventListener('scroll', handleScroll);
+      lastScrollY = currentScrollY;
+    };
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
+    window.addEventListener('scroll', handleScroll);
 
-    return (
-        <div className="ml-root">
-            <style>{ML_CSS}</style>
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-            {/* ── Background ── */}
-            <div className="ml-orb ml-orb-1" />
-            <div className="ml-orb ml-orb-2" />
-            <div className="ml-orb ml-orb-3" />
-            <div className="ml-grid-overlay" />
-            <div className="ml-vignette" />
+  return (
+    <div className="ml-root">
+      <style>{ML_CSS}</style>
 
-            {/* ── NAV ── */}
-            <nav
-                className={`ml-nav ${scrolled ? 'ml-nav-scrolled' : ''}`}
-                style={{
-                    position: 'fixed',
-                    top: showNavbar ? '14px' : '-120px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    transition: 'top 0.35s ease',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '0.8rem',
-                    width: 'min(1180px, calc(100% - 32px))',
-                    margin: '0 auto',
-                    padding: '0.9rem 1rem',
+      {/* ── Background ── */}
+      <div className="ml-orb ml-orb-1" />
+      <div className="ml-orb ml-orb-2" />
+      <div className="ml-orb ml-orb-3" />
+      <div className="ml-grid-overlay" />
+      <div className="ml-vignette" />
 
-                    flexDirection:
-                        window.innerWidth <= 768
-                            ? 'row'
-                            : 'row',
-                }}
+      {/* ── NAV ── */}
+      <nav
+        className={`ml-nav ${scrolled ? 'ml-nav-scrolled' : ''}`}
+        style={{
+          position: 'fixed',
+          top: showNavbar ? '14px' : '-120px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          transition: 'top 0.35s ease',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '0.8rem',
+          width: 'min(1180px, calc(100% - 32px))',
+          margin: '0 auto',
+          padding: '0.9rem 1rem',
+
+          flexDirection:
+            window.innerWidth <= 768
+              ? 'row'
+              : 'row',
+        }}
+      >
+        <div
+          className="ml-logo"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.6rem',
+            flex:
+              window.innerWidth <= 768
+                ? 1
+                : '0 0 auto',
+            minWidth: 0,
+          }}
+        >
+          <div className="ml-logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                stroke="#F5EBD6"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <span
+            className="ml-logo-text"
+            style={{
+              fontSize: '1rem',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Algo<span>Sprint</span>
+          </span>
+
+          <span
+            className="ml-tape-sticker"
+            style={{
+              fontSize: '0.65rem',
+              padding: '0.15rem 0.45rem',
+            }}
+          >
+            ✨ beta
+          </span>
+        </div>
+
+        <button
+          className="ml-hamburger"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+          style={{
+            display: window.innerWidth <= 768 ? 'flex' : 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '42px',
+            height: '42px',
+            fontSize: '1.6rem',
+            color: '#F5EBD6',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          {mobileMenuOpen ? '✕' : '☰'}
+        </button>
+
+        <div
+          className={`ml-nav-links ${mobileMenuOpen ? 'active' : ''}`}
+          style={{
+            display:
+              window.innerWidth <= 768
+                ? mobileMenuOpen
+                  ? 'flex'
+                  : 'none'
+                : 'flex',
+
+            flexDirection:
+              window.innerWidth <= 768
+                ? 'column'
+                : 'row',
+
+            alignItems:
+              window.innerWidth <= 768
+                ? 'flex-start'
+                : 'center',
+
+            width:
+              window.innerWidth <= 768
+                ? '100%'
+                : 'auto',
+
+            gap: '1rem',
+
+            marginTop:
+              window.innerWidth <= 768
+                ? '1rem'
+                : '0',
+
+            position:
+              window.innerWidth <= 768
+                ? 'static'
+                : 'absolute',
+
+            left:
+              window.innerWidth <= 768
+                ? 'auto'
+                : '50%',
+
+            transform:
+              window.innerWidth <= 768
+                ? 'none'
+                : 'translateX(-50%)',
+          }}
+        >
+          <a href="#features" className="ml-nav-link">Features</a>
+          <a href="#why" className="ml-nav-link">Why it works</a>
+          <a href="#how" className="ml-nav-link">How it works</a>
+          <a href="#team" className="ml-nav-link">Team</a>
+          <a href="#faq" className="ml-nav-link">FAQ</a>
+          <a href="#contact" className="ml-nav-link">Contact</a>
+        </div>
+
+        <div
+          className={`ml-nav-actions ${mobileMenuOpen ? 'active' : ''}`}
+          style={{
+            display:
+              window.innerWidth <= 768
+                ? mobileMenuOpen
+                  ? 'flex'
+                  : 'none'
+                : 'flex',
+
+            flexDirection:
+              window.innerWidth <= 768
+                ? 'column'
+                : 'row',
+
+            alignItems: 'center',
+
+            width:
+              window.innerWidth <= 768
+                ? '100%'
+                : 'auto',
+
+            gap: '0.8rem',
+
+            marginTop:
+              window.innerWidth <= 768
+                ? '1rem'
+                : '0',
+            marginLeft:
+              window.innerWidth <= 768
+                ? '0'
+                : 'auto',
+          }}
+        >
+          <button
+            className="ml-btn-ghost"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            aria-label="Toggle theme"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '6px',
+              borderRadius: '50%',
+              width: '38px',
+              height: '38px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+            }}
+          >
+            {theme === 'dark' ? (
+              // Minimalist Sun Vector Icon (Active when background is Dark)
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" style={{ width: '20px', height: '20px', color: '#E5A653' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.22 4.22l1.58 1.58m12.42 12.42l1.58 1.58M3 12h2.25m13.5 0H21M4.22 19.78l1.58-1.58M17.66 6.34l1.58-1.58M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
+              </svg>
+            ) : (
+              // Minimalist Moon Vector Icon (Active when background is Light)
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" style={{ width: '18px', height: '18px', color: '#4B5563' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+              </svg>
+            )}
+          </button>
+          <button
+            className="ml-btn-ghost"
+            onClick={() => navigate('/login')}
+            style={{
+              width: mobileMenuOpen ? '100%' : 'auto',
+            }}
+          >
+            Login
+          </button>
+
+          <button
+            className="ml-btn-primary"
+            onClick={() => navigate('/signup')}
+            style={{
+              width: mobileMenuOpen ? '100%' : 'auto',
+            }}
+          >
+            Get started <span className="ml-arrow">→</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section className="ml-hero" ref={heroRef}>
+        <Sparkle size={22} color="#E5A653" style={{ position: 'absolute', top: 70, left: '5%' }} />
+        <Star size={14} color="#D88BA8" style={{ position: 'absolute', top: 160, right: '8%' }} />
+        <Sparkle size={14} color="#88C0A3" style={{ position: 'absolute', top: 280, left: '10%', opacity: 0.75 }} />
+        <Star size={10} color="#E5A653" style={{ position: 'absolute', top: 210, right: '22%' }} />
+        <Heart size={12} color="#D88BA8" style={{ position: 'absolute', top: 420, left: '4%', opacity: 0.7 }} />
+
+        <div className="ml-hero-left ml-reveal">
+          <div className="ml-eyebrow">
+            <span className="ml-eyebrow-dot" />
+            grow across every platform 🚀
+          </div>
+
+          <h1 className="ml-hero-title">
+            Level up on <span className="ml-italic">every</span> platform.<br />
+            Not just the one<br />
+            you're comfy on.
+            <Squiggle width={240} color="#E5A653" style={{ display: 'block', marginTop: 10 }} />
+          </h1>
+
+          <p className="ml-hero-sub">
+            AlgoSprint turns LeetCode, Codeforces (and GFG soon)
+            into one <span className="ml-underline-amber">honest</span>
+            {' '}practice system. Cross-platform streaks, merged
+            topic coverage, daily recs pointed at your weakest
+            area, and contest mode to keep your friends on it too.
+          </p>
+
+          <div className="ml-hero-ctas">
+            <div className="ml-cta-wrap">
+              <button className="ml-cta-primary" onClick={() => navigate('/signup')}>
+                <span>Start for free</span>
+                <span className="ml-cta-arrow">→</span>
+                <div className="ml-cta-shine" />
+              </button>
+              <div className="ml-cta-annotation">
+                <CurvyArrow style={{ position: 'absolute', top: -50, left: -84, transform: 'rotate(-8deg)' }} />
+                <span style={{ position: 'absolute', top: -72, left: -140, transform: 'rotate(-6deg)' }}>
+                  start here ✨
+                </span>
+              </div>
+            </div>
+            <button className="ml-cta-secondary" onClick={() => navigate('/login')}>
+              I have an account
+            </button>
+          </div>
+
+          <div className="ml-trust">
+            <span className="ml-trust-chip">🔒 no passwords needed</span>
+            <span className="ml-trust-chip">✨ free while you learn</span>
+            <span className="ml-trust-chip">🛠 built by students</span>
+          </div>
+        </div>
+
+        <div className="ml-hero-right ml-reveal" style={{ transitionDelay: '0.12s' }}>
+          <BookMascot size={90} style={{
+            position: 'absolute', top: -26, right: 30, zIndex: 5,
+            filter: 'drop-shadow(0 14px 40px rgba(229,166,83,0.35))',
+          }} />
+
+          <div className="ml-mock">
+            <div className="ml-mock-header">
+              <div className="ml-mock-dots">
+                <span style={{ background: '#FF5F57' }} />
+                <span style={{ background: '#FEBC2E' }} />
+                <span style={{ background: '#28C840' }} />
+              </div>
+              <span className="ml-mock-url">algosprint.app/dashboard</span>
+            </div>
+            <div className="ml-mock-body">
+              <div className="ml-mock-stats">
+                {[
+                  { val: '342', label: 'solved', color: '#9F8FE3' },
+                  { val: '🔥 14', label: 'day streak', color: '#E5A653' },
+                  { val: '48', label: 'hard', color: '#D88BA8' },
+                  { val: '87%', label: 'ready', color: '#88C0A3' },
+                ].map(s => (
+                  <div className="ml-mock-stat" key={s.label}>
+                    <div className="ml-mock-stat-val" style={{ color: s.color }}>{s.val}</div>
+                    <div className="ml-mock-stat-label">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="ml-mock-bars">
+                {[
+                  { label: 'Arrays', pct: 78, color: '#9F8FE3' },
+                  { label: 'Graphs', pct: 52, color: '#88C0A3' },
+                  { label: 'DP', pct: 41, color: '#D88BA8' },
+                  { label: 'Trees', pct: 65, color: '#E5A653' },
+                ].map(b => (
+                  <div className="ml-mock-bar-row" key={b.label}>
+                    <span className="ml-mock-bar-label">{b.label}</span>
+                    <div className="ml-mock-bar-track">
+                      <div className="ml-mock-bar-fill" style={{ width: `${b.pct}%`, background: b.color }} />
+                    </div>
+                    <span className="ml-mock-bar-pct">{b.pct}%</span>
+                  </div>
+                ))}
+              </div>
+              <div className="ml-mock-heat">
+                {Array.from({ length: 35 }).map((_, i) => {
+                  const seed = (i * 37) % 5
+                  return <div key={i} className={`ml-heatcell ml-heat-${seed}`} />
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="ml-sticky ml-sticky-1">
+            <span>real streak — not faked 🔥</span>
+          </div>
+          <div className="ml-sticky ml-sticky-2">
+            <span>see your weak topic 👀</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── INTEGRATIONS ── */}
+      <section className="ml-integrations ml-reveal">
+        <span className="ml-integrations-label">works with</span>
+        <div className="ml-integrations-row">
+          <div className="ml-brand"><span className="ml-brand-dot" style={{ background: '#FFA116' }} /> LeetCode</div>
+          <span className="ml-dot-sep" />
+          <div className="ml-brand"><span className="ml-brand-dot" style={{ background: '#1F8ACB' }} /> Codeforces</div>
+          <span className="ml-dot-sep" />
+          <div className="ml-brand ml-brand-soon"><span className="ml-brand-dot" style={{ background: '#2F8D46' }} /> GeeksforGeeks <em>soon</em></div>
+          <span className="ml-dot-sep" />
+          <div className="ml-brand ml-brand-soon"><span className="ml-brand-dot" style={{ background: '#5B6378' }} /> HackerRank <em>soon</em></div>
+        </div>
+      </section>
+
+      {/* ── PRODUCT FACTS STRIP ── */}
+      {/* These are concrete product truths, not user-count flexes. */}
+      <div className="ml-stats-strip ml-reveal">
+        <div className="ml-stat">
+          <div className="ml-stat-val" style={{ color: '#9F8FE3' }}>3</div>
+          <div className="ml-stat-label">
+            platforms, one profile
+            <Squiggle width={70} color="#9F8FE3" style={{ marginTop: 2, opacity: 0.7 }} />
+          </div>
+        </div>
+        <div className="ml-stat">
+          <div className="ml-stat-val" style={{ color: '#E5A653' }}>0</div>
+          <div className="ml-stat-label">
+            manual copy-paste, ever
+            <Squiggle width={70} color="#E5A653" style={{ marginTop: 2, opacity: 0.7 }} />
+          </div>
+        </div>
+        <div className="ml-stat">
+          <div className="ml-stat-val" style={{ color: '#88C0A3' }}>1</div>
+          <div className="ml-stat-label">
+            honest dashboard
+            <Squiggle width={70} color="#88C0A3" style={{ marginTop: 2, opacity: 0.7 }} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── WHY IT WORKS ── */}
+      <section className="ml-placement" id="why">
+        <div className="ml-section-eyebrow ml-reveal">why it works</div>
+        <h2 className="ml-section-title ml-reveal">
+          Three things that <span className="ml-italic">actually</span> grow a coder.
+        </h2>
+        <p className="ml-section-sub ml-reveal">
+          No magic. No bootcamp energy. Just the mechanisms that separate
+          the people who keep improving from the people who plateau at 80 solved.
+        </p>
+
+        <div className="ml-placement-grid">
+          {GROWTH_PILLARS.map((p, i) => (
+            <div
+              key={p.title}
+              className="ml-placement-card ml-reveal"
+              style={{ '--p-accent': p.accent, transitionDelay: `${i * 0.1}s` }}
             >
-                <div
-                    className="ml-logo"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.6rem',
-                        flex:
-                            window.innerWidth <= 768
-                                ? 1
-                                : '0 0 auto',
-                        minWidth: 0,
-                    }}
-                >
-                    <div className="ml-logo-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                stroke="#F5EBD6"
-                                strokeWidth="2.2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
+              <div className="ml-placement-sticker">{p.sticker}</div>
+              <div className="ml-placement-label">{p.title}</div>
+              <div className="ml-placement-note">{p.tag}</div>
+              <div className="ml-placement-desc">{p.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FEATURES (Terminal + Card Stack) ── */}
+      <section className="ml-features" id="features" ref={featuresRef}>
+        <div className="ml-section-eyebrow ml-reveal">what's inside</div>
+        <h2 className="ml-section-title ml-reveal">
+          Stuff you'll <span className="ml-italic">actually</span> use.
+        </h2>
+        <p className="ml-section-sub ml-reveal">
+          Watch it write itself. Each feature pops out of the stack as the
+          script runs — no gimmicks, no "AI-powered synergy," just the handful
+          of things that genuinely move the needle on placement prep.
+        </p>
+
+        <div className="ml-feat-split">
+
+          {/* ── LEFT: a tiny terminal that writes + runs live ── */}
+          <div className="ml-term-wrap ml-reveal">
+            <div className="ml-term-window">
+              <div className="ml-term-bar">
+                <span className="ml-term-dot ml-term-dot-r" />
+                <span className="ml-term-dot ml-term-dot-y" />
+                <span className="ml-term-dot ml-term-dot-g" />
+                <span className="ml-term-title">~/algosprint — loadFeatures.js</span>
+                <span className={`ml-term-run ${seqDone ? 'ml-term-run-done' : ''}`}>
+                  <span className="ml-term-run-dot" />
+                  {seqDone ? 'ready' : 'running'}
+                </span>
+              </div>
+              <pre className="ml-term-body">
+                {termLines.map((l, i) => {
+                  const t = l.trimStart()
+                  // Prompt + output lines get a single flat colour;
+                  // actual code lines get full token highlighting.
+                  const isPrompt = t.startsWith('$')
+                  const isOk = t.startsWith('✓')
+                  const isPop = t.startsWith('→') || t.startsWith('↪')
+                  const cls =
+                    'ml-term-line' +
+                    (isPrompt ? ' ml-term-prompt' : '') +
+                    (isOk ? ' ml-term-ok' : '') +
+                    (isPop ? ' ml-term-pop' : '')
+                  return (
+                    <div key={i} className={cls}>
+                      {hl(l)}
                     </div>
-
-                    <span
-                        className="ml-logo-text"
-                        style={{
-                            fontSize: '1rem',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        Algo<span>Sprint</span>
-                    </span>
-
-                    <span
-                        className="ml-tape-sticker"
-                        style={{
-                            fontSize: '0.65rem',
-                            padding: '0.15rem 0.45rem',
-                        }}
-                    >
-                        ✨ beta
-                    </span>
-                </div>
-
-                <button
-                    className="ml-hamburger"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    aria-label="Toggle menu"
-                    style={{
-                        display: window.innerWidth <= 768 ? 'flex' : 'none',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '42px',
-                        height: '42px',
-                        fontSize: '1.6rem',
-                        color: '#F5EBD6',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
-                >
-                    {mobileMenuOpen ? '✕' : '☰'}
-                </button>
-
-                <div
-                    className={`ml-nav-links ${mobileMenuOpen ? 'active' : ''}`}
-                    style={{
-                        display:
-                            window.innerWidth <= 768
-                                ? mobileMenuOpen
-                                    ? 'flex'
-                                    : 'none'
-                                : 'flex',
-
-                        flexDirection:
-                            window.innerWidth <= 768
-                                ? 'column'
-                                : 'row',
-
-                        alignItems:
-                            window.innerWidth <= 768
-                                ? 'flex-start'
-                                : 'center',
-
-                        width:
-                            window.innerWidth <= 768
-                                ? '100%'
-                                : 'auto',
-
-                        gap: '1rem',
-
-                        marginTop:
-                            window.innerWidth <= 768
-                                ? '1rem'
-                                : '0',
-
-                        position:
-                            window.innerWidth <= 768
-                                ? 'static'
-                                : 'absolute',
-
-                        left:
-                            window.innerWidth <= 768
-                                ? 'auto'
-                                : '50%',
-
-                        transform:
-                            window.innerWidth <= 768
-                                ? 'none'
-                                : 'translateX(-50%)',
-                    }}
-                >
-                    <a href="#features" className="ml-nav-link">Features</a>
-                    <a href="#why" className="ml-nav-link">Why it works</a>
-                    <a href="#how" className="ml-nav-link">How it works</a>
-                    <a href="#team" className="ml-nav-link">Team</a>
-                    <a href="#faq" className="ml-nav-link">FAQ</a>
-                    <a href="#contact" className="ml-nav-link">Contact</a>
-                </div>
-
-                <div
-                    className={`ml-nav-actions ${mobileMenuOpen ? 'active' : ''}`}
-                    style={{
-                        display:
-                            window.innerWidth <= 768
-                                ? mobileMenuOpen
-                                    ? 'flex'
-                                    : 'none'
-                                : 'flex',
-
-                        flexDirection:
-                            window.innerWidth <= 768
-                                ? 'column'
-                                : 'row',
-
-                        alignItems: 'center',
-
-                        width:
-                            window.innerWidth <= 768
-                                ? '100%'
-                                : 'auto',
-
-                        gap: '0.8rem',
-
-                        marginTop:
-                            window.innerWidth <= 768
-                                ? '1rem'
-                                : '0',
-                        marginLeft:
-                            window.innerWidth <= 768
-                                ? '0'
-                                : 'auto',
-                    }}
-                >
-                    <button
-                        className="ml-btn-ghost"
-                        onClick={() => navigate('/login')}
-                        style={{
-                            width: mobileMenuOpen ? '100%' : 'auto',
-                        }}
-                    >
-                        Login
-                    </button>
-
-                    <button
-                        className="ml-btn-primary"
-                        onClick={() => navigate('/signup')}
-                        style={{
-                            width: mobileMenuOpen ? '100%' : 'auto',
-                        }}
-                    >
-                        Get started <span className="ml-arrow">→</span>
-                    </button>
-                </div>
-            </nav>
-
-            {/* ── HERO ── */}
-            <section className="ml-hero" ref={heroRef}>
-                <Sparkle size={22} color="#E5A653" style={{ position: 'absolute', top: 70, left: '5%' }} />
-                <Star size={14} color="#D88BA8" style={{ position: 'absolute', top: 160, right: '8%' }} />
-                <Sparkle size={14} color="#88C0A3" style={{ position: 'absolute', top: 280, left: '10%', opacity: 0.75 }} />
-                <Star size={10} color="#E5A653" style={{ position: 'absolute', top: 210, right: '22%' }} />
-                <Heart size={12} color="#D88BA8" style={{ position: 'absolute', top: 420, left: '4%', opacity: 0.7 }} />
-
-                <div className="ml-hero-left ml-reveal">
-                    <div className="ml-eyebrow">
-                        <span className="ml-eyebrow-dot" />
-                        grow across every platform 🚀
-                    </div>
-
-                    <h1 className="ml-hero-title">
-                        Level up on <span className="ml-italic">every</span> platform.<br />
-                        Not just the one<br />
-                        you're comfy on.
-                        <Squiggle width={240} color="#E5A653" style={{ display: 'block', marginTop: 10 }} />
-                    </h1>
-
-                    <p className="ml-hero-sub">
-                        AlgoSprint turns LeetCode, Codeforces (and GFG soon)
-                        into one <span className="ml-underline-amber">honest</span>
-                        {' '}practice system. Cross-platform streaks, merged
-                        topic coverage, daily recs pointed at your weakest
-                        area, and contest mode to keep your friends on it too.
-                    </p>
-
-                    <div className="ml-hero-ctas">
-                        <div className="ml-cta-wrap">
-                            <button className="ml-cta-primary" onClick={() => navigate('/signup')}>
-                                <span>Start for free</span>
-                                <span className="ml-cta-arrow">→</span>
-                                <div className="ml-cta-shine" />
-                            </button>
-                            <div className="ml-cta-annotation">
-                                <CurvyArrow style={{ position: 'absolute', top: -50, left: -84, transform: 'rotate(-8deg)' }} />
-                                <span style={{ position: 'absolute', top: -72, left: -140, transform: 'rotate(-6deg)' }}>
-                                    start here ✨
-                                </span>
-                            </div>
-                        </div>
-                        <button className="ml-cta-secondary" onClick={() => navigate('/login')}>
-                            I have an account
-                        </button>
-                    </div>
-
-                    <div className="ml-trust">
-                        <span className="ml-trust-chip">🔒 no passwords needed</span>
-                        <span className="ml-trust-chip">✨ free while you learn</span>
-                        <span className="ml-trust-chip">🛠 built by students</span>
-                    </div>
-                </div>
-
-                <div className="ml-hero-right ml-reveal" style={{ transitionDelay: '0.12s' }}>
-                    <BookMascot size={90} style={{
-                        position: 'absolute', top: -26, right: 30, zIndex: 5,
-                        filter: 'drop-shadow(0 14px 40px rgba(229,166,83,0.35))',
-                    }} />
-
-                    <div className="ml-mock">
-                        <div className="ml-mock-header">
-                            <div className="ml-mock-dots">
-                                <span style={{ background: '#FF5F57' }} />
-                                <span style={{ background: '#FEBC2E' }} />
-                                <span style={{ background: '#28C840' }} />
-                            </div>
-                            <span className="ml-mock-url">algosprint.app/dashboard</span>
-                        </div>
-                        <div className="ml-mock-body">
-                            <div className="ml-mock-stats">
-                                {[
-                                    { val: '342', label: 'solved', color: '#9F8FE3' },
-                                    { val: '🔥 14', label: 'day streak', color: '#E5A653' },
-                                    { val: '48', label: 'hard', color: '#D88BA8' },
-                                    { val: '87%', label: 'ready', color: '#88C0A3' },
-                                ].map(s => (
-                                    <div className="ml-mock-stat" key={s.label}>
-                                        <div className="ml-mock-stat-val" style={{ color: s.color }}>{s.val}</div>
-                                        <div className="ml-mock-stat-label">{s.label}</div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="ml-mock-bars">
-                                {[
-                                    { label: 'Arrays', pct: 78, color: '#9F8FE3' },
-                                    { label: 'Graphs', pct: 52, color: '#88C0A3' },
-                                    { label: 'DP', pct: 41, color: '#D88BA8' },
-                                    { label: 'Trees', pct: 65, color: '#E5A653' },
-                                ].map(b => (
-                                    <div className="ml-mock-bar-row" key={b.label}>
-                                        <span className="ml-mock-bar-label">{b.label}</span>
-                                        <div className="ml-mock-bar-track">
-                                            <div className="ml-mock-bar-fill" style={{ width: `${b.pct}%`, background: b.color }} />
-                                        </div>
-                                        <span className="ml-mock-bar-pct">{b.pct}%</span>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="ml-mock-heat">
-                                {Array.from({ length: 35 }).map((_, i) => {
-                                    const seed = (i * 37) % 5
-                                    return <div key={i} className={`ml-heatcell ml-heat-${seed}`} />
-                                })}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ml-sticky ml-sticky-1">
-                        <span>real streak — not faked 🔥</span>
-                    </div>
-                    <div className="ml-sticky ml-sticky-2">
-                        <span>see your weak topic 👀</span>
-                    </div>
-                </div>
-            </section>
-
-            {/* ── INTEGRATIONS ── */}
-            <section className="ml-integrations ml-reveal">
-                <span className="ml-integrations-label">works with</span>
-                <div className="ml-integrations-row">
-                    <div className="ml-brand"><span className="ml-brand-dot" style={{ background: '#FFA116' }} /> LeetCode</div>
-                    <span className="ml-dot-sep" />
-                    <div className="ml-brand"><span className="ml-brand-dot" style={{ background: '#1F8ACB' }} /> Codeforces</div>
-                    <span className="ml-dot-sep" />
-                    <div className="ml-brand ml-brand-soon"><span className="ml-brand-dot" style={{ background: '#2F8D46' }} /> GeeksforGeeks <em>soon</em></div>
-                    <span className="ml-dot-sep" />
-                    <div className="ml-brand ml-brand-soon"><span className="ml-brand-dot" style={{ background: '#5B6378' }} /> HackerRank <em>soon</em></div>
-                </div>
-            </section>
-
-            {/* ── PRODUCT FACTS STRIP ── */}
-            {/* These are concrete product truths, not user-count flexes. */}
-            <div className="ml-stats-strip ml-reveal">
-                <div className="ml-stat">
-                    <div className="ml-stat-val" style={{ color: '#9F8FE3' }}>3</div>
-                    <div className="ml-stat-label">
-                        platforms, one profile
-                        <Squiggle width={70} color="#9F8FE3" style={{ marginTop: 2, opacity: 0.7 }} />
-                    </div>
-                </div>
-                <div className="ml-stat">
-                    <div className="ml-stat-val" style={{ color: '#E5A653' }}>0</div>
-                    <div className="ml-stat-label">
-                        manual copy-paste, ever
-                        <Squiggle width={70} color="#E5A653" style={{ marginTop: 2, opacity: 0.7 }} />
-                    </div>
-                </div>
-                <div className="ml-stat">
-                    <div className="ml-stat-val" style={{ color: '#88C0A3' }}>1</div>
-                    <div className="ml-stat-label">
-                        honest dashboard
-                        <Squiggle width={70} color="#88C0A3" style={{ marginTop: 2, opacity: 0.7 }} />
-                    </div>
-                </div>
+                  )
+                })}
+                {(!seqDone || termActive) && (
+                  <div className="ml-term-line ml-term-line-active">
+                    {hl(termActive)}
+                    <span className="ml-term-caret">▍</span>
+                  </div>
+                )}
+              </pre>
             </div>
 
-            {/* ── WHY IT WORKS ── */}
-            <section className="ml-placement" id="why">
-                <div className="ml-section-eyebrow ml-reveal">why it works</div>
-                <h2 className="ml-section-title ml-reveal">
-                    Three things that <span className="ml-italic">actually</span> grow a coder.
-                </h2>
-                <p className="ml-section-sub ml-reveal">
-                    No magic. No bootcamp energy. Just the mechanisms that separate
-                    the people who keep improving from the people who plateau at 80 solved.
-                </p>
+            <div className="ml-term-cap">
+              <span className="ml-term-cap-k">
+                <span className="ml-term-cap-dot" />
+                features.loaded
+              </span>
+              <span className="ml-term-cap-v">
+                {poppedCount}
+                <span className="ml-term-cap-d">/{FEATURES.length}</span>
+              </span>
+            </div>
 
-                <div className="ml-placement-grid">
-                    {GROWTH_PILLARS.map((p, i) => (
-                        <div
-                            key={p.title}
-                            className="ml-placement-card ml-reveal"
-                            style={{ '--p-accent': p.accent, transitionDelay: `${i * 0.1}s` }}
-                        >
-                            <div className="ml-placement-sticker">{p.sticker}</div>
-                            <div className="ml-placement-label">{p.title}</div>
-                            <div className="ml-placement-note">{p.tag}</div>
-                            <div className="ml-placement-desc">{p.desc}</div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* ── FEATURES (Terminal + Card Stack) ── */}
-            <section className="ml-features" id="features" ref={featuresRef}>
-                <div className="ml-section-eyebrow ml-reveal">what's inside</div>
-                <h2 className="ml-section-title ml-reveal">
-                    Stuff you'll <span className="ml-italic">actually</span> use.
-                </h2>
-                <p className="ml-section-sub ml-reveal">
-                    Watch it write itself. Each feature pops out of the stack as the
-                    script runs — no gimmicks, no "AI-powered synergy," just the handful
-                    of things that genuinely move the needle on placement prep.
-                </p>
-
-                <div className="ml-feat-split">
-
-                    {/* ── LEFT: a tiny terminal that writes + runs live ── */}
-                    <div className="ml-term-wrap ml-reveal">
-                        <div className="ml-term-window">
-                            <div className="ml-term-bar">
-                                <span className="ml-term-dot ml-term-dot-r" />
-                                <span className="ml-term-dot ml-term-dot-y" />
-                                <span className="ml-term-dot ml-term-dot-g" />
-                                <span className="ml-term-title">~/algosprint — loadFeatures.js</span>
-                                <span className={`ml-term-run ${seqDone ? 'ml-term-run-done' : ''}`}>
-                                    <span className="ml-term-run-dot" />
-                                    {seqDone ? 'ready' : 'running'}
-                                </span>
-                            </div>
-                            <pre className="ml-term-body">
-                                {termLines.map((l, i) => {
-                                    const t = l.trimStart()
-                                    // Prompt + output lines get a single flat colour;
-                                    // actual code lines get full token highlighting.
-                                    const isPrompt = t.startsWith('$')
-                                    const isOk = t.startsWith('✓')
-                                    const isPop = t.startsWith('→') || t.startsWith('↪')
-                                    const cls =
-                                        'ml-term-line' +
-                                        (isPrompt ? ' ml-term-prompt' : '') +
-                                        (isOk ? ' ml-term-ok' : '') +
-                                        (isPop ? ' ml-term-pop' : '')
-                                    return (
-                                        <div key={i} className={cls}>
-                                            {hl(l)}
-                                        </div>
-                                    )
-                                })}
-                                {(!seqDone || termActive) && (
-                                    <div className="ml-term-line ml-term-line-active">
-                                        {hl(termActive)}
-                                        <span className="ml-term-caret">▍</span>
-                                    </div>
-                                )}
-                            </pre>
-                        </div>
-
-                        <div className="ml-term-cap">
-                            <span className="ml-term-cap-k">
-                                <span className="ml-term-cap-dot" />
-                                features.loaded
-                            </span>
-                            <span className="ml-term-cap-v">
-                                {poppedCount}
-                                <span className="ml-term-cap-d">/{FEATURES.length}</span>
-                            </span>
-                        </div>
-
-                        {/* ── Feature stack — proper DSA stack visual inside a cylinder.
+            {/* ── Feature stack — proper DSA stack visual inside a cylinder.
                                Elements sit bottom-up (FEATURES[N-1] at the bottom, FEATURES[0]
                                at the top = next-to-pop). As poppedCount grows, top items rise
                                up out of the cylinder mouth and disappear. */}
-                        <div className="ml-fstack" aria-hidden="true">
-                            <div className="ml-fstack-heading">
-                                <Squiggle width={54} color="#E5A653" />
-                                <span>feature stack</span>
-                            </div>
+            <div className="ml-fstack" aria-hidden="true">
+              <div className="ml-fstack-heading">
+                <Squiggle width={54} color="#E5A653" />
+                <span>feature stack</span>
+              </div>
 
-                            <div className="ml-fstack-tube">
-                                {/* TOP → arrow pointing at the current top of the stack */}
-                                <div
-                                    className="ml-fstack-top-arrow"
-                                    data-empty={poppedCount >= FEATURES.length ? 'true' : 'false'}
-                                >
-                                    top&nbsp;<span className="ml-fstack-top-arrow-tip">→</span>
-                                </div>
-
-                                {/* Mouth (top ellipse / opening) */}
-                                <div className="ml-fstack-mouth">
-                                    <div className="ml-fstack-mouth-inner" />
-                                    <div className="ml-fstack-mouth-glare" />
-                                </div>
-
-                                {/* Body — the cylinder walls */}
-                                <div className="ml-fstack-body">
-                                    <div className="ml-fstack-shine" />
-                                    <div className="ml-fstack-shine ml-fstack-shine-r" />
-
-                                    {/* Stack elements anchored to the bottom */}
-                                    <div className="ml-fstack-items">
-                                        {FEATURES.map((f, i) => {
-                                            // depth-from-bottom: FEATURES[N-1] → 0 (bottom),
-                                            // FEATURES[0] → N-1 (top of stack).
-                                            const depth = FEATURES.length - 1 - i
-                                            const taken = i < poppedCount
-                                            return (
-                                                <div
-                                                    key={f.title}
-                                                    className="ml-fstack-item"
-                                                    data-taken={taken ? 'true' : 'false'}
-                                                    style={{
-                                                        '--s-accent': f.color,
-                                                        '--s-depth': depth,
-                                                        '--s-index': i,
-                                                    }}
-                                                >
-                                                    <span className="ml-fstack-item-num">{FEATURES.length - i}</span>
-                                                    <span className="ml-fstack-item-emoji">{f.sticker}</span>
-                                                    <span className="ml-fstack-item-bar" />
-                                                </div>
-                                            )
-                                        })}
-                                    </div>
-                                </div>
-
-                                {/* Base (closed bottom) */}
-                                <div className="ml-fstack-base" />
-
-                                {/* Ambient glow underneath */}
-                                <div className="ml-fstack-glow" />
-                            </div>
-
-                            {/* Caption under the cylinder */}
-                            <div className="ml-fstack-caption">
-                                <span className="ml-fstack-caption-k">size</span>
-                                <span className="ml-fstack-caption-v">
-                                    {FEATURES.length - poppedCount}
-                                    <span className="ml-fstack-caption-d">/{FEATURES.length}</span>
-                                </span>
-                                <span className="ml-fstack-caption-bar" />
-                                <span className="ml-fstack-caption-k">
-                                    {poppedCount >= FEATURES.length ? 'empty' : 'LIFO'}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ── RIGHT: popped cards land here, one after the other ── */}
-                    <div className="ml-feat-stage">
-                        <div className="ml-pop-list">
-                            {FEATURES.map((f, i) => (
-                                <div
-                                    key={f.title}
-                                    className="ml-stack-card"
-                                    data-stack-in={i < poppedCount ? 'true' : 'false'}
-                                    style={{
-                                        '--accent': f.color,
-                                        '--tape': f.tape,
-                                        '--card-index': i,
-                                        '--card-rot': `${([-1.4, 0.9, -0.6, 1.1, -1.0, 0.7])[i] ?? 0}deg`,
-                                    }}
-                                >
-                                    <div className="ml-fcard-tape" />
-                                    <CornerPeel color={f.color} style={{ position: 'absolute', top: 0, right: 0, opacity: 0.9 }} />
-                                    <div className="ml-fcard-sticker">{f.sticker}</div>
-                                    <div className="ml-fcard-title">{f.title}</div>
-                                    <div className="ml-fcard-tag">{f.tag}</div>
-                                    <div className="ml-fcard-desc">{f.desc}</div>
-                                    <div className="ml-fcard-glow" />
-                                    <div className="ml-stack-badge">
-                                        {i + 1}&thinsp;/&thinsp;{FEATURES.length}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
+              <div className="ml-fstack-tube">
+                {/* TOP → arrow pointing at the current top of the stack */}
+                <div
+                  className="ml-fstack-top-arrow"
+                  data-empty={poppedCount >= FEATURES.length ? 'true' : 'false'}
+                >
+                  top&nbsp;<span className="ml-fstack-top-arrow-tip">→</span>
                 </div>
-            </section>
 
-            {/* ── HOW IT WORKS ── */}
-            <section className="ml-how" id="how">
-                <div className="ml-section-eyebrow ml-reveal">how it works</div>
-                <h2 className="ml-section-title ml-reveal">
-                    Three steps. Then <span className="ml-italic">stop</span> worrying.
-                </h2>
-
-                <div className="ml-how-grid">
-                    {HOW_STEPS.map((s, i) => (
-                        <div key={s.n} className="ml-step ml-reveal" style={{ transitionDelay: `${i * 0.1}s`, '--step-accent': s.accent }}>
-                            <div className="ml-step-num-wrap">
-                                <div className="ml-step-num-tape" />
-                                <span className="ml-step-num">{s.n}</span>
-                            </div>
-                            <div className="ml-step-title">{s.title}</div>
-                            <div className="ml-step-desc">{s.desc}</div>
-                            {i < HOW_STEPS.length - 1 && (
-                                <div className="ml-step-connector" aria-hidden>
-                                    <svg width="60" height="18" viewBox="0 0 60 18" fill="none">
-                                        <path d="M2 9 Q 15 2, 30 9 T 56 9"
-                                            stroke="#E5A653" strokeWidth="2" strokeLinecap="round"
-                                            strokeDasharray="4 4" fill="none" opacity="0.55" />
-                                        <path d="M50 5 L58 9 L50 13" stroke="#E5A653" strokeWidth="2"
-                                            strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.75" />
-                                    </svg>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                {/* Mouth (top ellipse / opening) */}
+                <div className="ml-fstack-mouth">
+                  <div className="ml-fstack-mouth-inner" />
+                  <div className="ml-fstack-mouth-glare" />
                 </div>
-            </section>
 
-            {/* ── BUILT BY STUDENTS ── */}
-            <section className="ml-team" id="team">
-                <h2 className="ml-team-headline ml-reveal">
-                    Built by<span className="ml-team-dot">.</span><br />
-                    <span className="ml-team-ghost">Students.</span>
-                </h2>
+                {/* Body — the cylinder walls */}
+                <div className="ml-fstack-body">
+                  <div className="ml-fstack-shine" />
+                  <div className="ml-fstack-shine ml-fstack-shine-r" />
 
-                <div className="ml-team-grid">
-                    {FOUNDERS.map((f, i) => (
+                  {/* Stack elements anchored to the bottom */}
+                  <div className="ml-fstack-items">
+                    {FEATURES.map((f, i) => {
+                      // depth-from-bottom: FEATURES[N-1] → 0 (bottom),
+                      // FEATURES[0] → N-1 (top of stack).
+                      const depth = FEATURES.length - 1 - i
+                      const taken = i < poppedCount
+                      return (
                         <div
-                            key={f.slug}
-                            className="ml-team-card ml-reveal"
-                            style={{ transitionDelay: `${i * 0.12}s` }}
+                          key={f.title}
+                          className="ml-fstack-item"
+                          data-taken={taken ? 'true' : 'false'}
+                          style={{
+                            '--s-accent': f.color,
+                            '--s-depth': depth,
+                            '--s-index': i,
+                          }}
                         >
-                            {/* Orange L-bracket accents */}
-                            <span className="ml-team-bracket ml-team-bracket-tl" aria-hidden />
-                            <span className="ml-team-bracket ml-team-bracket-br" aria-hidden />
-                            <div
-                                className="ml-team-photo"
-                                style={{ backgroundImage: `url(${f.image})` }}
-                                role="img"
-                                aria-label={f.name}
-                            >
-                                <div className="ml-team-photo-fallback">{f.name[0]}</div>
-                                <div className="ml-team-role">{f.role}</div>
-                            </div>
-                            <div className="ml-team-name">{f.name}</div>
-                            <div className="ml-team-tags">
-                                {f.tags.map((t, idx) => (
-                                    <span key={t}>
-                                        {t}
-                                        {idx < f.tags.length - 1 && <span className="ml-team-tag-dot">·</span>}
-                                    </span>
-                                ))}
-                            </div>
+                          <span className="ml-fstack-item-num">{FEATURES.length - i}</span>
+                          <span className="ml-fstack-item-emoji">{f.sticker}</span>
+                          <span className="ml-fstack-item-bar" />
                         </div>
-                    ))}
-                </div>
-            </section>
-
-
-
-            {/* ── FAQ ── */}
-            <section className="ml-faq" id="faq">
-                <div className="ml-section-eyebrow ml-reveal">questions you asked</div>
-                <h2 className="ml-section-title ml-reveal">
-                    Frequently <span className="ml-italic">actually</span> asked.
-                </h2>
-
-                <div className="ml-faq-list">
-                    {FAQS.map((f, i) => {
-                        const open = openFaq === i
-                        return (
-                            <div
-                                key={i}
-                                className={`ml-faq-item ml-reveal ${open ? 'ml-faq-open' : ''}`}
-                                style={{ transitionDelay: `${i * 0.05}s` }}
-                            >
-                                <button
-                                    className="ml-faq-q"
-                                    onClick={() => setOpenFaq(open ? -1 : i)}
-                                    aria-expanded={open}
-                                >
-                                    <span className="ml-faq-marker">Q:</span>
-                                    <span className="ml-faq-qtext">{f.q}</span>
-                                    <span className="ml-faq-chevron" aria-hidden>›</span>
-                                </button>
-                                <div className="ml-faq-a">
-                                    <div className="ml-faq-a-inner">
-                                        <span className="ml-faq-marker-a">A:</span>
-                                        <span>{f.a}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )
+                      )
                     })}
-                </div>
-            </section>
-
-            {/* ── CONTACT ── */}
-            <section className="ml-contact" id="contact">
-
-                <div className="ml-section-eyebrow ml-reveal ml-contact-eyebrow">
-                    contact us
+                  </div>
                 </div>
 
+                {/* Base (closed bottom) */}
+                <div className="ml-fstack-base" />
 
+                {/* Ambient glow underneath */}
+                <div className="ml-fstack-glow" />
+              </div>
 
-                <div className="ml-contact-wrapper ml-reveal">
+              {/* Caption under the cylinder */}
+              <div className="ml-fstack-caption">
+                <span className="ml-fstack-caption-k">size</span>
+                <span className="ml-fstack-caption-v">
+                  {FEATURES.length - poppedCount}
+                  <span className="ml-fstack-caption-d">/{FEATURES.length}</span>
+                </span>
+                <span className="ml-fstack-caption-bar" />
+                <span className="ml-fstack-caption-k">
+                  {poppedCount >= FEATURES.length ? 'empty' : 'LIFO'}
+                </span>
+              </div>
+            </div>
+          </div>
 
-                    {/* LEFT */}
-                    <div className="ml-contact-left">
-
-                        <h2 className="ml-section-title ml-reveal">
-                            We'd love to <span className="ml-italic">hear</span> from you.
-                        </h2>
-
-                        <p className="ml-section-sub ml-reveal">
-                            Questions, feature requests, bug reports, or collaboration ideas —
-                            send us a message and the AlgoSprint team will get back to you.
-                        </p>
-
-                    </div>
-
-                    {/* RIGHT */}
-                    <form
-                        className="ml-contact-form"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-
-                            const formData = new FormData(e.target);
-
-                            const name = formData.get("name");
-                            const email = formData.get("email");
-                            const message = formData.get("message");
-
-                            if (
-                                !name.trim() ||
-                                !email.trim() ||
-                                !message.trim()
-                            ) {
-                                toast.error("Please fill all fields.");
-                                return;
-                            }
-
-                            toast.success("Message submitted successfully!");
-
-                            e.target.reset();
-                        }}
-                    >
-
-                        <div className="ml-contact-group">
-                            <label>Name</label>
-
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Enter your name"
-                            />
-                        </div>
-
-                        <div className="ml-contact-group">
-                            <label>Email</label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Enter your email"
-                            />
-                        </div>
-
-                        <div className="ml-contact-group">
-                            <label>Message</label>
-
-                            <textarea
-                                name="message"
-                                placeholder="Write your message..."
-                            ></textarea>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="ml-cta-primary ml-contact-btn"
-                        >
-                            Send Message →
-                        </button>
-
-                    </form>
-
+          {/* ── RIGHT: popped cards land here, one after the other ── */}
+          <div className="ml-feat-stage">
+            <div className="ml-pop-list">
+              {FEATURES.map((f, i) => (
+                <div
+                  key={f.title}
+                  className="ml-stack-card"
+                  data-stack-in={i < poppedCount ? 'true' : 'false'}
+                  style={{
+                    '--accent': f.color,
+                    '--tape': f.tape,
+                    '--card-index': i,
+                    '--card-rot': `${([-1.4, 0.9, -0.6, 1.1, -1.0, 0.7])[i] ?? 0}deg`,
+                  }}
+                >
+                  <div className="ml-fcard-tape" />
+                  <CornerPeel color={f.color} style={{ position: 'absolute', top: 0, right: 0, opacity: 0.9 }} />
+                  <div className="ml-fcard-sticker">{f.sticker}</div>
+                  <div className="ml-fcard-title">{f.title}</div>
+                  <div className="ml-fcard-tag">{f.tag}</div>
+                  <div className="ml-fcard-desc">{f.desc}</div>
+                  <div className="ml-fcard-glow" />
+                  <div className="ml-stack-badge">
+                    {i + 1}&thinsp;/&thinsp;{FEATURES.length}
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-            </section>
-
-            {/* ── BIG CTA ── */}
-            <section className="ml-big-cta">
-                <Sparkle size={22} color="#E5A653" style={{ position: 'absolute', top: 40, left: '10%' }} />
-                <Star size={16} color="#D88BA8" style={{ position: 'absolute', bottom: 50, right: '12%' }} />
-                <Sparkle size={14} color="#88C0A3" style={{ position: 'absolute', top: 80, right: '20%' }} />
-                <Heart size={14} color="#D88BA8" style={{ position: 'absolute', bottom: 30, left: '14%', opacity: 0.75 }} />
-                <div className="ml-big-cta-inner ml-reveal">
-                    <h2 className="ml-big-cta-title">
-                        One place. <span className="ml-italic">Every</span> platform.
-                    </h2>
-                    <p className="ml-big-cta-sub">
-                        Stop jumping between three tabs pretending the other two don't exist.
-                        Link your handles, keep solving, watch yourself actually improve.
-                    </p>
-                    <button className="ml-cta-primary ml-cta-big" onClick={() => navigate('/signup')}>
-                        <span>Get started — it's free</span>
-                        <span className="ml-cta-arrow">→</span>
-                        <div className="ml-cta-shine" />
-                    </button>
-
-                </div>
-            </section>
-
-            {/* ── FOOTER ── */}
-            <footer className="ml-footer">
-                <div className="ml-footer-top">
-                    <div className="ml-logo">
-                        <div className="ml-logo-icon">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#F5EBD6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <span className="ml-logo-text" style={{ fontSize: 14 }}>Algo<span>Sprint</span></span>
-                    </div>
-                    <div className="ml-footer-links">
-                        {['Privacy', 'Terms', 'Contact', 'Twitter', 'GitHub'].map(l => (
-                            <a key={l} href="#" className="ml-footer-link">{l}</a>
-                        ))}
-                    </div>
-                </div>
-                <div className="ml-footer-bottom">
-                    <span>© 2026 AlgoSprint</span>
-                    <span className="ml-handwritten" style={{ color: '#E5A653' }}>
-                        made with ☕ and way too many late nights
-                    </span>
-                </div>
-            </footer>
         </div>
-    )
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="ml-how" id="how">
+        <div className="ml-section-eyebrow ml-reveal">how it works</div>
+        <h2 className="ml-section-title ml-reveal">
+          Three steps. Then <span className="ml-italic">stop</span> worrying.
+        </h2>
+
+        <div className="ml-how-grid">
+          {HOW_STEPS.map((s, i) => (
+            <div key={s.n} className="ml-step ml-reveal" style={{ transitionDelay: `${i * 0.1}s`, '--step-accent': s.accent }}>
+              <div className="ml-step-num-wrap">
+                <div className="ml-step-num-tape" />
+                <span className="ml-step-num">{s.n}</span>
+              </div>
+              <div className="ml-step-title">{s.title}</div>
+              <div className="ml-step-desc">{s.desc}</div>
+              {i < HOW_STEPS.length - 1 && (
+                <div className="ml-step-connector" aria-hidden>
+                  <svg width="60" height="18" viewBox="0 0 60 18" fill="none">
+                    <path d="M2 9 Q 15 2, 30 9 T 56 9"
+                      stroke="#E5A653" strokeWidth="2" strokeLinecap="round"
+                      strokeDasharray="4 4" fill="none" opacity="0.55" />
+                    <path d="M50 5 L58 9 L50 13" stroke="#E5A653" strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.75" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── BUILT BY STUDENTS ── */}
+      <section className="ml-team" id="team">
+        <h2 className="ml-team-headline ml-reveal">
+          Built by<span className="ml-team-dot">.</span><br />
+          <span className="ml-team-ghost">Students.</span>
+        </h2>
+
+        <div className="ml-team-grid">
+          {FOUNDERS.map((f, i) => (
+            <div
+              key={f.slug}
+              className="ml-team-card ml-reveal"
+              style={{ transitionDelay: `${i * 0.12}s` }}
+            >
+              {/* Orange L-bracket accents */}
+              <span className="ml-team-bracket ml-team-bracket-tl" aria-hidden />
+              <span className="ml-team-bracket ml-team-bracket-br" aria-hidden />
+              <div
+                className="ml-team-photo"
+                style={{ backgroundImage: `url(${f.image})` }}
+                role="img"
+                aria-label={f.name}
+              >
+                <div className="ml-team-photo-fallback">{f.name[0]}</div>
+                <div className="ml-team-role">{f.role}</div>
+              </div>
+              <div className="ml-team-name">{f.name}</div>
+              <div className="ml-team-tags">
+                {f.tags.map((t, idx) => (
+                  <span key={t}>
+                    {t}
+                    {idx < f.tags.length - 1 && <span className="ml-team-tag-dot">·</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+
+      {/* ── FAQ ── */}
+      <section className="ml-faq" id="faq">
+        <div className="ml-section-eyebrow ml-reveal">questions you asked</div>
+        <h2 className="ml-section-title ml-reveal">
+          Frequently <span className="ml-italic">actually</span> asked.
+        </h2>
+
+        <div className="ml-faq-list">
+          {FAQS.map((f, i) => {
+            const open = openFaq === i
+            return (
+              <div
+                key={i}
+                className={`ml-faq-item ml-reveal ${open ? 'ml-faq-open' : ''}`}
+                style={{ transitionDelay: `${i * 0.05}s` }}
+              >
+                <button
+                  className="ml-faq-q"
+                  onClick={() => setOpenFaq(open ? -1 : i)}
+                  aria-expanded={open}
+                >
+                  <span className="ml-faq-marker">Q:</span>
+                  <span className="ml-faq-qtext">{f.q}</span>
+                  <span className="ml-faq-chevron" aria-hidden>›</span>
+                </button>
+                <div className="ml-faq-a">
+                  <div className="ml-faq-a-inner">
+                    <span className="ml-faq-marker-a">A:</span>
+                    <span>{f.a}</span>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── CONTACT ── */}
+      <section className="ml-contact" id="contact">
+
+        <div className="ml-section-eyebrow ml-reveal ml-contact-eyebrow">
+          contact us
+        </div>
+
+
+
+        <div className="ml-contact-wrapper ml-reveal">
+
+          {/* LEFT */}
+          <div className="ml-contact-left">
+
+            <h2 className="ml-section-title ml-reveal">
+              We'd love to <span className="ml-italic">hear</span> from you.
+            </h2>
+
+            <p className="ml-section-sub ml-reveal">
+              Questions, feature requests, bug reports, or collaboration ideas —
+              send us a message and the AlgoSprint team will get back to you.
+            </p>
+
+          </div>
+
+          {/* RIGHT */}
+          <form
+            className="ml-contact-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              const formData = new FormData(e.target);
+
+              const name = formData.get("name");
+              const email = formData.get("email");
+              const message = formData.get("message");
+
+              if (
+                !name.trim() ||
+                !email.trim() ||
+                !message.trim()
+              ) {
+                toast.error("Please fill all fields.");
+                return;
+              }
+
+              toast.success("Message submitted successfully!");
+
+              e.target.reset();
+            }}
+          >
+
+            <div className="ml-contact-group">
+              <label>Name</label>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Enter your name"
+              />
+            </div>
+
+            <div className="ml-contact-group">
+              <label>Email</label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div className="ml-contact-group">
+              <label>Message</label>
+
+              <textarea
+                name="message"
+                placeholder="Write your message..."
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              className="ml-cta-primary ml-contact-btn"
+            >
+              Send Message →
+            </button>
+
+          </form>
+
+        </div>
+
+      </section>
+
+      {/* ── BIG CTA ── */}
+      <section className="ml-big-cta">
+        <Sparkle size={22} color="#E5A653" style={{ position: 'absolute', top: 40, left: '10%' }} />
+        <Star size={16} color="#D88BA8" style={{ position: 'absolute', bottom: 50, right: '12%' }} />
+        <Sparkle size={14} color="#88C0A3" style={{ position: 'absolute', top: 80, right: '20%' }} />
+        <Heart size={14} color="#D88BA8" style={{ position: 'absolute', bottom: 30, left: '14%', opacity: 0.75 }} />
+        <div className="ml-big-cta-inner ml-reveal">
+          <h2 className="ml-big-cta-title">
+            One place. <span className="ml-italic">Every</span> platform.
+          </h2>
+          <p className="ml-big-cta-sub">
+            Stop jumping between three tabs pretending the other two don't exist.
+            Link your handles, keep solving, watch yourself actually improve.
+          </p>
+          <button className="ml-cta-primary ml-cta-big" onClick={() => navigate('/signup')}>
+            <span>Get started — it's free</span>
+            <span className="ml-cta-arrow">→</span>
+            <div className="ml-cta-shine" />
+          </button>
+
+        </div>
+      </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="ml-footer">
+        <div className="ml-footer-top">
+          <div className="ml-logo">
+            <div className="ml-logo-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#F5EBD6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <span className="ml-logo-text" style={{ fontSize: 14 }}>Algo<span>Sprint</span></span>
+          </div>
+          <div className="ml-footer-links">
+            {['Privacy', 'Terms', 'Contact', 'Twitter', 'GitHub'].map(l => (
+              <a key={l} href="#" className="ml-footer-link">{l}</a>
+            ))}
+          </div>
+        </div>
+        <div className="ml-footer-bottom">
+          <span>© 2026 AlgoSprint</span>
+          <span className="ml-handwritten" style={{ color: '#E5A653' }}>
+            made with ☕ and way too many late nights
+          </span>
+        </div>
+      </footer>
+    </div>
+  )
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -1351,6 +1392,24 @@ const ML_CSS = `
     overflow-x: hidden;
 }
 .ml-root * { box-sizing: border-box; }
+body.light-theme .ml-root {
+    --bg: #F7F4EC;
+    --bg-soft: #ffffff;
+    --bg-card: #ffffff;
+    --bg-glass: rgba(255,255,255,0.75);
+
+    --ink: #111827;
+    --ink-mute: #4B5563;
+    --ink-faint: #6B7280;
+
+    --amber: #D97706;
+    --sage: #059669;
+    --rose: #DB2777;
+    --lavender: #7C3AED;
+
+    --edge: rgba(0,0,0,0.08);
+    --edge-soft: rgba(0,0,0,0.04);
+}
 
 /* ── Background glows + paper grid ── */
 .ml-orb {
