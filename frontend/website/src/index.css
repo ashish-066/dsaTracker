@@ -1345,6 +1345,28 @@ body::before {
   background: var(--bg-hover);
 }
 
+.google-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.google-auth-wrap {
+  min-height: 44px;
+  margin-bottom: 16px;
+}
+
+.google-auth-wrap > div:first-child,
+.google-auth-wrap iframe {
+  width: 100% !important;
+}
+
+.google-auth-status {
+  margin-top: 6px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
 .auth-switch {
   text-align: center;
   font-size: 13px;

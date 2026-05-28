@@ -6,6 +6,7 @@
 // Read from Vite's build-time env (`VITE_API_BASE`) on the deployed frontend;
 // fall through to localhost:8080 for local dev with `npm run dev`.
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080'
+const DEMO_API_BASE = API_BASE
 
 // ── One-shot legacy-session cleanup ────────────────────────────────────────
 //
@@ -123,7 +124,7 @@ export async function authFetchJson(path, options = {}) {
         if (res.status === 401) {
             const body = await res.text()
             let errMsg = 'Session expired. Please log in again.'
-            try { errMsg = JSON.parse(body)?.error || errMsg } catch (_) { /* ignore */ }
+            try { errMsg = JSON.parse(body)?.error || errMsg } catch { /* ignore */ }
             clearAuth()
             window.location.href = '/login'
             return { ok: false, error: errMsg }
@@ -133,7 +134,7 @@ export async function authFetchJson(path, options = {}) {
         const text = await res.text()
         if (!text) return { ok: false, error: `HTTP ${res.status} (empty response)` }
         let data
-        try { data = JSON.parse(text) } catch (_) {
+        try { data = JSON.parse(text) } catch {
             return { ok: false, error: `HTTP ${res.status}: unexpected response format` }
         }
         if (res.ok) return { ok: true, data }
@@ -316,7 +317,7 @@ export async function signupRequest(name, username, email, password) {
             return { ok: true, data }
         }
         return { ok: false, error: data.error || 'Could not send verification code' }
-    } catch (e) {
+    } catch {
         return { ok: false, error: 'Cannot connect to server. Please try again.' }
     }
 }
@@ -327,7 +328,7 @@ export async function checkUsernameAvailable(u) {
         const res = await fetch(`${API_BASE}/auth/username/check?u=${encodeURIComponent(u)}`)
         if (res.ok) return res.json()
         return { available: false, reason: 'Couldn\'t check right now' }
-    } catch (e) {
+    } catch {
         return { available: false, reason: 'Couldn\'t check right now' }
     }
 }
@@ -351,7 +352,7 @@ export async function signupResend(email) {
         const data = await res.json().catch(() => ({}))
         if (res.ok) return { ok: true, data }
         return { ok: false, error: data.error || 'Could not resend code' }
-    } catch (e) {
+    } catch {
         return { ok: false, error: 'Cannot connect to server. Please try again.' }
     }
 }
@@ -376,7 +377,32 @@ export async function signupVerify(email, otp) {
             return { ok: true, data }
         }
         return { ok: false, error: data.error || 'Verification failed' }
-    } catch (e) {
+    } catch {
+        return { ok: false, error: 'Cannot connect to server. Please try again.' }
+    }
+}
+
+export async function loginWithGoogle(idToken) {
+    try {
+        const res = await fetch(`${API_BASE}/auth/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken }),
+            credentials: 'include',
+        })
+        const data = await res.json().catch(() => ({}))
+        if (!res.ok) {
+            return { ok: false, error: data.error || 'Google sign-in failed' }
+        }
+        setUserEmail(data.email)
+        if (data.name) setUserName(data.name)
+        setUsername(data.username || '')
+        try {
+            const mod = await import('../utils/profilePic')
+            mod.setProfilePic(data.profilePic || null)
+        } catch { /* ignore */ }
+        return { ok: true, data }
+    } catch {
         return { ok: false, error: 'Cannot connect to server. Please try again.' }
     }
 }
@@ -413,7 +439,7 @@ export async function login(email, password) {
             }
         } catch { /* best-effort, login still succeeded */ }
         return { success: true, email }
-    } catch (err) {
+    } catch {
         return { success: false, error: 'Cannot connect to server. Please ensure the backend is running.' }
     }
 }

@@ -25,14 +25,17 @@ public class UserController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationService emailVerificationService;
+    private final GoogleOAuthService googleOAuthService;
 
     public UserController(UserInfoService service, JwtService jwtService,
             AuthenticationManager authenticationManager,
-            EmailVerificationService emailVerificationService) {
+            EmailVerificationService emailVerificationService,
+            GoogleOAuthService googleOAuthService) {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.emailVerificationService = emailVerificationService;
+        this.googleOAuthService = googleOAuthService;
     }
 
     /* ───────────── Auth-cookie helpers ─────────────
@@ -205,6 +208,33 @@ public class UserController {
         resp.put("ok", true);
         resp.put("email", authRequest.getUsername());
         return ResponseEntity.ok(resp);
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> authenticateWithGoogle(@RequestBody Map<String, String> body,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) {
+        try {
+            GoogleOAuthService.GoogleProfile profile = googleOAuthService.verifyIdToken(body.get("idToken"));
+            boolean existed = service.findByEmail(profile.email()).isPresent();
+            UserInfo user = service.findOrCreateGoogleUser(profile);
+            String token = jwtService.generateToken(user.getEmail());
+            setAuthCookie(request, response, token);
+
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("ok", true);
+            resp.put("email", user.getEmail());
+            resp.put("name", user.getName() != null ? user.getName() : "");
+            resp.put("username", user.getUsername());
+            resp.put("profilePic", user.getProfilePic());
+            resp.put("needsUsername", user.getUsername() == null || user.getUsername().isBlank());
+            resp.put("newUser", !existed);
+            return ResponseEntity.ok(resp);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(503).body(Map.of("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     /** Clears the auth cookie. JS-callable from the frontend's Logout button. */

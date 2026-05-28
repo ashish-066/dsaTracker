@@ -29,6 +29,10 @@ app.jwt.expiration-ms=${APP_JWT_EXPIRATION_MS:86400000}
 # REQUIRED in production. Generate with:  openssl rand -base64 48
 app.jwt.secret=${APP_JWT_SECRET:}
 
+# Public Google OAuth web client ID used to verify Google Identity Services
+# ID tokens on the backend. No client secret is required for this flow.
+app.google.client-id=${GOOGLE_CLIENT_ID:}
+
 # ── CORS ──────────────────────────────────────────────────────────────────
 # Comma-separated list of allowed origins, no trailing slashes.
 # Example for a Vercel deploy:

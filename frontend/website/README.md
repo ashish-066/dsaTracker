@@ -1,5 +1,12 @@
 # React + Vite
 
+## Google OAuth
+
+Set `VITE_GOOGLE_CLIENT_ID` to the same Google OAuth web client ID that the
+backend receives as `GOOGLE_CLIENT_ID`. The browser sends only the Google ID
+token to `/auth/google`; the backend verifies issuer, expiry, audience, and
+verified email before issuing the existing HttpOnly JWT cookie.
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

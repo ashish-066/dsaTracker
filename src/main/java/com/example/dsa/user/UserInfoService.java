@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
-import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class UserInfoService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -44,6 +44,34 @@ public class UserInfoService implements org.springframework.security.core.userde
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User added successfully!";
+    }
+
+    public UserInfo findOrCreateGoogleUser(GoogleOAuthService.GoogleProfile profile) {
+        String email = profile.email().trim().toLowerCase();
+        Optional<UserInfo> existing = repository.findByEmail(email);
+        if (existing.isPresent()) {
+            UserInfo user = existing.get();
+            boolean changed = false;
+            if ((user.getName() == null || user.getName().isBlank()) && profile.name() != null) {
+                user.setName(profile.name());
+                changed = true;
+            }
+            if ((user.getProfilePic() == null || user.getProfilePic().isBlank()) && profile.picture() != null) {
+                user.setProfilePic(profile.picture());
+                changed = true;
+            }
+            return changed ? repository.save(user) : user;
+        }
+
+        UserInfo user = new UserInfo();
+        user.setEmail(email);
+        user.setName(profile.name() != null && !profile.name().isBlank()
+                ? profile.name().trim()
+                : email.substring(0, email.indexOf('@')));
+        user.setProfilePic(profile.picture());
+        user.setRoles("ROLE_USER");
+        user.setPassword(encoder.encode(UUID.randomUUID().toString()));
+        return repository.save(user);
     }
 
     /** Returns the UserInfo for a given email, wrapped in Optional. */
