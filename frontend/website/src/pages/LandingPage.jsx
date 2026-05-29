@@ -1081,20 +1081,22 @@ export default function LandingPage() {
 // ──────────────────────────────────────────────────────────────────────────
 const ML_CSS = `
 .ml-root {
-    --bg:         #0B0F1A;
-    --bg-soft:    #121727;
-    --bg-card:    #151B2D;
-    --bg-glass:   rgba(18, 23, 39, 0.72);
-    --ink:        #EDE4CE;
-    --ink-mute:   #9DA3B5;
-    --ink-faint:  #5B6378;
+    --bg:         var(--bg-primary);
+    --bg-soft:    var(--bg-secondary);
+    --bg-card:    var(--bg-card);
+
+    --ink:        var(--text-primary);
+    --ink-mute:   var(--text-secondary);
+    --ink-faint:  var(--text-muted);
+
     --amber:      #E5A653;
     --amber-soft: rgba(229, 166, 83, 0.14);
     --sage:       #88C0A3;
     --rose:       #D88BA8;
     --lavender:   #9F8FE3;
-    --edge:       rgba(229, 166, 83, 0.18);
-    --edge-soft:  rgba(237, 228, 206, 0.08);
+
+    --edge:       var(--border);
+    --edge-soft:  var(--border-subtle);
 
     min-height: 100vh;
     background: var(--bg);
