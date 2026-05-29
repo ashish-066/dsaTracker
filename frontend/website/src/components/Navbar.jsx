@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar({ scrolled }) {
 
@@ -10,6 +11,7 @@ export default function Navbar({ scrolled }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showNavbar, setShowNavbar] = useState(true);
     const isLandingPage = location.pathname === "/";
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         let lastScrollY = window.scrollY;
@@ -218,6 +220,25 @@ export default function Navbar({ scrolled }) {
                             : 'auto',
                 }}
             >
+              <button
+    onClick={toggleTheme}
+    aria-label="Toggle theme"
+    style={{
+        width: '38px',
+        height: '38px',
+        borderRadius: '10px',
+        border: '1px solid var(--border)',
+        background: 'var(--bg-card)',
+        color: 'var(--text-primary)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '18px',
+    }}
+>
+    {theme === 'dark' ? '☀️' : '🌙'}
+</button>
                 <button
                     className="ml-btn-ghost"
                     onClick={() => navigate('/login')}
