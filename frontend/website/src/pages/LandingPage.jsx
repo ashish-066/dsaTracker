@@ -375,19 +375,19 @@ function useFeatureSequence(sectionRef, features) {
         }
 
         async function run() {
-            await wait(140)
+            await wait(50)
             await type('$ node features.js', 7, 1)
-            await wait(180)
+            await wait(60)
             await type("import { Stack } from './ds/Stack'", 6, 2)
-            await wait(90)
+            await wait(30)
             await type('const stack = Stack.from(FEATURES)', 6, 2)
-            await wait(120)
+            await wait(40)
             await type('while (!stack.isEmpty()) {', 6, 2)
-            await wait(60)
+            await wait(20)
             await type('  mount(stack.pop())', 6, 2)
-            await wait(60)
+            await wait(20)
             await type('}', 10, 1)
-            await wait(200)
+            await wait(60)
 
             for (let i = 0; i < features.length; i++) {
                 if (cancelled) return
@@ -398,7 +398,7 @@ function useFeatureSequence(sectionRef, features) {
                 )
                 // fire the card out of the stack's top
                 setPopped(n)
-                await wait(180)
+                await wait(70)
             }
 
             await wait(160)
