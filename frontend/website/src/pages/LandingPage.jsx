@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 /*
  * Landing page — "midnight library" studygram.
@@ -463,32 +465,7 @@ export default function LandingPage() {
         return () => hero.removeEventListener('mousemove', handle)
     }, [])
 
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showNavbar, setShowNavbar] = useState(true);
 
-    useEffect(() => {
-        let lastScrollY = window.scrollY;
-
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-            if (currentScrollY < lastScrollY) {
-                setShowNavbar(true);
-            } else {
-                setShowNavbar(false);
-            }
-            if (currentScrollY < 80) {
-                setShowNavbar(true);
-            }
-
-            lastScrollY = currentScrollY;
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
 
     return (
         <div className="ml-root">
@@ -501,208 +478,7 @@ export default function LandingPage() {
             <div className="ml-grid-overlay" />
             <div className="ml-vignette" />
 
-            {/* ── NAV ── */}
-            <nav
-                className={`ml-nav ${scrolled ? 'ml-nav-scrolled' : ''}`}
-                style={{
-                    position: 'fixed',
-                    top: showNavbar ? '14px' : '-120px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    transition: 'top 0.35s ease',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '0.8rem',
-                    width: 'min(1180px, calc(100% - 32px))',
-                    margin: '0 auto',
-                    padding: '0.9rem 1rem',
-
-                    flexDirection:
-                        window.innerWidth <= 768
-                            ? 'row'
-                            : 'row',
-                }}
-            >
-                <div
-                    className="ml-logo"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.6rem',
-                        flex:
-                            window.innerWidth <= 768
-                                ? 1
-                                : '0 0 auto',
-                        minWidth: 0,
-                    }}
-                >
-                    <div className="ml-logo-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                            <path
-                                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                stroke="#F5EBD6"
-                                strokeWidth="2.2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-                    </div>
-
-                    <span
-                        className="ml-logo-text"
-                        style={{
-                            fontSize: '1rem',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
-                        Algo<span>Sprint</span>
-                    </span>
-
-                    <span
-                        className="ml-tape-sticker"
-                        style={{
-                            fontSize: '0.65rem',
-                            padding: '0.15rem 0.45rem',
-                        }}
-                    >
-                        ✨ beta
-                    </span>
-                </div>
-
-                <button
-                    className="ml-hamburger"
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    aria-label="Toggle menu"
-                    style={{
-                        display: window.innerWidth <= 768 ? 'flex' : 'none',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '42px',
-                        height: '42px',
-                        fontSize: '1.6rem',
-                        color: '#F5EBD6',
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
-                >
-                    {mobileMenuOpen ? '✕' : '☰'}
-                </button>
-
-                <div
-                    className={`ml-nav-links ${mobileMenuOpen ? 'active' : ''}`}
-                    style={{
-                        display:
-                            window.innerWidth <= 768
-                                ? mobileMenuOpen
-                                    ? 'flex'
-                                    : 'none'
-                                : 'flex',
-
-                        flexDirection:
-                            window.innerWidth <= 768
-                                ? 'column'
-                                : 'row',
-
-                        alignItems:
-                            window.innerWidth <= 768
-                                ? 'flex-start'
-                                : 'center',
-
-                        width:
-                            window.innerWidth <= 768
-                                ? '100%'
-                                : 'auto',
-
-                        gap: '1rem',
-
-                        marginTop:
-                            window.innerWidth <= 768
-                                ? '1rem'
-                                : '0',
-
-                        position:
-                            window.innerWidth <= 768
-                                ? 'static'
-                                : 'absolute',
-
-                        left:
-                            window.innerWidth <= 768
-                                ? 'auto'
-                                : '50%',
-
-                        transform:
-                            window.innerWidth <= 768
-                                ? 'none'
-                                : 'translateX(-50%)',
-                    }}
-                >
-                    <a href="#features" className="ml-nav-link">Features</a>
-                    <a href="#why" className="ml-nav-link">Why it works</a>
-                    <a href="#how" className="ml-nav-link">How it works</a>
-                    <a href="#team" className="ml-nav-link">Team</a>
-                    <a href="#faq" className="ml-nav-link">FAQ</a>
-                    <a href="#contact" className="ml-nav-link">Contact</a>
-                </div>
-
-                <div
-                    className={`ml-nav-actions ${mobileMenuOpen ? 'active' : ''}`}
-                    style={{
-                        display:
-                            window.innerWidth <= 768
-                                ? mobileMenuOpen
-                                    ? 'flex'
-                                    : 'none'
-                                : 'flex',
-
-                        flexDirection:
-                            window.innerWidth <= 768
-                                ? 'column'
-                                : 'row',
-
-                        alignItems: 'center',
-
-                        width:
-                            window.innerWidth <= 768
-                                ? '100%'
-                                : 'auto',
-
-                        gap: '0.8rem',
-
-                        marginTop:
-                            window.innerWidth <= 768
-                                ? '1rem'
-                                : '0',
-                        marginLeft:
-                            window.innerWidth <= 768
-                                ? '0'
-                                : 'auto',
-                    }}
-                >
-                    <button
-                        className="ml-btn-ghost"
-                        onClick={() => navigate('/login')}
-                        style={{
-                            width: mobileMenuOpen ? '100%' : 'auto',
-                        }}
-                    >
-                        Login
-                    </button>
-
-                    <button
-                        className="ml-btn-primary"
-                        onClick={() => navigate('/signup')}
-                        style={{
-                            width: mobileMenuOpen ? '100%' : 'auto',
-                        }}
-                    >
-                        Get started <span className="ml-arrow">→</span>
-                    </button>
-                </div>
-            </nav>
+            <Navbar scrolled={scrolled} />
 
             {/* ── HERO ── */}
             <section className="ml-hero" ref={heroRef}>
@@ -1295,30 +1071,7 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* ── FOOTER ── */}
-            <footer className="ml-footer">
-                <div className="ml-footer-top">
-                    <div className="ml-logo">
-                        <div className="ml-logo-icon">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#F5EBD6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </div>
-                        <span className="ml-logo-text" style={{ fontSize: 14 }}>Algo<span>Sprint</span></span>
-                    </div>
-                    <div className="ml-footer-links">
-                        {['Privacy', 'Terms', 'Contact', 'Twitter', 'GitHub'].map(l => (
-                            <a key={l} href="#" className="ml-footer-link">{l}</a>
-                        ))}
-                    </div>
-                </div>
-                <div className="ml-footer-bottom">
-                    <span>© 2026 AlgoSprint</span>
-                    <span className="ml-handwritten" style={{ color: '#E5A653' }}>
-                        made with ☕ and way too many late nights
-                    </span>
-                </div>
-            </footer>
+            <Footer />
         </div>
     )
 }
@@ -1328,20 +1081,22 @@ export default function LandingPage() {
 // ──────────────────────────────────────────────────────────────────────────
 const ML_CSS = `
 .ml-root {
-    --bg:         #0B0F1A;
-    --bg-soft:    #121727;
-    --bg-card:    #151B2D;
-    --bg-glass:   rgba(18, 23, 39, 0.72);
-    --ink:        #EDE4CE;
-    --ink-mute:   #9DA3B5;
-    --ink-faint:  #5B6378;
+    --bg:         var(--bg-primary);
+    --bg-soft:    var(--bg-secondary);
+    --bg-card:    var(--bg-card);
+
+    --ink:        var(--text-primary);
+    --ink-mute:   var(--text-secondary);
+    --ink-faint:  var(--text-muted);
+
     --amber:      #E5A653;
     --amber-soft: rgba(229, 166, 83, 0.14);
     --sage:       #88C0A3;
     --rose:       #D88BA8;
     --lavender:   #9F8FE3;
-    --edge:       rgba(229, 166, 83, 0.18);
-    --edge-soft:  rgba(237, 228, 206, 0.08);
+
+    --edge:       var(--border);
+    --edge-soft:  var(--border-subtle);
 
     min-height: 100vh;
     background: var(--bg);

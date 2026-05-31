@@ -5,6 +5,7 @@ import {
     fetchNotifications, fetchUnreadNotifCount, markAllNotificationsRead,
 } from '../services/api'
 import { useProfilePic } from '../utils/profilePic'
+import { useTheme } from '../context/useTheme'
 
 /* ── helpers ──────────────────────────────────────────────────────────── */
 
@@ -34,6 +35,7 @@ function metaFor(type) { return TYPE_META[type] || { icon: '🔔', color: '#94A3
 
 export default function Topbar({ title, subtitle }) {
     const navigate = useNavigate()
+    const { theme, toggleTheme } = useTheme()
     const [streak, setStreak] = useState(null)
     const profilePic = useProfilePic()
     const name = getUserName() || getUserEmail() || ''
@@ -227,6 +229,26 @@ export default function Topbar({ title, subtitle }) {
                     )}
                 </div>
 
+ <button
+    onClick={toggleTheme}
+    aria-label="Toggle theme"
+    title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+    style={{
+        width: '38px',
+        height: '38px',
+        borderRadius: '10px',
+        border: '1px solid var(--border)',
+        background: 'var(--bg-card)',
+        color: 'var(--text-primary)',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '18px',
+    }}
+>
+    {theme === 'dark' ? '☀️' : '🌙'}
+</button>
                 {/* Avatar */}
                 <div
                     className="topbar-avatar"
