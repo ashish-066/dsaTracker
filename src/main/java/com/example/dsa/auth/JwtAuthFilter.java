@@ -43,13 +43,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String username = null;
+        boolean isPublic = isPublicEndpoint(request.getRequestURI());
+
         if (token != null) {
             try {
                 username = jwtService.extractUsername(token);
             } catch (Exception e) {
-                // Token is expired, malformed, or tampered — return JSON 401 immediately
-                sendJsonError(response, HttpStatus.UNAUTHORIZED, "Token expired or invalid. Please log in again.");
-                return;
+                if (!isPublic) {
+                    sendJsonError(response, HttpStatus.UNAUTHORIZED, "Token expired or invalid. Please log in again.");
+                    return;
+                }
             }
         }
 
@@ -62,16 +65,31 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
-                    sendJsonError(response, HttpStatus.UNAUTHORIZED, "Token validation failed. Please log in again.");
-                    return;
+                    if (!isPublic) {
+                        sendJsonError(response, HttpStatus.UNAUTHORIZED, "Token validation failed. Please log in again.");
+                        return;
+                    }
                 }
             } catch (Exception e) {
-                sendJsonError(response, HttpStatus.UNAUTHORIZED, "Authentication error. Please log in again.");
-                return;
+                if (!isPublic) {
+                    sendJsonError(response, HttpStatus.UNAUTHORIZED, "Authentication error. Please log in again.");
+                    return;
+                }
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPublicEndpoint(String uri) {
+        return uri.equals("/auth/welcome") ||
+               uri.equals("/auth/generateToken") ||
+               uri.startsWith("/auth/signup/") ||
+               uri.equals("/auth/username/check") ||
+               uri.equals("/auth/logout") ||
+               uri.startsWith("/api/leetcode/") ||
+               uri.startsWith("/api/codeforces/") ||
+               uri.equals("/challenges/problems/seed");
     }
 
     private void sendJsonError(HttpServletResponse response, HttpStatus status, String message) throws IOException {

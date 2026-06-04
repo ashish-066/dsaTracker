@@ -272,12 +272,16 @@ export default function ProfilePage() {
         { label: 'Platforms Linked', value: platformCount || '—' },
     ]
 
-    const connectedPlatforms = platforms.map(p => ({
-        key: p.platform,
-        label: p.platform === 'leetcode' ? 'LeetCode' : 'Codeforces',
-        color: p.platform === 'leetcode' ? '#FFA116' : '#1890FF',
-        abbr: p.platform === 'leetcode' ? 'LC' : 'CF',
-        username: p.username,
+    const connectedPlatforms = platforms.map(p => {
+        let label = 'Unknown', color = '#999', abbr = '??'
+        if (p.platform === 'leetcode') { label = 'LeetCode'; color = '#FFA116'; abbr = 'LC' }
+        else if (p.platform === 'codeforces') { label = 'Codeforces'; color = '#1890FF'; abbr = 'CF' }
+        else if (p.platform === 'gfg') { label = 'GeeksforGeeks'; color = '#2E8B57'; abbr = 'GFG' }
+
+        return {
+            key: p.platform,
+            label, color, abbr,
+            username: p.username,
         problems: p.totalSolved,
         easySolved: p.easySolved,
         mediumSolved: p.mediumSolved,
@@ -285,7 +289,8 @@ export default function ProfilePage() {
         currentStreak: p.currentStreak,
         updatedAt: p.updatedAt,
         hasData: p.totalSolved > 0,
-    }))
+        }
+    })
 
     const displayName = userName || email.split('@')[0]
     const avatarInitial = (displayName || '?')[0].toUpperCase()

@@ -210,6 +210,7 @@ export async function verifyStart(platform, handle) {
                 problemName: r.data.problemName,
                 problemUrl:  r.data.problemUrl,
                 startTime:   r.data.startTime,
+                autoVerify:  r.data.autoVerify,
             },
         }
     }
