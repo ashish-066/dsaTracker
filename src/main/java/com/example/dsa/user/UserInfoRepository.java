@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email);
 
+    Optional<UserInfo> findByGoogleSubject(String googleSubject);
+
     /** Lookup by public @handle (lowercase stored). */
     Optional<UserInfo> findByUsername(String username);
 

@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage'
 import ChallengePage from './pages/ChallengePage'
 import ContestPage from './pages/ContestPage'
 import CommunityPage from './pages/CommunityPage'
+import UsernameSetupPage from './pages/UsernameSetupPage'
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/choose-username" element={<UsernameSetupPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 {/* /problems and /recommendations both point to the unified Practice page */}

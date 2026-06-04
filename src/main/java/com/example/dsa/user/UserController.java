@@ -25,14 +25,17 @@ public class UserController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationService emailVerificationService;
+    private final GoogleAuthService googleAuthService;
 
     public UserController(UserInfoService service, JwtService jwtService,
             AuthenticationManager authenticationManager,
-            EmailVerificationService emailVerificationService) {
+            EmailVerificationService emailVerificationService,
+            GoogleAuthService googleAuthService) {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.emailVerificationService = emailVerificationService;
+        this.googleAuthService = googleAuthService;
     }
 
     /* ───────────── Auth-cookie helpers ─────────────
@@ -204,6 +207,25 @@ public class UserController {
         Map<String, Object> resp = new HashMap<>();
         resp.put("ok", true);
         resp.put("email", authRequest.getUsername());
+        return ResponseEntity.ok(resp);
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> authenticateWithGoogle(@RequestBody Map<String, String> body,
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) {
+        GoogleAuthService.GoogleProfile profile = googleAuthService.verify(body.get("credential"));
+        UserInfo user = service.upsertGoogleUser(profile);
+        String token = jwtService.generateToken(user.getEmail());
+        setAuthCookie(request, response, token);
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("ok", true);
+        resp.put("email", user.getEmail());
+        resp.put("name", user.getName() != null ? user.getName() : "");
+        resp.put("username", user.getUsername());
+        resp.put("profilePic", user.getProfilePic());
+        resp.put("requiresUsername", user.getUsername() == null || user.getUsername().isBlank());
         return ResponseEntity.ok(resp);
     }
 

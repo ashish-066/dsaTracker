@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
-import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class UserInfoService implements org.springframework.security.core.userdetails.UserDetailsService {
@@ -44,6 +44,31 @@ public class UserInfoService implements org.springframework.security.core.userde
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User added successfully!";
+    }
+
+    public UserInfo upsertGoogleUser(GoogleAuthService.GoogleProfile profile) {
+        UserInfo user = repository.findByGoogleSubject(profile.subject())
+                .or(() -> repository.findByEmail(profile.email()))
+                .orElseGet(UserInfo::new);
+
+        user.setGoogleSubject(profile.subject());
+        user.setEmail(profile.email());
+        if (profile.name() != null && !profile.name().isBlank()) {
+            user.setName(profile.name().trim());
+        } else if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(profile.email());
+        }
+        if ((user.getProfilePic() == null || user.getProfilePic().isBlank())
+                && profile.picture() != null && !profile.picture().isBlank()) {
+            user.setProfilePic(profile.picture());
+        }
+        if (user.getRoles() == null || user.getRoles().isBlank()) {
+            user.setRoles("ROLE_USER");
+        }
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            user.setPassword(encoder.encode("google-oauth:" + UUID.randomUUID()));
+        }
+        return repository.save(user);
     }
 
     /** Returns the UserInfo for a given email, wrapped in Optional. */
