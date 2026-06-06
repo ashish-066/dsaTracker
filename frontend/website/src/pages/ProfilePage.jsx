@@ -349,7 +349,7 @@ export default function ProfilePage() {
                                     style={{
                                         position: 'absolute', top: -4, right: -4,
                                         width: 20, height: 20, borderRadius: '50%',
-                                        background: '#EF4444', border: '2px solid #0B0F1A',
+                                        background: '#EF4444', border: '2px solid var(--badge-ring)',
                                         color: '#fff', fontSize: 10, fontWeight: 800,
                                         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         lineHeight: 1, padding: 0,

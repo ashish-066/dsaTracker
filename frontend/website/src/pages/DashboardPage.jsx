@@ -1,21 +1,43 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-    BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell,
-    RadarChart, PolarGrid, PolarAngleAxis, Radar,
-    ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer,
+    Area,
+    AreaChart,
+    Bar,
+    BarChart,
+    Cell,
+    Pie,
+    PieChart,
+    PolarAngleAxis,
+    PolarGrid,
+    Radar,
+    RadarChart,
+    ReferenceLine,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis, YAxis,
 } from 'recharts'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
 import * as api from '../services/api'
+import { useTour } from '../tour/TourContext'
 import {
-    computeTopicStats, detectWeakTopics, computeSkillRadar,
-    computeEfficiency, computeConsistency, computeWeeklyGrowth,
-    computeDailyTrend, computeContestReadiness,
-    computeRecommendations, computePrediction, computePerformanceScore,
-    computeDifficultyPace, computeMomentum,
+    computeConsistency,
+    computeContestReadiness,
+    computeDailyTrend,
+    computeDifficultyPace,
+    computeEfficiency,
+    computeMomentum,
+    computePerformanceScore,
+    computePrediction,
+    computeRecommendations,
+    computeSkillRadar,
+    computeTopicStats,
+    computeWeeklyGrowth,
+    detectWeakTopics,
     scoreLabel,
 } from '../utils/analytics'
+import { CARD, CHART_TOOLTIP, HEATMAP_COLORS, PROGRESS_TRACK } from '../utils/themeStyles'
 
 /* ─────────────────────────────── helpers ─────────────────────────────── */
 function buildHeatmap(calMap) {
@@ -41,36 +63,26 @@ function buildHeatmap(calMap) {
 /* ── tooltip ── */
 const TT = ({ active, payload, label }) =>
     active && payload?.length ? (
-        <div style={{ background: 'rgba(8,12,30,.98)', border: '1px solid rgba(229,166,83,.3)', borderRadius: 10, padding: '9px 14px', backdropFilter: 'blur(16px)', boxShadow: '0 8px 32px rgba(0,0,0,.4)' }}>
-            <div style={{ fontSize: 10, color: '#64748B', marginBottom: 3 }}>{label}</div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: '#F1F5F9' }}>
+        <div style={CHART_TOOLTIP}>
+            <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 3 }}>{label}</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--text-primary)' }}>
                 {payload[0].value}
-                <span style={{ fontSize: 10, color: '#64748B', marginLeft: 5, fontWeight: 500 }}>{payload[0].name}</span>
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', marginLeft: 5, fontWeight: 500 }}>{payload[0].name}</span>
             </div>
         </div>
     ) : null
 
-/* ── shared card style ── */
-const CARD = {
-    background: 'rgba(255,255,255,0.026)',
-    backdropFilter: 'blur(24px)',
-    border: '1px solid rgba(255,255,255,0.068)',
-    boxShadow: '0 4px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04)',
-    borderRadius: 18,
-    padding: 22,
-}
-
-const HM_COLORS = ['rgba(255,255,255,0.04)', 'rgba(229,166,83,0.22)', 'rgba(229,166,83,0.48)', 'rgba(229,166,83,0.76)', '#E5A653']
-const P_COLOR = { high: '#EF4444', medium: '#F59E0B', low: '#22C55E' }
+const HM_COLORS = HEATMAP_COLORS
+const P_COLOR = { high: 'var(--difficulty-hard)', medium: 'var(--difficulty-medium)', low: 'var(--difficulty-easy)' }
 const PMETA = {
-    leetcode: { label: 'LeetCode', color: '#FFA116', icon: '🟡' },
-    codeforces: { label: 'Codeforces', color: '#1890FF', icon: '🔵' },
+    leetcode: { label: 'LeetCode', color: 'var(--platform-leetcode)', icon: '🟡' },
+    codeforces: { label: 'Codeforces', color: 'var(--platform-codeforces)', icon: '🔵' },
 }
 
 /* ── reusable UI components ── */
 function Section({ title, sub, right, accent, children }) {
     return (
-        <div style={{ ...CARD, borderColor: accent ? `${accent}22` : 'rgba(255,255,255,0.068)' }}>
+        <div style={{ ...CARD, borderColor: accent ? `${accent}22` : 'var(--card-border)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
                 <div>
                     <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>{title}</div>
@@ -97,7 +109,7 @@ function Ring({ value, max = 100, size = 120, stroke = 9, color = '#E5A653', sub
     return (
         <div style={{ position: 'relative', width: size, height: size, flexShrink: 0 }}>
             <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-                <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth={stroke} />
+                <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--xp-track-bg)" strokeWidth={stroke} />
                 <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round"
                     strokeDasharray={circ}
                     strokeDashoffset={circ * (1 - value / max)}
@@ -122,7 +134,7 @@ function StatRow({ label, value, color }) {
 
 function MiniBar({ pct, color }) {
     return (
-        <div style={{ height: 4, background: 'rgba(255,255,255,.05)', borderRadius: 4, overflow: 'hidden', marginTop: 8 }}>
+        <div style={{ height: 4, ...PROGRESS_TRACK, borderRadius: 4, marginTop: 8 }}>
             <div style={{ height: '100%', width: `${Math.min(pct, 100)}%`, background: color, borderRadius: 4, transition: 'width 1.3s cubic-bezier(.4,0,.2,1)', boxShadow: `0 0 8px ${color}55` }} />
         </div>
     )
@@ -146,6 +158,7 @@ export default function DashboardPage() {
     const [dash, setDash] = useState(null)
     // Start loading=false when the cache already has a dashboard entry —
     // we can hydrate from localStorage in the first paint and skip the spinner.
+      const { isTourActive, startTour, tourCompleted } = useTour()
     const [loading, setLoading] = useState(() => api.getCacheTimestamp('dashboard') == null)
     const [syncing, setSyncing] = useState(false)
     const [error, setError] = useState(null)
@@ -161,6 +174,19 @@ export default function DashboardPage() {
         // Sync, which is the explicit contract we want.
         load({ force: false })
     }, [])
+
+    useEffect(() => {
+        // Only auto-start for first-time users
+        if (!tourCompleted && !isTourActive) {
+            // Wait for page to fully render before starting tour
+            const timer = setTimeout(() => {
+                startTour()
+            }, 800) // 800ms delay allows all components to load
+ 
+            // Cleanup timer if component unmounts
+            return () => clearTimeout(timer)
+        }
+    }, [tourCompleted, isTourActive, startTour])
 
     /**
      * Load dashboard data.
@@ -284,8 +310,33 @@ export default function DashboardPage() {
     if (!loading && linked.length === 0) return (
         <div className="app-shell">
             <Sidebar />
+              <button
+                  onClick={startTour}
+                  style={{
+                      position: 'fixed',
+                      bottom: 20,
+                      right: 20,
+                      width: 56,
+                      height: 56,
+                      borderRadius: '50%',
+                      background: 'var(--primary-color)',
+                      color: 'white',
+                      border: 'none',
+                      fontSize: 24,
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      zIndex: 100,
+                  }}
+                  title="Retake the tour"
+              >
+                  🎯
+                  </button>
             <div className="main-content">
                 <Topbar title="Dashboard" subtitle={today} />
+                
                 <main className="page-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <div style={{ textAlign: 'center', maxWidth: 460, padding: 48, background: 'linear-gradient(135deg,rgba(229,166,83,.1),rgba(159,143,227,.04))', border: '1px solid rgba(229,166,83,.2)', borderRadius: 24 }}>
                         <div style={{ fontSize: 60, marginBottom: 16 }}>🚀</div>
@@ -293,7 +344,7 @@ export default function DashboardPage() {
                         <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, marginBottom: 24 }}>Link your coding platforms to unlock your performance intelligence dashboard.</p>
                         <button
                             onClick={() => navigate('/onboarding')}
-                            style={{ display: 'inline-block', background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', padding: '12px 28px', borderRadius: 12, fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 15 }}
+                            style={{ display: 'inline-block', background: 'linear-gradient(135deg,var(--amber),var(--lavender))', color: '#fff', padding: '12px 28px', borderRadius: 12, fontWeight: 700, border: 'none', cursor: 'pointer', fontSize: 15 }}
                         >
                             Get Started →
                         </button>
@@ -304,7 +355,7 @@ export default function DashboardPage() {
     )
 
     return (
-        <div className="app-shell" style={{ background: 'linear-gradient(140deg, #0B0F1A 0%, #121727 50%, #0B0F1A 100%)' }}>
+        <div className="app-shell">
             <div style={{ position: 'fixed', top: -220, right: -180, width: 560, height: 560, background: `radial-gradient(circle, ${rankColor}0d, transparent 65%)`, borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
             <div style={{ position: 'fixed', bottom: -180, left: -60, width: 480, height: 480, background: 'radial-gradient(circle, rgba(229,166,83,0.06), transparent 65%)', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
 
@@ -342,7 +393,7 @@ export default function DashboardPage() {
                                         </div>
                                         <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 14px' }}>
                                             {consistency.currentStreak > 0
-                                                ? <><strong style={{ color: '#F59E0B' }}>{consistency.currentStreak}-day streak</strong> 🔥 · Best: <strong style={{ color: '#9F8FE3' }}>{consistency.longestStreak}d</strong> · {totalSolved} problems solved</>
+                                                ? <><strong style={{ color: 'var(--streak-high)' }}>{consistency.currentStreak}-day streak</strong> 🔥 · Best: <strong style={{ color: 'var(--lavender)' }}>{consistency.longestStreak}d</strong> · {totalSolved} problems solved</>
                                                 : `${totalSolved} problems solved. ${recommendation[0]?.action || 'Keep grinding!'}`}
                                         </p>
                                         {/* rank progress bar */}
@@ -357,7 +408,7 @@ export default function DashboardPage() {
                                                         <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>Progress to <span style={{ color: tier.c, fontWeight: 700 }}>{tier.next}</span></span>
                                                         <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{perfScore}/{tier.max}</span>
                                                     </div>
-                                                    <div style={{ height: 5, background: 'rgba(255,255,255,.06)', borderRadius: 6, overflow: 'hidden', maxWidth: 320 }}>
+                                                    <div style={{ height: 5, background: 'var(--xp-track-bg)', borderRadius: 6, overflow: 'hidden', maxWidth: 320 }}>
                                                         <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg,${rankColor},${tier.c})`, borderRadius: 6, transition: 'width 1.3s ease', boxShadow: `0 0 10px ${tier.c}50` }} />
                                                     </div>
                                                 </div>
@@ -385,11 +436,11 @@ export default function DashboardPage() {
                             {/* ══ KPI CARDS ══ */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 13 }}>
                                 {[
-                                    { icon: '✅', val: totalSolved, lbl: 'Total Solved', sub: `${easySolved}E · ${mediumSolved}M · ${hardSolved}H`, color: '#E5A653', pct: Math.min((totalSolved / 300) * 100, 100), trend: momentum.delta },
-                                    { icon: '🎯', val: `${accRate}%`, lbl: 'Acceptance Rate', sub: `${accepted} accepted of ${subs.length} recent`, color: '#22C55E', pct: accRate },
+                                    { icon: '✅', val: totalSolved, lbl: 'Total Solved', sub: `${easySolved}E · ${mediumSolved}M · ${hardSolved}H`, color: 'var(--emphasis-color)', pct: Math.min((totalSolved / 300) * 100, 100), trend: momentum.delta },
+                                    { icon: '🎯', val: `${accRate}%`, lbl: 'Acceptance Rate', sub: `${accepted} accepted of ${subs.length} recent`, color: 'var(--difficulty-easy)', pct: accRate },
                                     { icon: '⚡', val: efficiency.score, lbl: 'Efficiency Score', sub: `${efficiency.firstAttemptRate}% first-try (${efficiency.sampleSize} recent)`, color: '#38BDF8', pct: efficiency.score },
-                                    { icon: '📅', val: consistency.score, lbl: 'Consistency', sub: `${consistency.activeDays} active / last 30 days`, color: '#9F8FE3', pct: consistency.score },
-                                    { icon: '📈', val: avgPerWeek, lbl: 'Avg / Week', sub: `Best: ${bestWeek} · This week: ${momentum.thisWeek}`, color: '#F59E0B', pct: bestWeek ? (momentum.thisWeek / bestWeek) * 100 : 0, trend: momentum.delta },
+                                    { icon: '📅', val: consistency.score, lbl: 'Consistency', sub: `${consistency.activeDays} active / last 30 days`, color: 'var(--lavender)', pct: consistency.score },
+                                    { icon: '📈', val: avgPerWeek, lbl: 'Avg / Week', sub: `Best: ${bestWeek} · This week: ${momentum.thisWeek}`, color: 'var(--difficulty-medium)', pct: bestWeek ? (momentum.thisWeek / bestWeek) * 100 : 0, trend: momentum.delta },
                                 ].map((s, i) => (
                                     <div key={i}
                                         style={{ ...CARD, padding: '18px 18px 16px', cursor: 'default', border: `1px solid ${s.color}1f`, transition: 'all .25s', position: 'relative', overflow: 'hidden' }}
@@ -415,9 +466,9 @@ export default function DashboardPage() {
                                     { d: 'Medium', c: '#F59E0B', perWeek: pace.medPerWeek, pct: pace.medPct, icon: '🟡', hint: 'problems solved per active week' },
                                     { d: 'Hard', c: '#EF4444', perWeek: pace.hardPerWeek, pct: pace.hardPct, icon: '🔴', hint: 'problems solved per active week' },
                                 ].map(({ d, c, perWeek, pct, icon, hint }) => {
-                                    const quality = d === 'Hard' && perWeek >= 1 ? { label: 'Strong', color: '#22C55E' }
-                                        : d === 'Medium' && perWeek >= 2 ? { label: 'On track', color: '#22C55E' }
-                                            : perWeek === 0 ? { label: 'None', color: '#64748B' }
+                                    const quality = d === 'Hard' && perWeek >= 1 ? { label: 'Strong', color: 'var(--difficulty-easy)' }
+                                        : d === 'Medium' && perWeek >= 2 ? { label: 'On track', color: 'var(--difficulty-easy)' }
+                                            : perWeek === 0 ? { label: 'None', color: 'var(--text-muted)' }
                                                 : null
                                     return (
                                         <div key={d} style={{ ...CARD, padding: '16px 20px', border: `1px solid ${c}1f` }}>
@@ -450,11 +501,11 @@ export default function DashboardPage() {
                                             <div key={i} style={{ background: 'rgba(239,68,68,.05)', border: '1px solid rgba(239,68,68,.16)', borderRadius: 14, padding: 18 }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                                        <div style={{ width: 22, height: 22, borderRadius: 6, background: 'rgba(239,68,68,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: '#EF4444' }}>#{i + 1}</div>
+                                                        <div style={{ width: 22, height: 22, borderRadius: 6, background: 'rgba(239,68,68,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'var(--difficulty-hard)' }}>#{i + 1}</div>
                                                         <span style={{ fontSize: 13, fontWeight: 700 }}>{t.topic}</span>
                                                         {t.isHighPriority && <Pill label="Core" color="#F59E0B" size={9} />}
                                                     </div>
-                                                    <span style={{ fontSize: 18, fontWeight: 900, color: '#EF4444' }}>{t.count}</span>
+                                                    <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--difficulty-hard)' }}>{t.count}</span>
                                                 </div>
                                                 {/* Why it's flagged */}
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginBottom: 10 }}>
@@ -470,8 +521,8 @@ export default function DashboardPage() {
                                                         <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{t.count} solved</span>
                                                         <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>target: {t.target}</span>
                                                     </div>
-                                                    <div style={{ height: 4, background: 'rgba(255,255,255,.05)', borderRadius: 4, overflow: 'hidden' }}>
-                                                        <div style={{ height: '100%', width: `${Math.min((t.count / t.target) * 100, 100)}%`, background: '#EF4444', borderRadius: 4, transition: 'width 1.2s ease' }} />
+                                                    <div style={{ height: 4, background: 'var(--xp-track-bg)', borderRadius: 4, overflow: 'hidden' }}>
+                                                        <div style={{ height: '100%', width: `${Math.min((t.count / t.target) * 100, 100)}%`, background: 'var(--difficulty-hard)', borderRadius: 4, transition: 'width 1.2s ease' }} />
                                                     </div>
                                                 </div>
                                                 <div style={{ fontSize: 11, color: '#F87171', fontWeight: 600 }}>
@@ -674,15 +725,15 @@ export default function DashboardPage() {
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                                         <div style={{ background: 'rgba(34,197,94,.05)', border: '1px solid rgba(34,197,94,.14)', borderRadius: 12, padding: 14 }}>
-                                            <div style={{ fontSize: 12, fontWeight: 700, color: '#22C55E', marginBottom: 10 }}>✓ Strengths</div>
+                                            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--difficulty-easy)', marginBottom: 10 }}>✓ Strengths</div>
                                             {contest.strengths.length
-                                                ? contest.strengths.map((s, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6, display: 'flex', gap: 8 }}><span style={{ color: '#22C55E', flexShrink: 0 }}>•</span>{s}</div>)
+                                                ? contest.strengths.map((s, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6, display: 'flex', gap: 8 }}><span style={{ color: 'var(--difficulty-easy)', flexShrink: 0 }}>•</span>{s}</div>)
                                                 : <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Keep solving to build strengths</div>}
                                         </div>
                                         <div style={{ background: 'rgba(239,68,68,.05)', border: '1px solid rgba(239,68,68,.14)', borderRadius: 12, padding: 14 }}>
-                                            <div style={{ fontSize: 12, fontWeight: 700, color: '#EF4444', marginBottom: 10 }}>✗ To Improve</div>
+                                            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--difficulty-hard)', marginBottom: 10 }}>✗ To Improve</div>
                                             {contest.weaknesses.length
-                                                ? contest.weaknesses.map((w, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6, display: 'flex', gap: 8 }}><span style={{ color: '#EF4444', flexShrink: 0 }}>•</span>{w}</div>)
+                                                ? contest.weaknesses.map((w, i) => <div key={i} style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6, display: 'flex', gap: 8 }}><span style={{ color: 'var(--difficulty-hard)', flexShrink: 0 }}>•</span>{w}</div>)
                                                 : <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>No major gaps found!</div>}
                                         </div>
                                     </div>
@@ -703,9 +754,9 @@ export default function DashboardPage() {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Milestone Projections</div>
                                     {prediction.milestones.map((m, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '10px 14px', background: m.reached ? 'rgba(34,197,94,.06)' : 'rgba(255,255,255,.02)', border: `1px solid ${m.reached ? 'rgba(34,197,94,.18)' : 'rgba(255,255,255,.05)'}`, borderRadius: 10 }}>
+                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '10px 14px', background: m.reached ? 'rgba(34,197,94,.06)' : 'var(--surface-glass)', border: `1px solid ${m.reached ? 'rgba(34,197,94,.18)' : 'var(--xp-track-bg)'}`, borderRadius: 10 }}>
                                             <div style={{ fontSize: 11, fontWeight: 700, color: m.reached ? '#22C55E' : 'var(--text-muted)', width: 50 }}>{m.target}</div>
-                                            <div style={{ flex: 1, height: 5, background: 'rgba(255,255,255,.05)', borderRadius: 5, overflow: 'hidden' }}>
+                                            <div style={{ flex: 1, height: 5, background: 'var(--xp-track-bg)', borderRadius: 5, overflow: 'hidden' }}>
                                                 <div style={{ height: '100%', width: `${Math.min((totalSolved / m.target) * 100, 100)}%`, background: m.reached ? '#22C55E' : 'linear-gradient(90deg,#E5A653,#9F8FE3)', borderRadius: 5, transition: 'width 1.3s ease', boxShadow: m.reached ? '0 0 6px #22C55E60' : undefined }} />
                                             </div>
                                             <div style={{ fontSize: 11, color: m.reached ? '#22C55E' : 'var(--text-muted)', width: 100, textAlign: 'right' }}>
@@ -720,7 +771,7 @@ export default function DashboardPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                                 <Section title="Platform Breakdown" sub="Per-platform difficulty distribution">
                                     {linked.map(lp => {
-                                        const m = PMETA[lp.platform] || { label: lp.platform, color: '#E5A653', icon: '🔷' }
+                                        const m = PMETA[lp.platform] || { label: lp.platform, color: 'var(--emphasis-color)', icon: '🔷' }
                                         const ps = platforms.find(p => p.platform === lp.platform) || {}
                                         const sv = ps.totalSolved || 0
                                         const e = ps.easySolved || 0
@@ -748,7 +799,7 @@ export default function DashboardPage() {
                                                             <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{l}</span>
                                                             <span style={{ fontSize: 10, fontWeight: 700, color: c }}>{v} ({tot ? Math.round(v / tot * 100) : 0}%)</span>
                                                         </div>
-                                                        <div style={{ height: 5, background: 'rgba(255,255,255,.04)', borderRadius: 6, overflow: 'hidden' }}>
+                                                        <div style={{ height: 5, background: 'var(--xp-track-bg)', borderRadius: 6, overflow: 'hidden' }}>
                                                             <div style={{ height: '100%', width: `${(v / tot) * 100}%`, background: c, borderRadius: 6, transition: 'width 1.3s ease' }} />
                                                         </div>
                                                     </div>
@@ -789,14 +840,14 @@ export default function DashboardPage() {
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                                             <div style={{ width: 6, height: 6, borderRadius: '50%', background: rank.c, boxShadow: `0 0 5px ${rank.c}` }} />
                                                             <span style={{ fontSize: 12, fontWeight: 600 }}>{t.topic}</span>
-                                                            {t.isHighPriority && <span style={{ fontSize: 9, color: '#F59E0B', fontWeight: 700 }}>★</span>}
+                                                            {t.isHighPriority && <span style={{ fontSize: 9, color: 'var(--difficulty-medium)', fontWeight: 700 }}>★</span>}
                                                         </div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                                             <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>{t.count} solved</span>
                                                             <Pill label={rank.label} color={rank.c} size={9} />
                                                         </div>
                                                     </div>
-                                                    <div style={{ height: 5, background: 'rgba(255,255,255,.04)', borderRadius: 8, overflow: 'hidden' }}>
+                                                    <div style={{ height: 5, background: 'var(--xp-track-bg)', borderRadius: 8, overflow: 'hidden' }}>
                                                         <div style={{ height: '100%', width: `${Math.min(pct, 100)}%`, background: `linear-gradient(90deg,${rank.c},${rank.c}80)`, borderRadius: 8, transition: 'width 1.3s ease', boxShadow: `0 0 6px ${rank.c}40` }} />
                                                     </div>
                                                 </div>
@@ -850,9 +901,9 @@ export default function DashboardPage() {
                                     sub="Recent submissions — status from LeetCode API (titleSlug + status)"
                                     right={
                                         <div style={{ display: 'flex', gap: 8 }}>
-                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(34,197,94,.1)', color: '#22C55E', fontSize: 11, fontWeight: 700 }}>{accepted} AC</span>
-                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(239,68,68,.1)', color: '#EF4444', fontSize: 11, fontWeight: 700 }}>{subs.length - accepted} non-AC</span>
-                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(229,166,83,.1)', color: '#E5A653', fontSize: 11, fontWeight: 700 }}>{accRate}%</span>
+                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(34,197,94,.1)', color: 'var(--difficulty-easy)', fontSize: 11, fontWeight: 700 }}>{accepted} AC</span>
+                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(239,68,68,.1)', color: 'var(--difficulty-hard)', fontSize: 11, fontWeight: 700 }}>{subs.length - accepted} non-AC</span>
+                                            <span style={{ padding: '4px 10px', borderRadius: 8, background: 'rgba(229,166,83,.1)', color: 'var(--emphasis-color)', fontSize: 11, fontWeight: 700 }}>{accRate}%</span>
                                         </div>
                                     }>
                                     <div style={{ position: 'relative', paddingLeft: 20 }}>
@@ -869,9 +920,9 @@ export default function DashboardPage() {
                                                     <div key={i} style={{ position: 'relative', marginBottom: 10, paddingLeft: 14 }}>
                                                         <div style={{ position: 'absolute', left: -13, top: 11, width: 9, height: 9, borderRadius: '50%', background: ok ? '#22C55E' : '#EF4444', border: '2px solid rgba(10,15,38,.9)', boxShadow: `0 0 6px ${ok ? '#22C55E' : '#EF4444'}55` }} />
                                                         <div
-                                                            style={{ background: 'rgba(255,255,255,0.022)', border: `1px solid ${ok ? 'rgba(34,197,94,.13)' : 'rgba(239,68,68,.1)'}`, borderRadius: 11, padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all .2s', cursor: 'default' }}
-                                                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.transform = 'translateX(3px)' }}
-                                                            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.022)'; e.currentTarget.style.transform = 'translateX(0)' }}>
+                                                            style={{ background: 'var(--surface-glass)', border: `1px solid ${ok ? 'rgba(34,197,94,.13)' : 'rgba(239,68,68,.1)'}`, borderRadius: 11, padding: '10px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all .2s', cursor: 'default' }}
+                                                            onMouseEnter={e => { e.currentTarget.style.background = 'var(--xp-track-bg)'; e.currentTarget.style.transform = 'translateX(3px)' }}
+                                                            onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-glass)'; e.currentTarget.style.transform = 'translateX(0)' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                                                                 <div style={{ width: 28, height: 28, borderRadius: 7, background: ok ? 'rgba(34,197,94,.13)' : 'rgba(239,68,68,.13)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 900, color: ok ? '#22C55E' : '#EF4444', flexShrink: 0 }}>
                                                                     {ok ? '✓' : '✗'}
@@ -909,21 +960,21 @@ export default function DashboardPage() {
                                 })()}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
                                     {[
-                                        { title: 'First Blood', desc: 'Solve 1 problem', cur: totalSolved, tgt: 1, icon: '🩸', color: '#EF4444' },
-                                        { title: 'Warm Up', desc: 'Solve 10 problems', cur: totalSolved, tgt: 10, icon: '🔥', color: '#F59E0B' },
-                                        { title: 'Half Century', desc: 'Solve 50 problems', cur: totalSolved, tgt: 50, icon: '🌟', color: '#9F8FE3' },
+                                        { title: 'First Blood', desc: 'Solve 1 problem', cur: totalSolved, tgt: 1, icon: '🩸', color: 'var(--difficulty-hard)' },
+                                        { title: 'Warm Up', desc: 'Solve 10 problems', cur: totalSolved, tgt: 10, icon: '🔥', color: 'var(--difficulty-medium)' },
+                                        { title: 'Half Century', desc: 'Solve 50 problems', cur: totalSolved, tgt: 50, icon: '🌟', color: 'var(--lavender)' },
                                         { title: 'Century', desc: 'Solve 100 problems', cur: totalSolved, tgt: 100, icon: '👑', color: '#38BDF8' },
-                                        { title: 'Grinder', desc: 'Solve 200 problems', cur: totalSolved, tgt: 200, icon: '⚡', color: '#E5A653' },
-                                        { title: 'Streak Master', desc: '14-day streak', cur: consistency.longestStreak, tgt: 14, icon: '🔥', color: '#10B981' },
-                                        { title: 'Efficiency Pro', desc: 'Efficiency ≥ 70', cur: efficiency.score, tgt: 70, icon: '🎯', color: '#F59E0B' },
-                                        { title: 'Contest Ready', desc: 'Contest score ≥ 60', cur: contest.score, tgt: 60, icon: '🏆', color: '#22C55E' },
+                                        { title: 'Grinder', desc: 'Solve 200 problems', cur: totalSolved, tgt: 200, icon: '⚡', color: 'var(--emphasis-color)' },
+                                        { title: 'Streak Master', desc: '14-day streak', cur: consistency.longestStreak, tgt: 14, icon: '🔥', color: 'var(--difficulty-easy)' },
+                                        { title: 'Efficiency Pro', desc: 'Efficiency ≥ 70', cur: efficiency.score, tgt: 70, icon: '🎯', color: 'var(--difficulty-medium)' },
+                                        { title: 'Contest Ready', desc: 'Contest score ≥ 60', cur: contest.score, tgt: 60, icon: '🏆', color: 'var(--difficulty-easy)' },
                                         { title: 'Topic Explorer', desc: '8+ topics practised', cur: topicStats.length, tgt: 8, icon: '🗺️', color: '#E879F9' },
                                     ].map((m, i) => {
                                         const pct = Math.min((m.cur / m.tgt) * 100, 100)
                                         const done = pct >= 100
                                         return (
                                             <div key={i}
-                                                style={{ padding: '14px 15px', background: done ? `${m.color}0e` : 'rgba(255,255,255,.018)', border: `1px solid ${done ? m.color + '35' : 'rgba(255,255,255,.04)'}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 13, opacity: done ? 1 : 0.62, transition: 'all .2s', cursor: 'default' }}
+                                                style={{ padding: '14px 15px', background: done ? `${m.color}0e` : 'var(--surface-glass)', border: `1px solid ${done ? m.color + '35' : 'var(--xp-track-bg)'}`, borderRadius: 14, display: 'flex', alignItems: 'center', gap: 13, opacity: done ? 1 : 0.62, transition: 'all .2s', cursor: 'default' }}
                                                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.opacity = '1' }}
                                                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.opacity = done ? '1' : '0.62' }}>
                                                 <div style={{ fontSize: 22, filter: done ? 'none' : 'grayscale(1) opacity(.4)', flexShrink: 0 }}>{m.icon}</div>
@@ -933,7 +984,7 @@ export default function DashboardPage() {
                                                         <span style={{ fontSize: 9, color: 'var(--text-muted)' }}>{Math.min(m.cur, m.tgt)}/{m.tgt}</span>
                                                     </div>
                                                     <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 6 }}>{m.desc}</div>
-                                                    <div style={{ height: 3, background: 'rgba(255,255,255,.05)', borderRadius: 5, overflow: 'hidden' }}>
+                                                    <div style={{ height: 3, background: 'var(--xp-track-bg)', borderRadius: 5, overflow: 'hidden' }}>
                                                         <div style={{ height: '100%', width: `${pct}%`, background: done ? m.color : `${m.color}60`, borderRadius: 5, transition: 'width 1.3s ease', boxShadow: done ? `0 0 6px ${m.color}60` : undefined }} />
                                                     </div>
                                                 </div>

@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router-dom'
-import { useEffect, useRef, useState } from 'react'
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from 'react';
 import toast from "react-hot-toast";
-import Navbar from '../components/Navbar';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 /*
  * Landing page — "midnight library" studygram.
@@ -1191,11 +1190,11 @@ const ML_CSS = `
     -webkit-backdrop-filter: blur(22px);
     border: 1px solid var(--edge);
     border-radius: 18px;
-    box-shadow: 0 14px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(237,228,206,0.04);
-    transition: box-shadow 0.3s, border-color 0.3s;
+    box-shadow: none;
+    transition: border-color 0.3s;
 }
 .ml-nav-scrolled {
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(237,228,206,0.05);
+    box-shadow: none;
     border-color: rgba(229,166,83,0.35);
 }
 .ml-logo { display: flex; align-items: center; gap: 10px; }
@@ -1650,7 +1649,7 @@ const ML_CSS = `
     overflow: hidden;
     box-shadow:
         0 40px 90px rgba(0,0,0,0.6),
-        0 0 0 1px rgba(255,255,255,0.02) inset,
+        0 0 0 1px var(--surface-inset) inset,
         0 0 80px rgba(229,166,83,0.08);
     backdrop-filter: blur(8px);
 }
@@ -1729,8 +1728,8 @@ const ML_CSS = `
     background:
         repeating-linear-gradient(
             180deg,
-            rgba(255,255,255,0.008) 0,
-            rgba(255,255,255,0.008) 22px,
+            var(--surface-border-subtle) 0,
+            var(--surface-border-subtle) 22px,
             transparent 22px,
             transparent 44px
         ),
@@ -1898,7 +1897,7 @@ const ML_CSS = `
     position: absolute;
     top: 6px; left: 20%; width: 28%; height: 7px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.15);
+    background: var(--surface-glow);
     filter: blur(2.5px);
     z-index: 2;
 }
@@ -1992,7 +1991,7 @@ const ML_CSS = `
     border: 1px solid color-mix(in srgb, var(--s-accent) 55%, transparent);
     box-shadow:
         0 2px 6px rgba(0,0,0,0.45),
-        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 0 0 1px var(--surface-inset) inset,
         0 -1px 0 color-mix(in srgb, var(--s-accent) 22%, transparent) inset;
     transition:
         opacity 0.45s ease,
@@ -2007,7 +2006,7 @@ const ML_CSS = `
 .ml-fstack-items .ml-fstack-item:not([data-taken="true"]):first-of-type {
     box-shadow:
         0 2px 10px rgba(0,0,0,0.5),
-        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 0 0 1px var(--surface-inset) inset,
         0 0 18px color-mix(in srgb, var(--s-accent) 35%, transparent);
 }
 
@@ -2196,7 +2195,7 @@ const ML_CSS = `
     transform: translateX(-50%) rotate(-3deg);
     width: 82px; height: 20px;
     background-image: repeating-linear-gradient(
-        135deg, transparent 0 6px, rgba(255,255,255,0.12) 6px 12px
+        135deg, transparent 0 6px, var(--surface-border-subtle) 6px 12px
     );
     background-color: var(--tape);
     opacity: 0.38;
@@ -2634,4 +2633,322 @@ const ML_CSS = `
     .ml-eyebrow-dot { animation: none; }
     .ml-mock-bar-fill { animation: none; }
 }
-`
+
+/* ── Light theme adjustments ── */
+[data-theme="light"] .ml-grid-overlay {
+    background-image:
+        linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+}
+[data-theme="light"] .ml-vignette {
+    background: radial-gradient(ellipse at top, transparent 0%, transparent 50%, rgba(15, 23, 42, 0.06) 100%);
+}
+[data-theme="light"] .ml-orb-1 {
+    background: radial-gradient(circle, rgba(159, 143, 227, 0.14), transparent 70%);
+}
+[data-theme="light"] .ml-orb-2 {
+    background: radial-gradient(circle, rgba(229, 166, 83, 0.12), transparent 70%);
+}
+[data-theme="light"] .ml-orb-3 {
+    background: radial-gradient(circle, rgba(136, 192, 163, 0.1), transparent 70%);
+}
+[data-theme="light"] .ml-mock-window,
+[data-theme="light"] .ml-mock-card,
+[data-theme="light"] .ml-feature-card,
+[data-theme="light"] .ml-pricing-card {
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-stack-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.98));
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-stack-card[data-stack-in="true"] {
+    box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(15, 23, 42, 0.08) inset;
+}
+
+[data-theme="light"] .ml-stack-card .ml-fcard-desc {
+    color: var(--ink-mute);
+}
+
+[data-theme="light"] .ml-mock,
+[data-theme="light"] .ml-placement-card,
+[data-theme="light"] .ml-faq-open,
+[data-theme="light"] .ml-mock-card,
+[data-theme="light"] .ml-feature-card,
+[data-theme="light"] .ml-pricing-card {
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-mock {
+    box-shadow:
+        0 30px 80px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .ml-mock-header {
+    background: rgba(15, 23, 42, 0.05);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-term-window {
+    background: linear-gradient(180deg, rgba(248, 250, 252, 1), rgba(255, 255, 255, 1));
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 40px 90px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 0 80px rgba(229, 166, 83, 0.08);
+}
+
+[data-theme="light"] .ml-term-bar {
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.96));
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-term-body {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.94);
+}
+
+[data-theme="light"] .ml-term-run {
+    color: var(--amber);
+    background: rgba(229, 166, 83, 0.12);
+    border-color: rgba(229, 166, 83, 0.22);
+}
+
+[data-theme="light"] .ml-term-run-done {
+    color: var(--sage);
+    background: rgba(136, 192, 163, 0.14);
+    border-color: rgba(136, 192, 163, 0.28);
+}
+
+[data-theme="light"] .ml-faq-q {
+    background: rgba(15, 23, 42, 0.04);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-mock-stat {
+    background: var(--bg-soft);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-mock-bar-track {
+    background: rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="light"] .ml-brand {
+    background: var(--bg-soft);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-step,
+[data-theme="light"] .ml-pcard,
+[data-theme="light"] .ml-placement-card,
+[data-theme="light"] .ml-faq-open {
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-step:hover,
+[data-theme="light"] .ml-pcard:hover,
+[data-theme="light"] .ml-placement-card:hover {
+    box-shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .ml-faq-q {
+    background: rgba(15, 23, 42, 0.04);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-faq-q:hover {
+    background: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-mock,
+[data-theme="light"] .ml-stack-card,
+[data-theme="light"] .ml-mock-card,
+[data-theme="light"] .ml-feature-card,
+[data-theme="light"] .ml-pricing-card {
+    background: var(--bg-card);
+    border-color: var(--border-subtle);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-mock-header {
+    background: rgba(15, 23, 42, 0.05);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-term-window {
+    background: linear-gradient(180deg, rgba(248, 250, 252, 1), rgba(255, 255, 255, 1));
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 40px 90px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 0 80px rgba(229, 166, 83, 0.08);
+}
+
+[data-theme="light"] .ml-term-bar {
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.96));
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .ml-term-body {
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.94);
+}
+
+[data-theme="light"] .ml-term-run {
+    color: var(--amber);
+    background: rgba(229, 166, 83, 0.12);
+    border-color: rgba(229, 166, 83, 0.22);
+}
+
+[data-theme="light"] .ml-term-run-done {
+    color: var(--sage);
+    background: rgba(136, 192, 163, 0.14);
+    border-color: rgba(136, 192, 163, 0.28);
+}
+
+[data-theme="light"] .ml-fstack-body {
+    background: linear-gradient(
+        90deg,
+        rgba(248, 250, 252, 0.95) 0%,
+        rgba(241, 245, 249, 0.95) 100%
+    );
+    border-left-color: rgba(15, 23, 42, 0.12);
+    border-right-color: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .ml-fstack-mouth {
+    background: radial-gradient(
+        ellipse at 42% 35%,
+        rgba(229, 229, 229, 0.96) 0%,
+        rgba(241, 245, 249, 0.98) 65%
+    );
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 -6px 22px rgba(229, 166, 83, 0.12),
+        inset 0 5px 16px rgba(15, 23, 42, 0.08),
+        inset 0 -2px 8px rgba(229, 166, 83, 0.08);
+}
+
+[data-theme="light"] .ml-fstack-mouth-inner {
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(241, 245, 249, 0.95) 70%
+    );
+    box-shadow: inset 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .ml-fstack-item {
+    background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--s-accent) 32%, rgba(15, 23, 42, 0.12)) 0%,
+        color-mix(in srgb, var(--s-accent) 14%, rgba(15, 23, 42, 0.10)) 60%,
+        color-mix(in srgb, var(--s-accent) 32%, rgba(15, 23, 42, 0.12)) 100%
+    );
+    box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset,
+        0 -1px 0 color-mix(in srgb, var(--s-accent) 22%, transparent) inset;
+}
+
+[data-theme="light"] .ml-fstack-item-num {
+    background: rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-fstack-base {
+    background: linear-gradient(
+        180deg,
+        rgba(248, 250, 252, 0.95) 0%,
+        rgba(241, 245, 249, 0.95) 100%
+    );
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 14px 38px rgba(15, 23, 42, 0.12),
+        inset 0 -3px 10px rgba(15, 23, 42, 0.10);
+}
+
+[data-theme="light"] .ml-fstack-top-arrow,
+[data-theme="light"] .ml-fstack-top-arrow-tip {
+    color: var(--amber);
+    text-shadow: none;
+}
+
+[data-theme="light"] .ml-fstack-mouth {
+    background: radial-gradient(
+        ellipse at 42% 35%,
+        rgba(241, 245, 249, 0.96) 0%,
+        rgba(226, 232, 240, 0.98) 65%
+    );
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 -6px 22px rgba(229, 166, 83, 0.12),
+        inset 0 5px 16px rgba(15, 23, 42, 0.08),
+        inset 0 -2px 8px rgba(229, 166, 83, 0.08);
+}
+
+[data-theme="light"] .ml-fstack-mouth-inner {
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(241, 245, 249, 0.95) 70%
+    );
+    box-shadow: inset 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .ml-fstack-body {
+    background: linear-gradient(
+        90deg,
+        rgba(248, 250, 252, 0.95) 0%,
+        rgba(241, 245, 249, 0.95) 100%
+    );
+    border-left-color: rgba(15, 23, 42, 0.12);
+    border-right-color: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .ml-fstack-item {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.96) 0%,
+        rgba(241, 245, 249, 0.92) 40%,
+        rgba(255, 255, 255, 0.96) 100%
+    );
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow:
+        0 2px 6px rgba(15, 23, 42, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+}
+
+[data-theme="light"] .ml-fstack-item-num {
+    background: rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+}
+
+[data-theme="light"] .ml-fstack-base {
+    background: linear-gradient(
+        180deg,
+        rgba(248, 250, 252, 0.95) 0%,
+        rgba(241, 245, 249, 0.95) 100%
+    );
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow:
+        0 14px 38px rgba(15, 23, 42, 0.12),
+        inset 0 -3px 10px rgba(15, 23, 42, 0.10);
+}
+
+`;

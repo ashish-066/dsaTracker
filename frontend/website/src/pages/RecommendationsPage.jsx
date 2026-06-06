@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
 import * as api from '../services/api'
+import { CARD_COMPACT as CARD, PROGRESS_TRACK } from '../utils/themeStyles'
 
 const DIFF_COLOR = { Easy: '#22C55E', Medium: '#F59E0B', Hard: '#EF4444' }
 const PLAT_MAP = { leetcode: ['#FFA116', 'LeetCode'], codeforces: ['#1890FF', 'Codeforces'], geeksforgeeks: ['#308D46', 'GFG'] }
-
-const CARD = { background: 'rgba(255,255,255,0.025)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 22 }
 
 function DiffBadge({ d }) {
     const c = DIFF_COLOR[d] || '#94A3B8'
@@ -28,7 +27,7 @@ function SkillBar({ topic, pct, solved, target, color }) {
                 <span style={{ fontSize: 12, fontWeight: 600, textTransform: 'capitalize' }}>{topic}</span>
                 <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{solved}/{target} · {pct}%</span>
             </div>
-            <div style={{ height: 6, background: 'rgba(255,255,255,.05)', borderRadius: 10, overflow: 'hidden' }}>
+            <div style={{ height: 6, ...PROGRESS_TRACK }}>
                 <div style={{ height: '100%', width: `${pct}%`, background: pct < 30 ? '#EF4444' : pct < 60 ? '#F59E0B' : '#22C55E', borderRadius: 10, transition: 'width 1s ease', boxShadow: `0 0 6px ${pct < 30 ? '#EF444450' : pct < 60 ? '#F59E0B50' : '#22C55E50'}` }} />
             </div>
         </div>
@@ -68,7 +67,7 @@ export default function RecommendationsPage() {
     const rest = recs.slice(1)
 
     return (
-        <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
+        <div className="app-shell">
             <div style={{ position: 'fixed', top: -200, right: -200, width: 500, height: 500, background: 'radial-gradient(circle,rgba(229,166,83,.07),transparent 65%)', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
             <Sidebar />
             <div className="main-content" style={{ position: 'relative', zIndex: 1 }}>
@@ -100,7 +99,7 @@ export default function RecommendationsPage() {
                                     </div>
                                     <div style={{ fontSize: 11, color: '#9F8FE3', maxWidth: 280, textAlign: 'right' }}>{diff.nextMilestone}</div>
                                 </div>
-                                <div style={{ display: 'flex', gap: 24, marginTop: 14, paddingTop: 14, borderTop: '1px solid rgba(255,255,255,.06)' }}>
+                                <div style={{ display: 'flex', gap: 24, marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--surface-border-subtle)' }}>
                                     {[['Easy', diff.easyCount, '#22C55E'], ['Medium', diff.mediumCount, '#F59E0B'], ['Hard', diff.hardCount, '#EF4444']].map(([l, v, c]) => (
                                         <div key={l} style={{ textAlign: 'center' }}>
                                             <div style={{ fontSize: 20, fontWeight: 800, color: c }}>{v}</div>
@@ -114,9 +113,9 @@ export default function RecommendationsPage() {
                         {/* ── Tabs ── */}
                         <div style={{ display: 'flex', gap: 8, marginBottom: 22 }}>
                             {[['daily', '🎯 Daily Picks'], ['weak', '⚠️ Weak Topics'], ['skill', '📊 Skill Map']].map(([k, l]) => (
-                                <button key={k} onClick={() => setTab(k)} style={{ padding: '8px 16px', borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: 'pointer', border: '1px solid', transition: 'all .2s', background: tab === k ? 'linear-gradient(135deg,#E5A653,#9F8FE3)' : 'rgba(255,255,255,.03)', color: tab === k ? '#fff' : 'var(--text-muted)', borderColor: tab === k ? 'transparent' : 'rgba(255,255,255,.08)' }}>{l}</button>
+                                <button key={k} onClick={() => setTab(k)} style={{ padding: '8px 16px', borderRadius: 10, fontWeight: 700, fontSize: 12, cursor: 'pointer', border: '1px solid', transition: 'all .2s', background: tab === k ? 'linear-gradient(135deg,#E5A653,#9F8FE3)' : 'var(--surface-glass)', color: tab === k ? 'var(--on-accent)' : 'var(--text-muted)', borderColor: tab === k ? 'transparent' : 'var(--surface-border)' }}>{l}</button>
                             ))}
-                            <button onClick={load} style={{ marginLeft: 'auto', padding: '8px 14px', borderRadius: 10, border: '1px solid rgba(255,255,255,.08)', background: 'rgba(255,255,255,.03)', color: 'var(--text-muted)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>⟳ Refresh</button>
+                            <button onClick={load} style={{ marginLeft: 'auto', padding: '8px 14px', borderRadius: 10, border: '1px solid var(--surface-border)', background: 'var(--surface-glass)', color: 'var(--text-muted)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>⟳ Refresh</button>
                         </div>
 
                         {/* ══ DAILY TAB ══ */}
@@ -141,7 +140,7 @@ export default function RecommendationsPage() {
                                                     {featured.topic && <TopicBadge t={featured.topic} />}
                                                 </div>
                                                 <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 10 }}>{featured.title}</h3>
-                                                <div style={{ background: 'rgba(229,166,83,.1)', border: '1px solid rgba(229,166,83,.2)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: '#94A3B8', lineHeight: 1.6 }}>
+                                                <div style={{ background: 'rgba(229,166,83,.1)', border: '1px solid rgba(229,166,83,.2)', borderRadius: 10, padding: '10px 14px', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
                                                     💡 {featured.reason}
                                                 </div>
                                             </div>
@@ -149,7 +148,7 @@ export default function RecommendationsPage() {
                                                 {featured.problemUrl ? (
                                                     <a href={featured.problemUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', padding: '11px 24px', borderRadius: 11, fontWeight: 700, fontSize: 13, textDecoration: 'none', boxShadow: '0 4px 16px rgba(229,166,83,.4)', textAlign: 'center' }}>Solve Now →</a>
                                                 ) : null}
-                                                <button onClick={load} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', color: 'var(--text-muted)', padding: '9px 18px', borderRadius: 10, fontSize: 12, cursor: 'pointer' }}>↻ New suggestion</button>
+                                                <button onClick={load} style={{ background: 'var(--surface-hover)', border: '1px solid var(--surface-border)', color: 'var(--text-muted)', padding: '9px 18px', borderRadius: 10, fontSize: 12, cursor: 'pointer' }}>↻ New suggestion</button>
                                             </div>
                                         </div>
                                     </div>
@@ -189,7 +188,7 @@ export default function RecommendationsPage() {
                                             <span style={{ fontSize: 14, fontWeight: 700, textTransform: 'capitalize' }}>{w.topic}</span>
                                             <span style={{ fontSize: 22, fontWeight: 900, color: w.pct < 30 ? '#EF4444' : w.pct < 60 ? '#F59E0B' : '#22C55E' }}>{w.pct}%</span>
                                         </div>
-                                        <div style={{ height: 7, background: 'rgba(255,255,255,.05)', borderRadius: 10, overflow: 'hidden', marginBottom: 10 }}>
+                                        <div style={{ height: 7, background: 'var(--surface-hover)', borderRadius: 10, overflow: 'hidden', marginBottom: 10 }}>
                                             <div style={{ height: '100%', width: `${w.pct}%`, background: w.pct < 30 ? '#EF4444' : w.pct < 60 ? '#F59E0B' : '#22C55E', borderRadius: 10, transition: 'width 1s ease' }} />
                                         </div>
                                         <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>{w.solved} / {w.target} problems · {w.reason}</div>
@@ -218,7 +217,7 @@ export default function RecommendationsPage() {
                                             {[['Easy', diff.easyCount, 30, '#22C55E'], ['Medium', diff.mediumCount, 60, '#F59E0B'], ['Hard', diff.hardCount, 20, '#EF4444']].map(([l, v, t, c]) => (
                                                 <div key={l} style={{ marginBottom: 12 }}>
                                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span style={{ fontSize: 12, fontWeight: 600 }}>{l}</span><span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{v}/{t}</span></div>
-                                                    <div style={{ height: 6, background: 'rgba(255,255,255,.05)', borderRadius: 10, overflow: 'hidden' }}>
+                                                    <div style={{ height: 6, ...PROGRESS_TRACK }}>
                                                         <div style={{ height: '100%', width: `${Math.min((v / t) * 100, 100)}%`, background: c, borderRadius: 10, transition: 'width 1s ease' }} />
                                                     </div>
                                                 </div>

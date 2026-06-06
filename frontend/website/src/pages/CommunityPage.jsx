@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
@@ -81,13 +81,13 @@ function PostCard({ post, onLike, onDelete, myEmail, onOpen }) {
         <article
             onClick={() => onOpen(post)}
             style={{
-                background: 'rgba(255,255,255,.028)', backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,.07)', borderRadius: 18,
+                background: 'var(--card-bg)', backdropFilter: 'blur(20px)',
+                border: '1px solid var(--card-border)', borderRadius: 18,
                 overflow: 'hidden', cursor: 'pointer', transition: 'all .2s',
                 display: 'flex', flexDirection: 'column',
             }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.borderColor = `${c1}35` ; e.currentTarget.style.boxShadow = `0 12px 40px rgba(0,0,0,.25)` }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.07)'; e.currentTarget.style.boxShadow = 'none' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'var(--card-border)'; e.currentTarget.style.boxShadow = 'none' }}
         >
             {/* Coloured accent bar */}
             <div style={{ height: 3, background: `linear-gradient(90deg,${c1},${c2})` }} />
@@ -100,8 +100,8 @@ function PostCard({ post, onLike, onDelete, myEmail, onOpen }) {
                             {(post.authorName || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                            <div style={{ fontSize: 12, fontWeight: 700, color: '#E2E8F0' }}>{post.authorName || post.userId}</div>
-                            <div style={{ fontSize: 10, color: '#64748B' }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>{post.authorName || post.userId}</div>
+                            <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>
                                 {post.authorUsername && <span style={{ color: 'var(--amber)', fontWeight: 600 }}>@{post.authorUsername} · </span>}
                                 {timeAgo(post.createdAt)} · {readTime(post.content)} min read
                             </div>
@@ -112,14 +112,14 @@ function PostCard({ post, onLike, onDelete, myEmail, onOpen }) {
 
                 {/* Title + preview */}
                 <div style={{ flex: 1 }}>
-                    <h3 style={{ fontSize: 15.5, fontWeight: 800, lineHeight: 1.45, marginBottom: 8, color: '#F1F5F9' }}>{post.title}</h3>
-                    <p style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.7, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    <h3 style={{ fontSize: 15.5, fontWeight: 800, lineHeight: 1.45, marginBottom: 8, color: 'var(--text-primary)' }}>{post.title}</h3>
+                    <p style={{ fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.7, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {post.preview || post.content}
                     </p>
                 </div>
 
                 {/* Footer */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid rgba(255,255,255,.05)', marginTop: 'auto' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 12, borderTop: '1px solid var(--surface-border)', marginTop: 'auto' }}>
                     <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
                         <button onClick={handleLike} disabled={liking} style={{ background: 'none', border: 'none', cursor: 'pointer', color: liked ? '#EF4444' : '#475569', fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5, padding: 0, transition: 'all .2s' }}>
                             {liked ? '❤️' : '🤍'} {likes}
@@ -193,9 +193,9 @@ function PostView({ post, onBack, onLike, myEmail }) {
         <div style={{ maxWidth: 740, margin: '0 auto', paddingBottom: 80 }}>
 
             {/* Back button */}
-            <button onClick={onBack} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', color: '#94A3B8', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', marginBottom: 32, transition: 'all .2s' }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.09)'; e.currentTarget.style.color = '#F1F5F9' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.05)'; e.currentTarget.style.color = '#94A3B8' }}>
+            <button onClick={onBack} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: 'var(--text-secondary)', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', marginBottom: 32, transition: 'all .2s' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.color = 'var(--text-primary)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-glass)'; e.currentTarget.style.color = '#94A3B8' }}>
                 ← Back to Community
             </button>
 
@@ -210,14 +210,14 @@ function PostView({ post, onBack, onLike, myEmail }) {
             </h1>
 
             {/* Author bar */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid rgba(255,255,255,.07)` }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32, paddingBottom: 24, borderBottom: `1px solid var(--surface-border)` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     <div style={{ width: 44, height: 44, borderRadius: '50%', background: `linear-gradient(135deg,${c1},${c2})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 17, color: '#fff', flexShrink: 0 }}>
                         {(post.authorName || '?')[0].toUpperCase()}
                     </div>
                     <div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#E2E8F0' }}>{post.authorName || post.userId}</div>
-                        <div style={{ fontSize: 12, color: '#64748B' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{post.authorName || post.userId}</div>
+                        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                             {post.authorUsername && <span style={{ color: 'var(--amber)', fontWeight: 600 }}>@{post.authorUsername} · </span>}
                             {timeAgo(post.createdAt)} · {mins} min read
                         </div>
@@ -247,12 +247,12 @@ function PostView({ post, onBack, onLike, myEmail }) {
                 <div style={{ display: 'flex', gap: 8 }}>
                     <button onClick={handleSave} title={saved ? 'Saved' : 'Save for later'}
                         style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer',
-                            background: saved ? 'var(--amber-light)' : 'rgba(255,255,255,.05)',
-                            border: `1px solid ${saved ? 'var(--border-hover)' : 'rgba(255,255,255,.1)'}`,
+                            background: saved ? 'var(--amber-light)' : 'var(--surface-glass)',
+                            border: `1px solid ${saved ? 'var(--border-hover)' : 'var(--surface-border)'}`,
                             color: saved ? 'var(--amber)' : '#94A3B8', transition: 'all .2s' }}>
                         {saved ? '🔖 Saved' : '📑 Save'}
                     </button>
-                    <button onClick={handleLike} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all .2s', background: liked ? 'rgba(239,68,68,.12)' : 'rgba(255,255,255,.05)', border: `1px solid ${liked ? 'rgba(239,68,68,.3)' : 'rgba(255,255,255,.1)'}`, color: liked ? '#EF4444' : '#94A3B8' }}>
+                    <button onClick={handleLike} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 18px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all .2s', background: liked ? 'rgba(239,68,68,.12)' : 'var(--surface-glass)', border: `1px solid ${liked ? 'rgba(239,68,68,.3)' : 'var(--surface-border)'}`, color: liked ? '#EF4444' : '#94A3B8' }}>
                         {liked ? '❤️' : '🤍'} {likes} {likes === 1 ? 'like' : 'likes'}
                     </button>
                 </div>
@@ -263,8 +263,8 @@ function PostView({ post, onBack, onLike, myEmail }) {
             <style>{MD_CSS}</style>
 
             {/* Bottom action bar */}
-            <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <button onClick={handleLike} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 11, fontWeight: 700, fontSize: 14, cursor: 'pointer', transition: 'all .2s', background: liked ? 'rgba(239,68,68,.12)' : 'rgba(255,255,255,.05)', border: `1px solid ${liked ? 'rgba(239,68,68,.3)' : 'rgba(255,255,255,.1)'}`, color: liked ? '#EF4444' : '#94A3B8' }}>
+            <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid var(--surface-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <button onClick={handleLike} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 22px', borderRadius: 11, fontWeight: 700, fontSize: 14, cursor: 'pointer', transition: 'all .2s', background: liked ? 'rgba(239,68,68,.12)' : 'var(--surface-glass)', border: `1px solid ${liked ? 'rgba(239,68,68,.3)' : 'var(--surface-border)'}`, color: liked ? '#EF4444' : '#94A3B8' }}>
                     {liked ? '❤️' : '🤍'} {liked ? 'Liked' : 'Like this post'}
                 </button>
                 <button onClick={onBack} style={{ background: `linear-gradient(135deg,${c1},${c2})`, color: '#fff', border: 'none', padding: '10px 22px', borderRadius: 11, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
@@ -641,12 +641,12 @@ function WriteEditor({ onCancel, onPublished }) {
 
             {/* Top bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
-                <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', color: '#94A3B8', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
+                <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: 'var(--text-secondary)', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
                     ← Discard
                 </button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     {form.content && (
-                        <button type="button" onClick={() => setPreview(p => !p)} style={{ background: preview ? `${c1}20` : 'rgba(255,255,255,.05)', border: `1px solid ${preview ? c1 + '50' : 'rgba(255,255,255,.1)'}`, color: preview ? c1 : '#94A3B8', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
+                        <button type="button" onClick={() => setPreview(p => !p)} style={{ background: preview ? `${c1}20` : 'var(--surface-glass)', border: `1px solid ${preview ? c1 + '50' : 'var(--surface-border)'}`, color: preview ? c1 : '#94A3B8', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
                             {preview ? '✏️ Edit' : '👁 Preview'}
                         </button>
                     )}
@@ -669,7 +669,7 @@ function WriteEditor({ onCancel, onPublished }) {
                     <h1 style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.3, marginBottom: 16, color: '#F8FAFC', letterSpacing: '-0.02em' }}>
                         {form.title || <span style={{ color: '#475569' }}>Untitled post</span>}
                     </h1>
-                    <div style={{ fontSize: 12, color: '#64748B', marginBottom: 28 }}>{words} words · {mins} min read</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 28 }}>{words} words · {mins} min read</div>
                     <Markdown text={form.content} />
                 </div>
             ) : (
@@ -703,7 +703,7 @@ function WriteEditor({ onCancel, onPublished }) {
                     />
 
                     {/* Divider */}
-                    <div style={{ height: 1, background: 'rgba(255,255,255,.07)', marginBottom: 20 }} />
+                    <div style={{ height: 1, background: 'var(--surface-border)', marginBottom: 20 }} />
 
                     {/* ── Formatting toolbar ── */}
                     <div className="md-toolbar" role="toolbar" aria-label="Formatting">
@@ -783,7 +783,7 @@ const MD_CSS = `
     padding: 6px 8px;
     margin-bottom: 14px;
     background: rgba(15, 23, 42, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--surface-border-subtle);
     border-radius: 12px;
     backdrop-filter: blur(6px);
     /* NB: deliberately NOT sticky — sticky + an auto-growing textarea below
@@ -817,7 +817,7 @@ const MD_CSS = `
 .md-tb-mono   { font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 12px; }
 .md-tb-sep {
     width: 1px; height: 18px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--surface-border);
     margin: 0 4px;
     display: inline-block;
 }
@@ -830,7 +830,7 @@ const MD_CSS = `
     align-items: center;
     margin-top: 18px;
     padding-top: 14px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.06);
+    border-top: 1px dashed var(--surface-border-subtle);
     font-size: 12px;
     color: #64748B;
 }
@@ -841,25 +841,51 @@ const MD_CSS = `
     background: rgba(15, 23, 42, 0.6);
     padding: 2px 7px;
     border-radius: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--surface-border-subtle);
 }
-.md-hint-muted {
-    margin-left: auto;
-    opacity: 0.6;
-    font-style: italic;
+
+[data-theme="light"] .md-toolbar {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(15, 23, 42, 0.12);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .md-tb-btn {
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .md-tb-btn:hover {
+    background: rgba(15, 23, 42, 0.04);
+    color: var(--text-primary);
+    border-color: rgba(15, 23, 42, 0.12);
+}
+
+[data-theme="light"] .md-hint {
+    border-top-color: rgba(15, 23, 42, 0.08);
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .md-hint-k {
+    color: var(--text-primary);
+    background: rgba(15, 23, 42, 0.06);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .md-hint-muted {
+    color: var(--text-muted);
 }
 
 /* ── Rendered body — real blog typography ── */
 .md-body {
     font-size: 16px;
     line-height: 1.8;
-    color: #CBD5E1;
+    color: var(--text-secondary);
     letter-spacing: 0.005em;
 }
 .md-body > * + * { margin-top: 18px; }
 
 .md-h1, .md-h2, .md-h3 {
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.25;
@@ -869,38 +895,38 @@ const MD_CSS = `
 .md-h2 {
     font-size: 22px;
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--surface-border-subtle);
 }
-.md-h3 { font-size: 18px; color: #E2E8F0; }
+.md-h3 { font-size: 18px; color: var(--text-primary); }
 
 .md-p { margin: 0; }
 
 .md-body strong {
-    color: #F1F5F9;
+    color: var(--text-primary);
     font-weight: 800;
 }
-.md-body em { color: #E2E8F0; font-style: italic; }
+.md-body em { color: var(--text-secondary); font-style: italic; }
 
 .md-icode {
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 0.88em;
     padding: 2px 7px;
     border-radius: 5px;
-    background: rgba(229, 166, 83, 0.1);
-    border: 1px solid rgba(229, 166, 83, 0.18);
-    color: #F3C887;
+    background: var(--code-inline-bg);
+    border: 1px solid var(--code-inline-border);
+    color: var(--code-inline-color);
 }
 
 .md-block {
-    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-size: 13.5px;
     line-height: 1.6;
     padding: 16px 18px;
-    background: rgba(8, 12, 30, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
     border-left: 3px solid rgba(229, 166, 83, 0.55);
     border-radius: 10px;
-    color: #E2E8F0;
+    color: var(--text-primary);
     overflow-x: auto;
 }
 .md-block code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
@@ -908,7 +934,7 @@ const MD_CSS = `
 .md-ul, .md-ol {
     margin: 0;
     padding-left: 26px;
-    color: #CBD5E1;
+    color: var(--text-secondary);
 }
 .md-ul li, .md-ol li {
     margin: 8px 0;
@@ -923,7 +949,7 @@ const MD_CSS = `
     padding: 4px 18px;
     border-left: 3px solid rgba(159, 143, 227, 0.7);
     background: rgba(159, 143, 227, 0.05);
-    color: #E2E8F0;
+    color: var(--text-secondary);
     font-style: italic;
     border-radius: 0 10px 10px 0;
 }
@@ -1013,7 +1039,7 @@ export default function CommunityPage() {
     // ── Write view ──
     if (view === 'write') {
         return (
-            <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
+            <div className="app-shell" >
                 <Sidebar />
                 <div className="main-content">
                     <Topbar title="Write a Post" subtitle="Share your insight with the community" />
@@ -1028,7 +1054,7 @@ export default function CommunityPage() {
     // ── Post view ──
     if (view === 'post' && openPost) {
         return (
-            <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
+            <div className="app-shell" >
                 <Sidebar />
                 <div className="main-content">
                     <Topbar title="Community" subtitle="Reading a post" />
@@ -1042,7 +1068,7 @@ export default function CommunityPage() {
 
     // ── Feed view ──
     return (
-        <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
+        <div className="app-shell" >
             <div style={{ position: 'fixed', top: -180, left: 60, width: 400, height: 400, background: 'radial-gradient(circle,rgba(229,166,83,.06),transparent 65%)', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
             <Sidebar />
             <div className="main-content" style={{ position: 'relative', zIndex: 1 }}>
@@ -1051,7 +1077,7 @@ export default function CommunityPage() {
 
                     {/* ── Header row ── */}
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22, flexWrap: 'wrap', gap: 12 }}>
-                        <div style={{ display: 'flex', gap: 6, background: 'rgba(255,255,255,.03)', padding: 4, borderRadius: 12, border: '1px solid rgba(255,255,255,.06)' }}>
+                        <div style={{ display: 'flex', gap: 6, background: 'var(--surface-glass)', padding: 4, borderRadius: 12, border: '1px solid var(--surface-border)' }}>
                             {[['feed', '📰 Feed'], ['mine', '✍️ My Posts']].map(([k, l]) => (
                                 <button key={k} onClick={() => setTab(k)} style={{ padding: '7px 18px', borderRadius: 9, fontWeight: 700, fontSize: 12.5, cursor: 'pointer', border: 'none', transition: 'all .2s', background: tab === k ? 'linear-gradient(135deg,#E5A653,#9F8FE3)' : 'transparent', color: tab === k ? '#fff' : '#64748B', boxShadow: tab === k ? '0 3px 12px rgba(229,166,83,.35)' : 'none' }}>
                                     {l}
@@ -1071,7 +1097,7 @@ export default function CommunityPage() {
                                 const [bg] = topicColor(t)
                                 const sel = topic === t
                                 return (
-                                    <button key={t} onClick={() => { setTopic(t); setPage(0) }} style={{ padding: '5px 14px', borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: '1px solid', transition: 'all .2s', background: sel ? `linear-gradient(135deg,${topicColor(t)[0]},${topicColor(t)[1]})` : 'rgba(255,255,255,.04)', color: sel ? '#fff' : '#64748B', borderColor: sel ? 'transparent' : 'rgba(255,255,255,.08)' }}>
+                                    <button key={t} onClick={() => { setTopic(t); setPage(0) }} style={{ padding: '5px 14px', borderRadius: 20, fontSize: 11, fontWeight: 700, cursor: 'pointer', border: '1px solid', transition: 'all .2s', background: sel ? `linear-gradient(135deg,${topicColor(t)[0]},${topicColor(t)[1]})` : 'var(--surface-glass)', color: sel ? '#fff' : '#64748B', borderColor: sel ? 'transparent' : 'var(--surface-border)' }}>
                                         {t === 'all' ? '🌐 All' : t}
                                     </button>
                                 )
@@ -1081,14 +1107,14 @@ export default function CommunityPage() {
                         {loading && page === 0 && (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 80, gap: 14 }}>
                                 <div style={{ width: 38, height: 38, border: '3px solid rgba(229,166,83,.2)', borderTop: '3px solid #E5A653', borderRadius: '50%', animation: 'spin .8s linear infinite' }} />
-                                <div style={{ color: '#64748B', fontSize: 13 }}>Loading community feed…</div>
+                                <div style={{ color: 'var(--text-muted)', fontSize: 13 }}>Loading community feed…</div>
                             </div>
                         )}
 
                         {!loading && posts.length === 0 && (
-                            <div style={{ textAlign: 'center', padding: '70px 32px', color: '#64748B' }}>
+                            <div style={{ textAlign: 'center', padding: '70px 32px', color: 'var(--text-muted)' }}>
                                 <div style={{ fontSize: 52, marginBottom: 16 }}>📝</div>
-                                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: '#94A3B8' }}>No posts yet {topic !== 'all' ? `in "${topic}"` : ''}</div>
+                                <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: 'var(--text-secondary)' }}>No posts yet {topic !== 'all' ? `in "${topic}"` : ''}</div>
                                 <div style={{ fontSize: 13 }}>Be the first to share something!</div>
                                 <button onClick={openWrite} style={{ marginTop: 20, background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: 11, fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>Write a Post</button>
                             </div>
@@ -1113,9 +1139,9 @@ export default function CommunityPage() {
                     {tab === 'mine' && (
                         myPosts.length === 0
                             ? (
-                                <div style={{ textAlign: 'center', padding: '70px 32px', color: '#64748B' }}>
+                                <div style={{ textAlign: 'center', padding: '70px 32px', color: 'var(--text-muted)' }}>
                                     <div style={{ fontSize: 52, marginBottom: 16 }}>✍️</div>
-                                    <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: '#94A3B8' }}>No posts yet</div>
+                                    <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: 'var(--text-secondary)' }}>No posts yet</div>
                                     <div style={{ fontSize: 13 }}>Share a tip, a walkthrough, or something that helped you crack a problem.</div>
                                     <button onClick={openWrite} style={{ marginTop: 20, background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: 11, fontWeight: 700, cursor: 'pointer', fontSize: 13 }}>Write your first post</button>
                                 </div>

@@ -6,7 +6,7 @@ export default function Footer() {
             <div className="ml-footer-top">
 
                 <div className="ml-logo">
-                    <div className="ml-logo-icon">
+                    <div className="ml-logo-icon" style={{ color: 'var(--text-primary)' }}>
                         <svg
                             width="14"
                             height="14"
@@ -15,7 +15,7 @@ export default function Footer() {
                         >
                             <path
                                 d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                stroke="#F5EBD6"
+                                stroke="currentColor"
                                 strokeWidth="2.2"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"

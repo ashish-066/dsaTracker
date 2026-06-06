@@ -93,6 +93,147 @@
 
   /* === Motion === */
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* === Semantic aliases (landing + shared) === */
+  --ink: var(--text-primary);
+  --ink-mute: var(--text-secondary);
+  --ink-faint: var(--text-muted);
+  --edge: var(--border);
+  --edge-soft: var(--border-subtle);
+
+  /* === Shell & surfaces === */
+  --shell-bg: linear-gradient(140deg, #0B0F1A 0%, #121727 50%, #0B0F1A 100%);
+  --sidebar-bg: linear-gradient(180deg, #0A0F1E 0%, #080C18 100%);
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --topbar-bg: rgba(8, 12, 20, 0.7);
+  --topbar-border: rgba(255, 255, 255, 0.04);
+
+  --surface-glass: rgba(255, 255, 255, 0.026);
+  --surface-border: rgba(255, 255, 255, 0.068);
+  --surface-border-subtle: rgba(255, 255, 255, 0.05);
+  --surface-hover: rgba(255, 255, 255, 0.04);
+  --surface-inset: rgba(255, 255, 255, 0.04);
+  --surface-shadow: 0 4px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --card-bg: rgba(17, 24, 39, 0.7);
+  --card-border: rgba(255, 255, 255, 0.06);
+
+  --nav-hover-bg: rgba(255, 255, 255, 0.04);
+  --nav-active-bg: rgba(139, 92, 246, 0.1);
+  --sidebar-user-bg: linear-gradient(135deg, rgba(229, 166, 83, 0.1), rgba(79, 70, 229, 0.06));
+  --sidebar-user-border: rgba(139, 92, 246, 0.15);
+  --xp-track-bg: rgba(255, 255, 255, 0.06);
+
+  --popover-bg: rgba(11, 15, 26, 0.96);
+  --popover-border: rgba(229, 166, 83, 0.22);
+  --popover-head-bg: rgba(11, 15, 26, 0.96);
+  --popover-divider: rgba(255, 255, 255, 0.05);
+  --popover-item-hover: rgba(255, 255, 255, 0.03);
+  --badge-ring: #0B0F1A;
+
+  --chart-tooltip-bg: rgba(8, 12, 30, 0.98);
+  --chart-tooltip-border: rgba(229, 166, 83, 0.3);
+
+  --heatmap-0: rgba(255, 255, 255, 0.04);
+  --heatmap-1: rgba(229, 166, 83, 0.22);
+  --heatmap-2: rgba(229, 166, 83, 0.48);
+  --heatmap-3: rgba(229, 166, 83, 0.76);
+  --heatmap-4: #E5A653;
+
+  --code-bg: rgba(8, 12, 30, 0.75);
+  --code-border: rgba(255, 255, 255, 0.06);
+  --code-inline-bg: rgba(229, 166, 83, 0.1);
+  --code-inline-border: rgba(229, 166, 83, 0.18);
+  --code-inline-color: #F3C887;
+
+  --on-accent: #ffffff;
+  --on-gradient: #1C1608;
+
+  --toast-bg: #111827;
+  --toast-color: #fff;
+  --toast-border: rgba(255, 255, 255, 0.08);
+
+  /* === Difficulty Colors === */
+  --difficulty-easy: #22C55E;
+  --difficulty-easy-bg: rgba(34, 197, 94, 0.10);
+  --difficulty-easy-glow: rgba(34, 197, 94, 0.30);
+  
+  --difficulty-medium: #F59E0B;
+  --difficulty-medium-bg: rgba(245, 158, 11, 0.10);
+  --difficulty-medium-glow: rgba(245, 158, 11, 0.30);
+  
+  --difficulty-hard: #EF4444;
+  --difficulty-hard-bg: rgba(239, 68, 68, 0.10);
+  --difficulty-hard-glow: rgba(239, 68, 68, 0.30);
+
+  /* === Platform Colors === */
+  --platform-leetcode: #FFA116;
+  --platform-codeforces: #1890FF;
+  --platform-geeksforgeeks: #308D46;
+
+  /* === Streak Colors === */
+  --streak-high: #F59E0B;
+  --streak-medium: #FB923C;
+  --streak-low: #FCD34D;
+  --streak-none: #6B7280;
+
+  /* === Category Colors === */
+  --category-mission: #9F8FE3;
+  --category-mission-bg: rgba(159, 143, 227, 0.12);
+  --category-mission-glow: rgba(159, 143, 227, 0.35);
+  
+  --category-weakness: #EF4444;
+  --category-weakness-bg: rgba(239, 68, 68, 0.10);
+  --category-weakness-glow: rgba(239, 68, 68, 0.30);
+  
+  --category-levelup: #F59E0B;
+  --category-levelup-bg: rgba(245, 158, 11, 0.10);
+  --category-levelup-glow: rgba(245, 158, 11, 0.30);
+  
+  --category-explore: #38BDF8;
+  --category-explore-bg: rgba(56, 189, 248, 0.10);
+  --category-explore-glow: rgba(56, 189, 248, 0.30);
+  
+  --category-stretch: #E5A653;
+  --category-stretch-bg: rgba(229, 166, 83, 0.12);
+  --category-stretch-glow: rgba(229, 166, 83, 0.35);
+
+  /* === Skill Stage Colors === */
+  --stage-beginner: #22C55E;
+  --stage-intermediate: #F59E0B;
+  --stage-advanced: #EF4444;
+  --stage-expert: #9F8FE3;
+
+  /* === Nav Item Colors === */
+  --nav-dashboard: #6366F1;
+  --nav-training: #22D3EE;
+  --nav-challenges: #F59E0B;
+  --nav-community: #34D399;
+  --nav-profile: #F472B6;
+
+  /* === Topic Colors === */
+  --topic-arrays-dark: #E5A653;
+  --topic-arrays-light: #9F8FE3;
+  --topic-graphs-dark: #10B981;
+  --topic-graphs-light: #34D399;
+  --topic-dp-dark: #F59E0B;
+  --topic-dp-light: #FCD34D;
+  --topic-trees-dark: #9F8FE3;
+  --topic-trees-light: #9F8FE3;
+  --topic-binsearch-dark: #3B82F6;
+  --topic-binsearch-light: #60A5FA;
+  --topic-sysdesign-dark: #EC4899;
+  --topic-sysdesign-light: #F472B6;
+  --topic-interview-dark: #14B8A6;
+  --topic-interview-light: #2DD4BF;
+  --topic-strings-dark: #F97316;
+  --topic-strings-light: #FB923C;
+  --topic-backtrack-dark: #EF4444;
+  --topic-backtrack-light: #F87171;
+  --topic-general-dark: #94A3B8;
+  --topic-general-light: #CBD5E1;
+
+  /* === Accent Colors for Emphasis === */
+  --emphasis-color: #E5A653;
 }
 
 [data-theme="light"] {
@@ -105,11 +246,196 @@
   --text-primary: #0F172A;
   --text-secondary: #334155;
   --text-muted: #64748B;
+  --text-accent: #B45309;
 
   --border: rgba(15, 23, 42, 0.12);
   --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.22);
 
   --bg-glass: rgba(255, 255, 255, 0.7);
+
+  --shell-bg: linear-gradient(140deg, #F8FAFC 0%, #FFFFFF 50%, #F1F5F9 100%);
+  --sidebar-bg: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  --sidebar-border: rgba(15, 23, 42, 0.08);
+  --topbar-bg: rgba(255, 255, 255, 0.88);
+  --topbar-border: rgba(15, 23, 42, 0.08);
+
+  --surface-glass: rgba(15, 23, 42, 0.03);
+  --surface-border: rgba(15, 23, 42, 0.10);
+  --surface-border-subtle: rgba(15, 23, 42, 0.06);
+  --surface-hover: rgba(15, 23, 42, 0.04);
+  --surface-inset: rgba(15, 23, 42, 0.03);
+  --surface-glow: rgba(255, 255, 255, 0.18);
+  --surface-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: rgba(15, 23, 42, 0.08);
+
+  --nav-hover-bg: rgba(15, 23, 42, 0.04);
+  --nav-active-bg: rgba(159, 143, 227, 0.12);
+  --sidebar-user-bg: linear-gradient(135deg, rgba(229, 166, 83, 0.08), rgba(159, 143, 227, 0.06));
+  --sidebar-user-border: rgba(159, 143, 227, 0.2);
+  --xp-track-bg: rgba(15, 23, 42, 0.08);
+
+  --popover-bg: rgba(255, 255, 255, 0.98);
+  --popover-border: rgba(15, 23, 42, 0.12);
+  --popover-head-bg: rgba(255, 255, 255, 0.98);
+  --popover-divider: rgba(15, 23, 42, 0.08);
+  --popover-item-hover: rgba(15, 23, 42, 0.04);
+  --badge-ring: #FFFFFF;
+
+  --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+  --chart-tooltip-border: rgba(15, 23, 42, 0.12);
+
+  --heatmap-0: rgba(15, 23, 42, 0.06);
+  --heatmap-1: rgba(229, 166, 83, 0.18);
+  --heatmap-2: rgba(229, 166, 83, 0.38);
+  --heatmap-3: rgba(229, 166, 83, 0.58);
+  --heatmap-4: #B45309;
+
+  --code-bg: rgba(241, 245, 249, 0.95);
+  --code-border: rgba(15, 23, 42, 0.1);
+  --code-inline-bg: rgba(229, 166, 83, 0.12);
+  --code-inline-border: rgba(180, 83, 9, 0.25);
+  --code-inline-color: #92400E;
+
+  --shadow-sm: 0 1px 4px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.10);
+  --shadow-lg: 0 8px 40px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 0 24px rgba(229, 166, 83, 0.15);
+
+  --toast-bg: #FFFFFF;
+  --toast-color: #0F172A;
+  --toast-border: rgba(15, 23, 42, 0.12);
+
+  /* === Light Theme Overrides for Color Systems === */
+  /* Difficulty Colors - adjusted for light backgrounds */
+  --difficulty-easy: #059669;
+  --difficulty-easy-bg: rgba(5, 150, 105, 0.12);
+  --difficulty-easy-glow: rgba(5, 150, 105, 0.25);
+  
+  --difficulty-medium: #92400E;
+  --difficulty-medium-bg: rgba(146, 64, 14, 0.12);
+  --difficulty-medium-glow: rgba(146, 64, 14, 0.25);
+  
+  --difficulty-hard: #991B1B;
+  --difficulty-hard-bg: rgba(153, 27, 27, 0.12);
+  --difficulty-hard-glow: rgba(153, 27, 27, 0.25);
+
+  /* Platform Colors - adjusted for light backgrounds */
+  --platform-leetcode: #D97706;
+  --platform-codeforces: #0369A1;
+  --platform-geeksforgeeks: #166534;
+
+  /* Streak Colors - adjusted for light backgrounds */
+  --streak-high: #D97706;
+  --streak-medium: #EA580C;
+  --streak-low: #B45309;
+  --streak-none: #6B7280;
+
+  /* Category Colors - adjusted for light backgrounds */
+  --category-mission: #6D28D9;
+  --category-mission-bg: rgba(109, 40, 217, 0.12);
+  --category-mission-glow: rgba(109, 40, 217, 0.25);
+  
+  --category-weakness: #991B1B;
+  --category-weakness-bg: rgba(153, 27, 27, 0.12);
+  --category-weakness-glow: rgba(153, 27, 27, 0.25);
+  
+  --category-levelup: #92400E;
+  --category-levelup-bg: rgba(146, 64, 14, 0.12);
+  --category-levelup-glow: rgba(146, 64, 14, 0.25);
+  
+  --category-explore: #0369A1;
+  --category-explore-bg: rgba(3, 105, 161, 0.12);
+  --category-explore-glow: rgba(3, 105, 161, 0.25);
+  
+  --category-stretch: #B45309;
+  --category-stretch-bg: rgba(180, 83, 9, 0.12);
+  --category-stretch-glow: rgba(180, 83, 9, 0.25);
+
+  /* Skill Stage Colors */
+  --stage-beginner: #059669;
+  --stage-intermediate: #92400E;
+  --stage-advanced: #991B1B;
+  --stage-expert: #6D28D9;
+
+  /* Nav Item Colors - adjusted for light backgrounds */
+  --nav-dashboard: #4F46E5;
+  --nav-training: #0891B2;
+  --nav-challenges: #D97706;
+  --nav-community: #059669;
+  --nav-profile: #BE185D;
+
+  /* Topic Colors - adjusted for light backgrounds */
+  --topic-arrays-dark: #B45309;
+  --topic-arrays-light: #6D28D9;
+  --topic-graphs-dark: #059669;
+  --topic-graphs-light: #10B981;
+  --topic-dp-dark: #92400E;
+  --topic-dp-light: #B45309;
+  --topic-trees-dark: #6D28D9;
+  --topic-trees-light: #6D28D9;
+  --topic-binsearch-dark: #1E40AF;
+  --topic-binsearch-light: #2563EB;
+  --topic-sysdesign-dark: #9D174D;
+  --topic-sysdesign-light: #BE185D;
+  --topic-interview-dark: #0D9488;
+  --topic-interview-light: #14B8A6;
+  --topic-strings-dark: #C2410C;
+  --topic-strings-light: #EA580C;
+  --topic-backtrack-dark: #991B1B;
+  --topic-backtrack-light: #DC2626;
+  --topic-general-dark: #475569;
+  --topic-general-light: #64748B;
+
+  /* Accent Colors for Emphasis */
+  --emphasis-color: #B45309;
+}
+
+[data-theme="light"] .card:hover {
+  border-color: rgba(159, 143, 227, 0.28);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .lp-pricing-divider,
+[data-theme="light"] .lp-footer {
+  border-color: var(--border-subtle);
+}
+
+[data-theme="light"] .lp-pricing-divider {
+  background: var(--border-subtle);
+}
+
+[data-theme="light"] .lp-cta-banner-bg {
+  background: linear-gradient(135deg, #EDE9FE, #E0F2FE, #F8FAFC);
+}
+
+[data-theme="light"] .lp-cta-banner-bg::before {
+  background:
+    radial-gradient(ellipse at top left, rgba(229, 166, 83, 0.2), transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(136, 192, 163, 0.15), transparent 50%);
+}
+
+[data-theme="light"] .lp-section-head,
+[data-theme="light"] .lp-pricing-card,
+[data-theme="light"] .lp-feature-card,
+[data-theme="light"] .lp-faq-item,
+[data-theme="light"] .lp-team-card,
+[data-theme="light"] .lp-placement-card {
+  border-color: var(--border-subtle);
+}
+
+[data-theme="light"] .lp-ghost-num {
+  color: rgba(15, 23, 42, 0.06);
+  -webkit-text-stroke: 1px rgba(15, 23, 42, 0.1);
+}
+
+.contest-page {
+  min-height: 100vh;
+  background: var(--shell-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
 }
 
 /* ── Reset ── */
@@ -462,11 +788,11 @@ body::before {
    CARDS
    ============================================================ */
 .card {
-  background: rgba(17, 24, 39, 0.7);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--surface-shadow);
   border-radius: var(--radius-lg);
   padding: 24px;
   position: relative;
@@ -483,6 +809,15 @@ body::before {
 .card-sm {
   padding: 16px;
   border-radius: var(--radius-md);
+}
+
+.glass-card {
+  background: var(--surface-glass);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--surface-shadow);
+  border-radius: var(--radius-lg);
 }
 
 /* ============================================================
@@ -583,6 +918,8 @@ body::before {
 .app-shell {
   display: flex;
   min-height: 100vh;
+  background: var(--shell-bg);
+  color: var(--text-primary);
 }
 
 .main-content {
@@ -605,8 +942,8 @@ body::before {
    ============================================================ */
 .sidebar {
   width: var(--sidebar-width);
-  background: linear-gradient(180deg, #0A0F1E 0%, #080C18 100%);
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
   height: 100vh;
   position: fixed;
   top: 0;
@@ -663,8 +1000,8 @@ body::before {
 /* User card */
 .sidebar-user {
   margin: 0 12px 8px;
-  background: linear-gradient(135deg, rgba(229, 166, 83, 0.1), rgba(79, 70, 229, 0.06));
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  background: var(--sidebar-user-bg);
+  border: 1px solid var(--sidebar-user-border);
   border-radius: var(--radius-lg);
   padding: 12px 14px;
   display: flex;
@@ -736,12 +1073,12 @@ body::before {
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--nav-hover-bg);
   color: var(--text-primary);
 }
 
 .nav-item.active {
-  background: rgba(139, 92, 246, 0.1);
+  background: var(--nav-active-bg);
   color: var(--text-primary);
   font-weight: 600;
 }
@@ -851,7 +1188,7 @@ body::before {
 /* XP bar */
 .sidebar-bottom {
   padding: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--sidebar-border);
 }
 
 .sidebar-xp-bar {
@@ -880,7 +1217,7 @@ body::before {
 
 .sidebar-xp-track {
   height: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--xp-track-bg);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -914,10 +1251,10 @@ body::before {
   left: var(--sidebar-width);
   right: 0;
   height: var(--topbar-height);
-  background: rgba(8, 12, 20, 0.7);
+  background: var(--topbar-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--topbar-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2794,12 +3131,12 @@ body::before {
   -webkit-backdrop-filter: blur(22px);
   border: 1px solid var(--edge);
   border-radius: 18px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(237, 228, 206, 0.04);
-  transition: box-shadow 0.3s, border-color 0.3s;
+  box-shadow: none;
+  transition: border-color 0.3s;
 }
 
 .ml-nav-scrolled {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(237, 228, 206, 0.05);
+  box-shadow: none;
   border-color: rgba(229, 166, 83, 0.35);
 }
 

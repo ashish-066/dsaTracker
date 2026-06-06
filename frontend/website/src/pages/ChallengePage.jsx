@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
@@ -55,8 +55,8 @@ function PresetPicker({ value, onChange }) {
                 return (
                     <button key={k} type="button" onClick={() => onChange(k)} style={{
                         padding: '7px 16px', borderRadius: 20, fontSize: 12.5, fontWeight: 700,
-                        cursor: 'pointer', border: `1.5px solid ${sel ? v.color : 'rgba(255,255,255,.1)'}`,
-                        background: sel ? `${v.color}18` : 'rgba(255,255,255,.03)',
+                        cursor: 'pointer', border: `1.5px solid ${sel ? v.color : 'var(--surface-border)'}`,
+                        background: sel ? `${v.color}18` : 'var(--surface-glass)',
                         color: sel ? v.color : '#64748B', transition: 'all .18s',
                     }}>
                         {v.label}
@@ -102,7 +102,7 @@ function SectionLabel({ n, children }) {
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
             <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(229,166,83,.2)', border: '1px solid rgba(229,166,83,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: '#9F8FE3', flexShrink: 0 }}>{n}</div>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '.07em' }}>{children}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '.07em' }}>{children}</span>
         </div>
     )
 }
@@ -110,7 +110,7 @@ function SectionLabel({ n, children }) {
 // ─── Back button ──────────────────────────────────────────────────────────────
 function BackBtn({ onBack }) {
     return (
-        <button onClick={onBack} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.09)', color: '#64748B', padding: '7px 14px', borderRadius: 9, fontSize: 12, fontWeight: 600, cursor: 'pointer', marginBottom: 28 }}>
+        <button onClick={onBack} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: '#64748B', padding: '7px 14px', borderRadius: 9, fontSize: 12, fontWeight: 600, cursor: 'pointer', marginBottom: 28 }}>
             ← Back
         </button>
     )
@@ -154,12 +154,12 @@ function DuelSetup({ onBack, onSuccess, myEmail }) {
                 <div style={{ background: 'rgba(34,197,94,.06)', border: '1px solid rgba(34,197,94,.2)', borderRadius: 18, padding: '32px 36px', textAlign: 'center' }}>
                     <div style={{ fontSize: 44, marginBottom: 14 }}>⚔️</div>
                     <div style={{ fontSize: 18, fontWeight: 800, color: '#22C55E', marginBottom: 8 }}>Challenge Sent!</div>
-                    <div style={{ fontSize: 13, color: '#94A3B8', marginBottom: 22, lineHeight: 1.6 }}>
-                        Duel <strong style={{ color: '#F1F5F9' }}>#{success.id}</strong> sent to <strong style={{ color: '#F1F5F9' }}>{success.opponentName || success.opponentId}</strong>.<br />Waiting for them to accept.
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 22, lineHeight: 1.6 }}>
+                        Duel <strong style={{ color: 'var(--text-primary)' }}>#{success.id}</strong> sent to <strong style={{ color: 'var(--text-primary)' }}>{success.opponentName || success.opponentId}</strong>.<br />Waiting for them to accept.
                     </div>
                     <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
                         <button onClick={() => navigate(`/contest/${success.id}`)} style={{ background: 'rgba(229,166,83,.15)', border: '1px solid rgba(229,166,83,.3)', color: '#9F8FE3', padding: '9px 20px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>View Duel →</button>
-                        <button onClick={() => { setSuccess(null); onBack() }} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', color: '#64748B', padding: '9px 20px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Back to Challenges</button>
+                        <button onClick={() => { setSuccess(null); onBack() }} style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: '#64748B', padding: '9px 20px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>Back to Challenges</button>
                     </div>
                 </div>
             </div>
@@ -200,9 +200,9 @@ function DuelSetup({ onBack, onSuccess, myEmail }) {
                             spellCheck={false}
                             maxLength={30}
                             placeholder="their_handle"
-                            style={{ width: '100%', padding: '12px 14px 12px 36px', borderRadius: 12, background: 'rgba(255,255,255,.04)', border: '1.5px solid rgba(255,255,255,.1)', color: '#F1F5F9', fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                            style={{ width: '100%', padding: '12px 14px 12px 36px', borderRadius: 12, background: 'var(--surface-glass)', border: '1.5px solid var(--surface-border)', color: 'var(--text-primary)', fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border-color .2s' }}
                             onFocus={e => e.target.style.borderColor = 'rgba(229,166,83,.5)'}
-                            onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,.1)'}
+                            onBlur={e => e.target.style.borderColor = 'var(--surface-border)'}
                         />
                     </div>
                     <div className="accent-hand" style={{ marginTop: 6, fontSize: 14, color: 'var(--text-muted)' }}>
@@ -276,9 +276,9 @@ function ContestSetup({ onBack }) {
                     <input
                         value={name} onChange={e => setName(e.target.value)}
                         placeholder="e.g. Friday Night Grind, Team Qualifier…"
-                        style={{ width: '100%', padding: '11px 14px', borderRadius: 11, background: 'rgba(255,255,255,.04)', border: '1.5px solid rgba(255,255,255,.1)', color: '#F1F5F9', fontSize: 13.5, outline: 'none', boxSizing: 'border-box', transition: 'border-color .2s' }}
-                        onFocus={e => e.target.style.borderColor = 'rgba(229,166,83,.5)'}
-                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,.1)'}
+                        style={{ width: '100%', padding: '11px 14px', borderRadius: 11, background: 'var(--surface-glass)', border: '1.5px solid var(--surface-border)', color: 'var(--text-primary)', fontSize: 13.5, outline: 'none', boxSizing: 'border-box', transition: 'border-color .2s' }}
+                        onFocus={e => e.target.style.borderColor = 'var(--border-hover)'}
+                        onBlur={e => e.target.style.borderColor = 'var(--surface-border)'}
                     />
                 </div>
 
@@ -292,9 +292,9 @@ function ContestSetup({ onBack }) {
                                     type="email" value={em}
                                     onChange={e => updateEmail(i, e.target.value)}
                                     placeholder={`Participant ${i + 1} email`}
-                                    style={{ flex: 1, padding: '10px 14px', borderRadius: 10, background: 'rgba(255,255,255,.04)', border: '1.5px solid rgba(255,255,255,.08)', color: '#F1F5F9', fontSize: 13, outline: 'none', transition: 'border-color .2s' }}
-                                    onFocus={e => e.target.style.borderColor = 'rgba(229,166,83,.4)'}
-                                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,.08)'}
+                                    style={{ flex: 1, padding: '10px 14px', borderRadius: 10, background: 'var(--surface-glass)', border: '1.5px solid var(--surface-border)', color: 'var(--text-primary)', fontSize: 13, outline: 'none', transition: 'border-color .2s' }}
+                                    onFocus={e => e.target.style.borderColor = 'var(--border-hover)'}
+                                    onBlur={e => e.target.style.borderColor = 'var(--surface-border)'}
                                 />
                                 {emails.length > 1 && (
                                     <button type="button" onClick={() => removeEmail(i)} style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.2)', color: '#EF4444', cursor: 'pointer', fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>✕</button>
@@ -307,8 +307,8 @@ function ContestSetup({ onBack }) {
                     </div>
 
                     {/* Max participants */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', background: 'rgba(255,255,255,.03)', borderRadius: 11, border: '1px solid rgba(255,255,255,.07)' }}>
-                        <span style={{ fontSize: 12.5, color: '#94A3B8', fontWeight: 600 }}>Max participants</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', background: 'var(--surface-glass)', borderRadius: 11, border: '1px solid var(--surface-border)' }}>
+                        <span style={{ fontSize: 12.5, color: 'var(--text-secondary)', fontWeight: 600 }}>Max participants</span>
                         <input
                             type="number" min={2} max={50} value={maxPeople}
                             onChange={e => setMaxPeople(Math.min(50, Math.max(2, Number(e.target.value) || 2)))}
@@ -335,7 +335,7 @@ function ContestSetup({ onBack }) {
                     <div style={{ background: 'rgba(229,166,83,.06)', border: '1px solid rgba(229,166,83,.2)', borderRadius: 14, padding: '18px 20px' }}>
                         <div style={{ fontSize: 11, fontWeight: 700, color: '#9F8FE3', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '.06em' }}>🔗 Invite Link</div>
                         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                            <div style={{ flex: 1, padding: '9px 14px', borderRadius: 9, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', fontSize: 12, color: '#94A3B8', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div style={{ flex: 1, padding: '9px 14px', borderRadius: 9, background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', fontSize: 12, color: 'var(--text-secondary)', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                 {inviteLink}
                             </div>
                             <button type="button" onClick={copyLink} style={{ padding: '9px 16px', borderRadius: 9, background: copied ? 'rgba(34,197,94,.15)' : 'rgba(229,166,83,.15)', border: `1px solid ${copied ? 'rgba(34,197,94,.3)' : 'rgba(229,166,83,.3)'}`, color: copied ? '#22C55E' : '#9F8FE3', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -362,7 +362,7 @@ function ContestSetup({ onBack }) {
 
 // ─── Challenge row (compact) ──────────────────────────────────────────────────
 function ChallengeRow({ c, myEmail, onNavigate }) {
-    const sm = STATUS_META[c.status] || { color: '#94A3B8', label: c.status, dot: '•' }
+    const sm = STATUS_META[c.status] || { color: 'var(--text-secondary)', label: c.status, dot: '•' }
     const preset = PRESETS[c.contestType] || PRESETS.MEDIUM
     const isChallenger = c.challengerId === myEmail
     const opponent = isChallenger ? (c.opponentName || c.opponentId) : (c.challengerName || c.challengerId)
@@ -370,9 +370,9 @@ function ChallengeRow({ c, myEmail, onNavigate }) {
     const isActive = c.status === 'ACTIVE'
 
     return (
-        <div onClick={() => onNavigate(c.id)} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', borderRadius: 13, background: 'rgba(255,255,255,.025)', border: `1px solid ${isActive ? 'rgba(34,197,94,.18)' : 'rgba(255,255,255,.06)'}`, cursor: 'pointer', transition: 'all .18s' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.025)'; e.currentTarget.style.transform = 'translateY(0)' }}>
+        <div onClick={() => onNavigate(c.id)} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '14px 18px', borderRadius: 13, background: 'var(--surface-glass)', border: `1px solid ${isActive ? 'rgba(34,197,94,.18)' : 'var(--surface-border)'}`, cursor: 'pointer', transition: 'all .18s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-glass)'; e.currentTarget.style.transform = 'translateY(0)' }}>
 
             {/* Type icon */}
             <div style={{ width: 38, height: 38, borderRadius: 10, background: `${preset.color}12`, border: `1px solid ${preset.color}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
@@ -382,9 +382,9 @@ function ChallengeRow({ c, myEmail, onNavigate }) {
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#E2E8F0' }}>vs {opponent}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>vs {opponent}</span>
                     <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 20, background: `${sm.color}15`, color: sm.color, fontWeight: 700 }}>{sm.dot} {sm.label}</span>
-                    {!isChallenger && <span style={{ fontSize: 9, color: '#475569', background: 'rgba(255,255,255,.05)', padding: '2px 7px', borderRadius: 20 }}>Invited</span>}
+                    {!isChallenger && <span style={{ fontSize: 9, color: 'var(--text-muted)', background: 'var(--surface-glass)', padding: '2px 7px', borderRadius: 20 }}>Invited</span>}
                 </div>
                 <div style={{ fontSize: 11, color: '#475569' }}>#{c.id} · {preset.label} · {timeAgo(c.createdAt)}</div>
             </div>
@@ -414,8 +414,8 @@ function InvitationRow({ c, onAccept, onDecline, actionLoading }) {
                 <div>
                     <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 3 }}>
                         <span style={{ color: preset.color }}>{c.challengerName || c.challengerId}</span>
-                        <span style={{ color: '#64748B', fontWeight: 400 }}> challenged you to a </span>
-                        <span style={{ color: '#E2E8F0' }}>{preset.label} Duel</span>
+                        <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}> challenged you to a </span>
+                        <span style={{ color: 'var(--text-primary)' }}>{preset.label} Duel</span>
                     </div>
                     <div style={{ fontSize: 11.5, color: '#475569' }}>
                         {PRESETS[c.contestType]?.easy > 0 ? `${PRESETS[c.contestType].easy}E ` : ''}
@@ -439,7 +439,7 @@ function InvitationRow({ c, onAccept, onDecline, actionLoading }) {
 }
 
 function Spin() {
-    return <span style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin .7s linear infinite', display: 'inline-block' }} />
+    return <span style={{ width: 12, height: 12, border: '2px solid var(--surface-border)', borderTop: '2px solid var(--text-primary)', borderRadius: '50%', animation: 'spin .7s linear infinite', display: 'inline-block' }} />
 }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
@@ -539,7 +539,7 @@ export default function ChallengePage() {
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
                     <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, background: 'radial-gradient(circle,rgba(229,166,83,.15),transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
                     <div style={{ fontSize: 36, marginBottom: 14 }}>⚔️</div>
-                    <div style={{ fontSize: 18, fontWeight: 900, marginBottom: 6, color: '#E2E8F0' }}>1v1 Duel</div>
+                    <div style={{ fontSize: 18, fontWeight: 900, marginBottom: 6, color: 'var(--text-primary)' }}>1v1 Duel</div>
                     <div style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.6, marginBottom: 18 }}>Challenge a friend head-to-head. Choose your format, pick your problems, fight.</div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', padding: '8px 18px', borderRadius: 10, fontWeight: 700, fontSize: 13 }}>
                         Get Ready for Duel →
@@ -552,7 +552,7 @@ export default function ChallengePage() {
                     onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
                     <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, background: 'radial-gradient(circle,rgba(245,158,11,.12),transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
                     <div style={{ fontSize: 36, marginBottom: 14 }}>🏆</div>
-                    <div style={{ fontSize: 18, fontWeight: 900, marginBottom: 6, color: '#E2E8F0' }}>Group Contest</div>
+                    <div style={{ fontSize: 18, fontWeight: 900, marginBottom: 6, color: 'var(--text-primary)' }}>Group Contest</div>
                     <div style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.6, marginBottom: 18 }}>Organize a coding contest for your team. Set questions, cap participants, share an invite link.</div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg,#F59E0B,#EF4444)', color: '#fff', padding: '8px 18px', borderRadius: 10, fontWeight: 700, fontSize: 13 }}>
                         Organize Contest →
@@ -562,7 +562,7 @@ export default function ChallengePage() {
 
             {/* ── History tabs ── */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                <div style={{ display: 'flex', gap: 4, background: 'rgba(255,255,255,.03)', padding: 3, borderRadius: 10, border: '1px solid rgba(255,255,255,.06)' }}>
+                <div style={{ display: 'flex', gap: 4, background: 'var(--surface-glass)', padding: 3, borderRadius: 10, border: '1px solid var(--surface-border)' }}>
                     {[
                         ['mine', '📋 My Challenges'],
                         ['invitations', `📬 Invitations${pendingCount > 0 ? ` (${pendingCount})` : ''}`],
@@ -581,7 +581,7 @@ export default function ChallengePage() {
                     {!loading && myChallenges.length === 0 && (
                         <div style={{ textAlign: 'center', padding: '48px 20px', color: '#475569' }}>
                             <div style={{ fontSize: 40, marginBottom: 12 }}>⚔️</div>
-                            <div style={{ fontSize: 14, fontWeight: 700, color: '#94A3B8', marginBottom: 6 }}>No challenges yet</div>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 6 }}>No challenges yet</div>
                             <div style={{ fontSize: 12 }}>Start a duel to see your history here.</div>
                         </div>
                     )}
@@ -598,7 +598,7 @@ export default function ChallengePage() {
                     {!loading && invitations.length === 0 && (
                         <div style={{ textAlign: 'center', padding: '48px 20px', color: '#475569' }}>
                             <div style={{ fontSize: 40, marginBottom: 12 }}>📬</div>
-                            <div style={{ fontSize: 14, fontWeight: 700, color: '#94A3B8', marginBottom: 6 }}>No pending invitations</div>
+                            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 6 }}>No pending invitations</div>
                             <div style={{ fontSize: 12 }}>When someone challenges you, it'll show here.</div>
                         </div>
                     )}
@@ -615,7 +615,7 @@ export default function ChallengePage() {
 // ─── Shell wrapper (keeps sidebar + topbar consistent across views) ────────────
 function Shell({ title, subtitle, children }) {
     return (
-        <div className="app-shell" style={{ background: 'linear-gradient(135deg,#0B0F1A,#121727 50%,#06091a)' }}>
+        <div className="app-shell">
             <div style={{ position: 'fixed', top: -200, right: -100, width: 600, height: 600, background: 'radial-gradient(circle,rgba(229,166,83,.07),transparent 65%)', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
             <Sidebar />
             <div className="main-content" style={{ position: 'relative', zIndex: 1 }}>
