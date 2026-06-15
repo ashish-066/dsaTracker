@@ -28,6 +28,8 @@ spring.jpa.show-sql=false
 app.jwt.expiration-ms=${APP_JWT_EXPIRATION_MS:86400000}
 # REQUIRED in production. Generate with:  openssl rand -base64 48
 app.jwt.secret=${APP_JWT_SECRET:}
+# Google OAuth client ID used to verify Google Identity Services ID tokens.
+app.google.client-id=${GOOGLE_CLIENT_ID:}
 
 # ── CORS ──────────────────────────────────────────────────────────────────
 # Comma-separated list of allowed origins, no trailing slashes.

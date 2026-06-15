@@ -1382,6 +1382,26 @@ body::before {
   background: var(--bg-hover);
 }
 
+.google-btn:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+
+.google-auth-host {
+  min-height: 44px;
+  width: 100%;
+}
+
+.google-auth-host > div,
+.google-auth-host iframe {
+  width: 100% !important;
+}
+
+.google-auth-disabled {
+  opacity: .65;
+  pointer-events: none;
+}
+
 .auth-switch {
   text-align: center;
   font-size: 13px;
