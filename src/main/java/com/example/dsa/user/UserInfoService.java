@@ -46,30 +46,37 @@ public class UserInfoService implements org.springframework.security.core.userde
         return "User added successfully!";
     }
 
-    public UserInfo upsertGoogleUser(GoogleAuthService.GoogleProfile profile) {
-        UserInfo user = repository.findByGoogleSubject(profile.subject())
-                .or(() -> repository.findByEmail(profile.email()))
-                .orElseGet(UserInfo::new);
+  public UserInfo upsertGoogleUser(GoogleAuthService.GoogleProfile profile) {
+    UserInfo user = repository.findByGoogleSubject(profile.subject())
+            .or(() -> repository.findByEmail(profile.email()))
+            .orElseGet(UserInfo::new);
 
-        user.setGoogleSubject(profile.subject());
-        user.setEmail(profile.email());
+    user.setGoogleSubject(profile.subject());
+    user.setEmail(profile.email());
+    // Only set the display name when the account doesn't already have one
+    // (brand-new users, or legacy rows with a blank name). We must NOT
+    // overwrite a name the user may have customized via PUT /auth/me —
+    // otherwise every Google login would silently reset it to their
+    // Google profile name. Falls back to email if Google sends no name.
+    if (user.getName() == null || user.getName().isBlank()) {
         if (profile.name() != null && !profile.name().isBlank()) {
             user.setName(profile.name().trim());
-        } else if (user.getName() == null || user.getName().isBlank()) {
+        } else {
             user.setName(profile.email());
         }
-        if ((user.getProfilePic() == null || user.getProfilePic().isBlank())
-                && profile.picture() != null && !profile.picture().isBlank()) {
-            user.setProfilePic(profile.picture());
-        }
-        if (user.getRoles() == null || user.getRoles().isBlank()) {
-            user.setRoles("ROLE_USER");
-        }
-        if (user.getPassword() == null || user.getPassword().isBlank()) {
-            user.setPassword(encoder.encode("google-oauth:" + UUID.randomUUID()));
-        }
-        return repository.save(user);
     }
+    if ((user.getProfilePic() == null || user.getProfilePic().isBlank())
+            && profile.picture() != null && !profile.picture().isBlank()) {
+        user.setProfilePic(profile.picture());
+    }
+    if (user.getRoles() == null || user.getRoles().isBlank()) {
+        user.setRoles("ROLE_USER");
+    }
+    if (user.getPassword() == null || user.getPassword().isBlank()) {
+        user.setPassword(encoder.encode("google-oauth:" + UUID.randomUUID()));
+    }
+    return repository.save(user);
+}
 
     /** Returns the UserInfo for a given email, wrapped in Optional. */
     public Optional<UserInfo> findByEmail(String email) {
