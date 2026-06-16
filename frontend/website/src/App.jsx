@@ -1,34 +1,45 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import ChallengePage from './pages/ChallengePage'
+import CommunityPage from './pages/CommunityPage'
+import ContestPage from './pages/ContestPage'
+import DashboardPage from './pages/DashboardPage'
 import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
-import SignupPage from './pages/SignupPage'
 import OnboardingPage from './pages/OnboardingPage'
-import DashboardPage from './pages/DashboardPage'
 import PracticePage from './pages/PracticePage'
 import ProfilePage from './pages/ProfilePage'
-import ChallengePage from './pages/ChallengePage'
-import ContestPage from './pages/ContestPage'
-import CommunityPage from './pages/CommunityPage'
+import SignupPage from './pages/SignupPage'
+import { TourProvider } from './tour/TourContext'
+import TourOverlay from './tour/TourOverlay'
+
 import UsernameSetupPage from './pages/UsernameSetupPage'
 import { Toaster } from "react-hot-toast";
+function ThemedToaster() {
+    return (
+        <Toaster
+            position="bottom-right"
+            toastOptions={{
+                duration: 3000,
+                style: {
+                    background: "var(--toast-bg)",
+                    color: "var(--toast-color)",
+                    border: "1px solid var(--toast-border)",
+                    borderRadius: "14px",
+                    padding: "14px 18px",
+                },
+            }}
+        />
+    );
+}
+
 
 export default function App() {
     return (
         <BrowserRouter>
-
-            <Toaster
-                position="bottom-right"
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        background: "#111827",
-                        color: "#fff",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: "14px",
-                        padding: "14px 18px",
-                    },
-                }}
-            />
+            <TourProvider>
+            <ThemedToaster />
+            <TourOverlay />
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
@@ -46,6 +57,7 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
 
             </Routes>
+            </TourProvider>
         </BrowserRouter>
     )
 }

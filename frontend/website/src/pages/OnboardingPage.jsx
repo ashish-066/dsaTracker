@@ -1,20 +1,15 @@
 /**
- * OnboardingPage.jsx
- * ──────────────────
+ * OnboardingPage.jsx (Updated)
+ * ──────────────────────────────
  * Multi-step onboarding with proof-of-ownership verification.
- *
- * The "prove you own the account" challenge is back: the user types their
- * handle, clicks Link, the backend picks a target problem (LeetCode: Two Sum,
- * Codeforces: 4A Watermelon) and records startTime. The user submits that
- * problem on the real platform, clicks Check, and the backend scans their
- * recent submissions for an Accepted entry after startTime. Verified only
- * then. All of this now runs against the main backend (port 8080) — the
- * old separate-service-on-port-4000 dependency is gone.
+ * Now integrated with the tour feature - tour will start automatically
+ * after onboarding completes on the dashboard.
  */
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as api from '../services/api'
+import { useTour } from '../tour/TourContext'
 
 const STEPS = ['Skill Level', 'Platforms', 'Companies']
 
@@ -37,6 +32,7 @@ const PLATFORM_CONFIG = [
 
 export default function OnboardingPage() {
     const navigate = useNavigate()
+    const { startTour } = useTour()
     const [step, setStep] = useState(0)
     const [skill, setSkill] = useState(null)
     const [selectedCompanies, setSelectedCompanies] = useState([])
@@ -156,210 +152,235 @@ export default function OnboardingPage() {
         })
     }
 
+    // ── Finish onboarding and redirect to dashboard
+    // The tour will start automatically on the dashboard via useEffect
     const handleFinish = async () => {
-        // Run every linkPlatform call in parallel — they're independent server-side
-        // and the old sequential loop was adding whole seconds on accounts with
-        // multiple verified platforms (each POST triggers a backend sync).
-        const linkJobs = Object.entries(platformState)
-            .filter(([, ps]) => ps.status === 'verified' && ps.username.trim())
-            .map(([key, ps]) =>
-                api.linkPlatform(key, ps.username.trim())
-                    .catch(err => { console.error(`Failed to link ${key}:`, err); return null })
-            )
-        await Promise.all(linkJobs)
+        try {
+            // Save onboarding data to backend
+            await api.completeOnboarding({
+                skillLevel: skill,
+                selectedCompanies,
+                platforms: Object.keys(platformState).reduce((acc, key) => {
+                    if (platformState[key].status === 'verified') {
+                        acc[key] = {
+                            username: platformState[key].username,
+                            verified: true,
+                        }
+                    }
+                    return acc
+                }, {}),
+            })
 
-        // Any cached dashboard data from before linking is now stale (new
-        // platforms just got attached). Wipe it so the dashboard mounts
-        // with a fresh fetch exactly once, then caches.
-        try { api.invalidateDashboardCache() } catch { /* ignore */ }
+            // Mark tour as not completed so it starts fresh
+            localStorage.removeItem('algoSprint_tourCompleted')
 
-        navigate('/dashboard')
+            // Navigate to dashboard - tour will start there
+            navigate('/dashboard')
+
+            // Start tour on next tick to ensure component mounted
+            setTimeout(() => {
+                startTour()
+            }, 500)
+        } catch (err) {
+            console.error('Error completing onboarding:', err)
+        }
     }
 
     return (
-        <div className="onboarding-page">
-            <div className="onboarding-card">
-                {/* Step indicator */}
-                <div className="progress-bar-wrap">
-                    <div className="progress-steps">
-                        {STEPS.map((label, i) => (
-                            <div key={label} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                                <div className="progress-step">
-                                    <div className={`step-circle ${i < step ? 'done' : i === step ? 'active' : 'pending'}`}>
-                                        {i < step ? '✓' : i + 1}
-                                    </div>
-                                    <span className="step-label">{label}</span>
-                                </div>
-                                {i < STEPS.length - 1 && (
-                                    <div className={`step-connector ${i < step ? 'done' : ''}`} />
-                                )}
-                            </div>
-                        ))}
-                    </div>
+        <div style={{
+            minHeight: '100vh',
+            background: 'var(--bg-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+        }}>
+            <div style={{
+                width: '100%',
+                maxWidth: '500px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: '16px',
+                padding: '40px',
+            }}>
+
+                {/* Header */}
+                <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                    <div style={{ fontSize: 32, marginBottom: 12 }}>🚀</div>
+                    <h1 style={{ fontSize: 24, fontWeight: 700, margin: '0 0 8px 0', color: 'var(--text-primary)' }}>
+                        Let's Get Started
+                    </h1>
+                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 14 }}>
+                        Tell us about yourself so we can personalize your experience
+                    </p>
                 </div>
 
-                {/* Step 0 — Skill Level */}
+                {/* Progress indicator */}
+                <div style={{ display: 'flex', gap: 8, marginBottom: 32, justifyContent: 'center' }}>
+                    {STEPS.map((s, i) => (
+                        <div
+                            key={i}
+                            style={{
+                                height: 8,
+                                flex: 1,
+                                maxWidth: 100,
+                                borderRadius: 4,
+                                background: i < step ? 'var(--primary-color)' : i === step ? 'var(--primary-color)' : 'var(--bg-tertiary)',
+                                transition: 'all 0.3s ease',
+                            }}
+                        />
+                    ))}
+                </div>
+
+                {/* Step content */}
                 {step === 0 && (
                     <>
-                        <h2 className="onb-title">What's your current level?</h2>
-                        <p className="onb-sub">We'll personalize your experience based on where you are now.</p>
-                        <div className="skill-options">
+                        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: 'var(--text-primary)' }}>
+                            What's your skill level?
+                        </h2>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 30 }}>
                             {SKILLS.map(s => (
-                                <div
+                                <button
                                     key={s.id}
-                                    className={`skill-option ${skill === s.id ? 'selected' : ''}`}
                                     onClick={() => setSkill(s.id)}
-                                    id={`skill-${s.id}`}
+                                    style={{
+                                        padding: '16px',
+                                        border: skill === s.id ? '2px solid var(--primary-color)' : '1px solid var(--border)',
+                                        background: skill === s.id ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-primary)',
+                                        borderRadius: '10px',
+                                        cursor: 'pointer',
+                                        textAlign: 'left',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.background = e.currentTarget.style.background === 'rgba(59, 130, 246, 0.1)' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)'
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = skill === s.id ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-primary)'
+                                    }}
                                 >
-                                    <div className="skill-icon">{s.icon}</div>
-                                    <div className="skill-name">{s.name}</div>
-                                    <div className="skill-desc">{s.desc}</div>
-                                </div>
+                                    <div style={{ fontSize: 18, marginBottom: 6 }}>{s.icon}</div>
+                                    <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 }}>{s.name}</div>
+                                    <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>{s.desc}</div>
+                                </button>
                             ))}
                         </div>
                     </>
                 )}
 
-                {/* Step 1 — Platforms with Submission-based Verification */}
                 {step === 1 && (
                     <>
-                        <h2 className="onb-title">Verify your platforms</h2>
-                        <p className="onb-sub">Prove account ownership by solving a quick problem. We'll check your recent submissions.</p>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 16 }}>
+                        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--text-primary)' }}>
+                            Connect your accounts
+                        </h2>
+                        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20, lineHeight: 1.5 }}>
+                            Verify at least one platform to continue. We'll sync your problem history.
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 30 }}>
                             {PLATFORM_CONFIG.map(p => {
                                 const ps = platformState[p.key]
                                 return (
-                                    <div key={p.key} style={{
-                                        padding: 16, borderRadius: 12,
-                                        border: ps.status === 'verified' ? '2px solid #22C55E' : '1px solid var(--border)',
-                                        background: ps.status === 'verified' ? 'rgba(34,197,94,0.05)' : 'var(--bg-card)',
-                                    }}>
-                                        {/* Header */}
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                                            <span style={{ fontWeight: 700, color: p.color, fontSize: 15 }}>{p.label}</span>
-                                            {ps.status === 'verified' && (
-                                                <span style={{
-                                                    padding: '3px 10px', borderRadius: 99, fontSize: 12, fontWeight: 700,
-                                                    background: 'rgba(136,192,163,0.15)', color: 'var(--sage)',
-                                                }}>✓ Verified</span>
-                                            )}
-                                            {(ps.status === 'pending' || ps.status === 'checking') && (
-                                                <span style={{
-                                                    padding: '3px 10px', borderRadius: 99, fontSize: 12, fontWeight: 700,
-                                                    background: 'rgba(229,166,83,0.15)', color: 'var(--amber)',
-                                                }}>⏳ Awaiting submission</span>
-                                            )}
-                                        </div>
+                                    <div key={p.key}>
+                                        <label style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 6, display: 'block' }}>
+                                            {p.label}
+                                        </label>
 
-                                        {/* Idle: username input + Link button */}
                                         {ps.status === 'idle' && (
                                             <div style={{ display: 'flex', gap: 8 }}>
                                                 <input
-                                                    id={`platform-${p.key}`}
                                                     type="text"
-                                                    className="input-field"
                                                     placeholder={p.placeholder}
                                                     value={ps.username}
                                                     onChange={e => updatePlatform(p.key, { username: e.target.value })}
-                                                    onKeyDown={e => { if (e.key === 'Enter') handleStart(p.key) }}
-                                                    style={{ flex: 1 }}
-                                                    disabled={ps.loading}
-                                                    autoComplete="off"
-                                                    autoCapitalize="off"
-                                                    spellCheck={false}
+                                                    style={{
+                                                        flex: 1,
+                                                        padding: '10px 12px',
+                                                        border: '1px solid var(--border)',
+                                                        borderRadius: '8px',
+                                                        background: 'var(--bg-primary)',
+                                                        color: 'var(--text-primary)',
+                                                        fontSize: 13,
+                                                    }}
                                                 />
                                                 <button
-                                                    className="btn btn-primary btn-sm"
                                                     onClick={() => handleStart(p.key)}
-                                                    disabled={ps.loading || !ps.username.trim()}
-                                                    style={{ whiteSpace: 'nowrap' }}
+                                                    disabled={ps.loading}
+                                                    style={{
+                                                        padding: '10px 16px',
+                                                        background: p.color,
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '8px',
+                                                        fontWeight: 600,
+                                                        fontSize: 13,
+                                                        cursor: ps.loading ? 'not-allowed' : 'pointer',
+                                                        opacity: ps.loading ? 0.7 : 1,
+                                                    }}
                                                 >
-                                                    {ps.loading ? '⏳…' : '🔗 Link'}
+                                                    {ps.loading ? '⏳' : '🔗'}
                                                 </button>
                                             </div>
                                         )}
 
-                                        {/* Pending/checking: show the target problem + the Check button */}
                                         {(ps.status === 'pending' || ps.status === 'checking') && ps.problemUrl && (
-                                            <div style={{ marginTop: 4 }}>
-                                                <div style={{
-                                                    background: 'var(--bg-tertiary)',
-                                                    border: '1px dashed var(--border)',
-                                                    borderRadius: 10,
-                                                    padding: 12,
-                                                    marginBottom: 10,
-                                                }}>
-                                                    <div style={{ fontWeight: 700, marginBottom: 6, color: 'var(--text-primary)', fontSize: 13 }}>
-                                                        Prove you own <b>@{ps.username}</b>:
-                                                    </div>
-                                                    <div style={{ color: 'var(--text-secondary)', fontSize: 12.5, marginBottom: 4 }}>
-                                                        1. Open the problem below and submit <i>anything</i> — even a wrong answer is fine
-                                                    </div>
-                                                    <div style={{ color: 'var(--text-secondary)', fontSize: 12.5, marginBottom: 10 }}>
-                                                        2. Come back and hit <b>Check Submission</b>
-                                                    </div>
-                                                    <a
-                                                        href={ps.problemUrl}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        style={{
-                                                            display: 'inline-block',
-                                                            padding: '7px 14px', borderRadius: 7,
-                                                            background: 'var(--amber-light)',
-                                                            color: 'var(--amber)', fontWeight: 700,
-                                                            fontSize: 13, textDecoration: 'none',
-                                                        }}
-                                                    >
-                                                        🔗 {ps.problemName || 'Open Problem'}
-                                                    </a>
-                                                    <div className="accent-hand" style={{ fontSize: 14, color: 'var(--text-muted)', marginTop: 10 }}>
-                                                        only submissions after you clicked Link count — we record the timestamp server-side
-                                                    </div>
+                                            <div style={{ padding: 12, background: 'var(--bg-primary)', borderRadius: 8, border: '1px dashed var(--border)', marginBottom: 10 }}>
+                                                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
+                                                    Verify your account by solving this problem:
                                                 </div>
-
-                                                <div style={{ display: 'flex', gap: 8 }}>
-                                                    <button
-                                                        className="btn btn-primary btn-sm"
-                                                        onClick={() => handleCheck(p.key)}
-                                                        disabled={ps.loading}
-                                                        style={{ flex: 1 }}
-                                                    >
-                                                        {ps.loading ? '⏳ Checking…' : '✓ Check Submission'}
-                                                    </button>
-                                                    <button
-                                                        className="btn btn-ghost btn-sm"
-                                                        onClick={() => handleReset(p.key)}
-                                                        disabled={ps.loading}
-                                                    >
-                                                        ↩ Cancel
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Verified */}
-                                        {ps.status === 'verified' && (
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                                                <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                                                    Verified as <b style={{ color: 'var(--text-primary)' }}>@{ps.username}</b>
-                                                </div>
-                                                <button
-                                                    className="btn btn-ghost btn-sm"
-                                                    onClick={() => handleReset(p.key)}
-                                                    style={{ fontSize: 12 }}
+                                                <a
+                                                    href={ps.problemUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{
+                                                        display: 'inline-block',
+                                                        padding: '6px 12px',
+                                                        background: p.color,
+                                                        color: 'white',
+                                                        borderRadius: 6,
+                                                        textDecoration: 'none',
+                                                        fontSize: 12,
+                                                        fontWeight: 600,
+                                                        marginBottom: 10,
+                                                    }}
                                                 >
-                                                    Change
+                                                    {ps.problemName}
+                                                </a>
+                                                <button
+                                                    onClick={() => handleCheck(p.key)}
+                                                    disabled={ps.loading}
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '8px',
+                                                        background: 'var(--primary-color)',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        borderRadius: '6px',
+                                                        fontSize: 12,
+                                                        fontWeight: 600,
+                                                        cursor: ps.loading ? 'not-allowed' : 'pointer',
+                                                    }}
+                                                >
+                                                    {ps.loading ? '⏳ Checking...' : '✓ Check Submission'}
                                                 </button>
                                             </div>
                                         )}
 
-                                        {/* Error / info messages */}
-                                        {ps.message && (
+                                        {ps.status === 'verified' && (
                                             <div style={{
-                                                marginTop: 8, fontSize: 12, fontWeight: 600,
-                                                color: ps.status === 'verified' ? 'var(--sage)' : 'var(--rose)',
+                                                padding: '10px 12px',
+                                                background: 'rgba(16, 185, 129, 0.1)',
+                                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                                borderRadius: '8px',
+                                                color: '#10b981',
+                                                fontSize: 12,
+                                                fontWeight: 600,
                                             }}>
+                                                ✅ Verified as @{ps.username}
+                                            </div>
+                                        )}
+
+                                        {ps.message && (
+                                            <div style={{ fontSize: 12, color: ps.status === 'verified' ? '#10b981' : '#ef4444', marginTop: 6 }}>
                                                 {ps.message}
                                             </div>
                                         )}
@@ -367,63 +388,92 @@ export default function OnboardingPage() {
                                 )
                             })}
                         </div>
-
-                        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 12 }}>
-                            ✓ Verify at least one platform to continue
-                        </p>
                     </>
                 )}
 
-                {/* Step 2 — Companies */}
                 {step === 2 && (
                     <>
-                        <h2 className="onb-title">Target companies</h2>
-                        <p className="onb-sub">Select companies you're targeting. We'll tailor problem recommendations accordingly.</p>
-                        <div className="companies-grid">
+                        <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--text-primary)' }}>
+                            Target companies
+                        </h2>
+                        <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>
+                            Select companies you're targeting. We'll tailor recommendations accordingly.
+                        </p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 30 }}>
                             {COMPANIES.map(c => (
-                                <div
+                                <button
                                     key={c}
-                                    id={`company-${c.replace(/\s/g, '-').toLowerCase()}`}
-                                    className={`company-chip ${selectedCompanies.includes(c) ? 'selected' : ''}`}
                                     onClick={() => toggleCompany(c)}
+                                    style={{
+                                        padding: '12px',
+                                        border: selectedCompanies.includes(c) ? '2px solid var(--primary-color)' : '1px solid var(--border)',
+                                        background: selectedCompanies.includes(c) ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-primary)',
+                                        borderRadius: '8px',
+                                        color: 'var(--text-primary)',
+                                        fontWeight: 600,
+                                        fontSize: 13,
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (!selectedCompanies.includes(c)) {
+                                            e.currentTarget.style.background = 'var(--bg-tertiary)'
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.background = selectedCompanies.includes(c) ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-primary)'
+                                    }}
                                 >
                                     {c}
-                                </div>
+                                </button>
                             ))}
                         </div>
                     </>
                 )}
 
-                {/* Navigation */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 36, gap: 12 }}>
-                    {step > 0 ? (
-                        <button className="btn btn-secondary" onClick={() => setStep(s => s - 1)}>
-                            ← Back
-                        </button>
-                    ) : <div />}
+                {/* Navigation buttons */}
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between' }}>
+                    <button
+                        onClick={() => setStep(s => Math.max(0, s - 1))}
+                        disabled={step === 0}
+                        style={{
+                            padding: '12px 20px',
+                            border: '1px solid var(--border)',
+                            background: 'transparent',
+                            borderRadius: '8px',
+                            color: 'var(--text-primary)',
+                            fontWeight: 600,
+                            cursor: step === 0 ? 'not-allowed' : 'pointer',
+                            opacity: step === 0 ? 0.5 : 1,
+                        }}
+                    >
+                        ← Back
+                    </button>
 
-                    {step < STEPS.length - 1 ? (
-                        <button
-                            id="onb-next"
-                            className="btn btn-primary"
-                            disabled={!canProceed()}
-                            onClick={() => setStep(s => s + 1)}
-                            style={{ opacity: canProceed() ? 1 : 0.5 }}
-                        >
-                            Continue →
-                        </button>
-                    ) : (
-                        <button
-                            id="onb-finish"
-                            className="btn btn-primary"
-                            disabled={!canProceed()}
-                            onClick={handleFinish}
-                            style={{ opacity: canProceed() ? 1 : 0.5 }}
-                        >
-                            🚀 Finish Setup
-                        </button>
-                    )}
+                    <button
+                        onClick={() => {
+                            if (step < STEPS.length - 1) {
+                                setStep(s => s + 1)
+                            } else {
+                                handleFinish()
+                            }
+                        }}
+                        disabled={!canProceed()}
+                        style={{
+                            padding: '12px 20px',
+                            background: 'var(--primary-color)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: 600,
+                            cursor: canProceed() ? 'pointer' : 'not-allowed',
+                            opacity: canProceed() ? 1 : 0.5,
+                        }}
+                    >
+                        {step < STEPS.length - 1 ? 'Continue →' : '🚀 Get Started'}
+                    </button>
                 </div>
+
             </div>
         </div>
     )

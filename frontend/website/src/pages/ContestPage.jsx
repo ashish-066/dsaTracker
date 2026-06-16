@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import * as api from '../services/api'
 import { useProfilePic } from '../utils/profilePic'
@@ -121,8 +121,8 @@ export default function ContestPage() {
 
     /* ── loading / error ── */
     if (loading) return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0B0F1A' }}>
-            <div style={{ textAlign: 'center', color: '#64748B' }}>
+        <div className="contest-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
                 <div style={{ width: 48, height: 48, border: '3px solid rgba(229,166,83,.2)', borderTop: '3px solid #E5A653', borderRadius: '50%', animation: 'spin .8s linear infinite', margin: '0 auto 16px' }} />
                 <div style={{ fontSize: 13 }}>Loading contest…</div>
             </div>
@@ -131,7 +131,7 @@ export default function ContestPage() {
     )
 
     if (error || !challenge) return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0B0F1A', color: '#EF4444', gap: 16 }}>
+        <div className="contest-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#EF4444', gap: 16 }}>
             <div style={{ fontSize: 48 }}>⚠️</div>
             <div style={{ fontSize: 15 }}>{error || 'Challenge not found'}</div>
             <button onClick={() => navigate('/challenges')} style={{ background: 'rgba(229,166,83,.2)', border: '1px solid rgba(229,166,83,.4)', color: '#9F8FE3', padding: '10px 20px', borderRadius: 10, cursor: 'pointer', fontWeight: 600 }}>← Back to Challenges</button>
@@ -160,7 +160,7 @@ export default function ContestPage() {
     const isDraw = isCompleted && !challenge.winnerId
 
     return (
-        <div ref={containerRef} style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#0B0F1A 0%,#121727 55%,#0B0F1A 100%)', fontFamily: 'Inter,system-ui,sans-serif', color: '#F1F5F9', position: 'relative' }}>
+        <div ref={containerRef} className="contest-page">
             {/* ambient */}
             <div style={{ position: 'fixed', top: -200, right: -200, width: 600, height: 600, background: `radial-gradient(circle,${cfg.color}10 0%,transparent 65%)`, borderRadius: '50%', pointerEvents: 'none' }} />
             <div style={{ position: 'fixed', bottom: -200, left: -100, width: 500, height: 500, background: 'radial-gradient(circle,rgba(159,143,227,.07) 0%,transparent 65%)', borderRadius: '50%', pointerEvents: 'none' }} />
@@ -170,7 +170,7 @@ export default function ContestPage() {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.88)', zIndex: 9999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18 }}>
                     <div style={{ fontSize: 56 }}>⚠️</div>
                     <div style={{ fontSize: 22, fontWeight: 800, color: '#F59E0B' }}>Exited Fullscreen!</div>
-                    <div style={{ fontSize: 13, color: '#94A3B8', marginBottom: 8, textAlign: 'center', maxWidth: 340 }}>Stay in fullscreen during the contest. Your timer is still running.</div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8, textAlign: 'center', maxWidth: 340 }}>Stay in fullscreen during the contest. Your timer is still running.</div>
                     <button onClick={() => { enterFullscreen(); setFsWarning(false) }} style={{ background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', border: 'none', padding: '14px 32px', borderRadius: 13, fontWeight: 800, fontSize: 15, cursor: 'pointer', boxShadow: '0 6px 24px rgba(229,166,83,.5)' }}>↩ Return to Contest</button>
                 </div>
             )}
@@ -180,7 +180,7 @@ export default function ContestPage() {
                 {/* ── HEADER ── */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 14 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                        <button onClick={() => navigate('/challenges')} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.08)', color: '#94A3B8', padding: '8px 16px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>← Back</button>
+                        <button onClick={() => navigate('/challenges')} style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: 'var(--text-secondary)', padding: '8px 16px', borderRadius: 10, cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>← Back</button>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{ width: 38, height: 38, borderRadius: 10, background: `${cfg.color}15`, border: `1px solid ${cfg.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>{cfg.icon}</div>
                             <div>
@@ -207,7 +207,7 @@ export default function ContestPage() {
                             </button>
                         )}
                         {isActive && !document.fullscreenElement && (
-                            <button onClick={enterFullscreen} style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.08)', color: '#94A3B8', padding: '8px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12 }}>⛶ Fullscreen</button>
+                            <button onClick={enterFullscreen} style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', color: 'var(--text-secondary)', padding: '8px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 12 }}>⛶ Fullscreen</button>
                         )}
                         {isPending && isOpponent && (
                             <button onClick={async () => { const r = await api.acceptChallenge(id); if (r.success) load() }} style={{ background: `linear-gradient(135deg,${cfg.color},${cfg.color}cc)`, color: '#fff', border: 'none', padding: '10px 22px', borderRadius: 11, fontWeight: 800, cursor: 'pointer', boxShadow: `0 4px 16px ${cfg.glow}` }}>⚔️ Accept Challenge</button>
@@ -229,17 +229,17 @@ export default function ContestPage() {
 
                 {/* ── TIMER BAR (only when active) ── */}
                 {isActive && (
-                    <div style={{ background: 'rgba(255,255,255,.025)', border: `1px solid ${urgentColor}30`, borderRadius: 16, padding: '16px 22px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 20 }}>
+                    <div style={{ background: 'var(--surface-glass)', border: `1px solid ${urgentColor}30`, borderRadius: 16, padding: '16px 22px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 20 }}>
                         <div style={{ textAlign: 'center', minWidth: 90 }}>
                             <div style={{ fontSize: 36, fontWeight: 900, color: urgentColor, fontVariantNumeric: 'tabular-nums', letterSpacing: '0.03em', lineHeight: 1, textShadow: `0 0 20px ${urgentColor}60` }}>{fmtTime(secsLeft)}</div>
                             <div style={{ fontSize: 10, color: '#475569', marginTop: 3, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Remaining</div>
                         </div>
                         <div style={{ flex: 1 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                                <span style={{ fontSize: 11, color: '#64748B' }}>Time elapsed</span>
+                                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Time elapsed</span>
                                 <span style={{ fontSize: 11, color: urgentColor, fontWeight: 600 }}>{secsLeft < 120 ? '⚠️ Almost out!' : secsLeft < 300 ? 'Hurry up!' : 'On track'}</span>
                             </div>
-                            <div style={{ height: 8, background: 'rgba(255,255,255,.06)', borderRadius: 8, overflow: 'hidden' }}>
+                            <div style={{ height: 8, background: 'var(--surface-hover)', borderRadius: 8, overflow: 'hidden' }}>
                                 <div style={{ height: '100%', width: `${Math.max(0, Math.min(100, timerPct))}%`, background: `linear-gradient(90deg,${urgentColor},${urgentColor}99)`, borderRadius: 8, transition: 'width 1s linear', boxShadow: `0 0 8px ${urgentColor}60` }} />
                             </div>
                         </div>
@@ -258,23 +258,23 @@ export default function ContestPage() {
                         <div style={{ fontSize: 26, fontWeight: 900, color: isDraw ? '#9F8FE3' : iWon ? '#22C55E' : '#EF4444', marginBottom: 8 }}>
                             {isDraw ? "It's a Draw!" : iWon ? 'You Won!' : 'You Lost'}
                         </div>
-                        <div style={{ fontSize: 13, color: '#94A3B8', marginBottom: 18 }}>
+                        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 18 }}>
                             {isDraw ? 'Both players tied on problems solved.' : `${challenge.winnerId === challenge.challengerId ? challenge.challengerName : challenge.opponentName} wins this contest.`}
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'center', gap: 32 }}>
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 28, fontWeight: 900, color: iWon ? '#22C55E' : '#F1F5F9' }}>{myProgress.solved || 0}</div>
-                                <div style={{ fontSize: 11, color: '#64748B' }}>Your solves</div>
+                                <div style={{ fontSize: 28, fontWeight: 900, color: iWon ? '#22C55E' : 'var(--text-primary)' }}>{myProgress.solved || 0}</div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Your solves</div>
                             </div>
-                            <div style={{ width: 1, background: 'rgba(255,255,255,.06)' }} />
+                            <div style={{ width: 1, background: 'var(--surface-border)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 28, fontWeight: 900, color: '#F1F5F9' }}>{theirProgress.solved || 0}</div>
-                                <div style={{ fontSize: 11, color: '#64748B' }}>Opponent solves</div>
+                                <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--text-primary)' }}>{theirProgress.solved || 0}</div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Opponent solves</div>
                             </div>
-                            <div style={{ width: 1, background: 'rgba(255,255,255,.06)' }} />
+                            <div style={{ width: 1, background: 'var(--surface-border)' }} />
                             <div style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: 28, fontWeight: 900, color: '#64748B' }}>{totalProblems}</div>
-                                <div style={{ fontSize: 11, color: '#64748B' }}>Total problems</div>
+                                <div style={{ fontSize: 28, fontWeight: 900, color: 'var(--text-muted)' }}>{totalProblems}</div>
+                                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>Total problems</div>
                             </div>
                         </div>
                     </div>
@@ -290,7 +290,7 @@ export default function ContestPage() {
                         if (item === null) return (
                             <div key="vs" style={{ textAlign: 'center' }}>
                                 <div style={{ fontSize: 14, fontWeight: 900, color: '#334155', marginBottom: 4 }}>VS</div>
-                                {isActive && <div style={{ width: 2, height: 40, background: 'rgba(255,255,255,.06)', margin: '0 auto' }} />}
+                                {isActive && <div style={{ width: 2, height: 40, background: 'var(--surface-border)', margin: '0 auto' }} />}
                             </div>
                         )
                         const { prog, isMe } = item
@@ -299,8 +299,8 @@ export default function ContestPage() {
                         const barColor = isWinner ? '#22C55E' : isMe ? '#E5A653' : '#475569'
                         return (
                             <div key={i} style={{
-                                background: isWinner ? 'rgba(34,197,94,.06)' : isMe ? 'rgba(229,166,83,.05)' : 'rgba(255,255,255,.025)',
-                                border: `1px solid ${isWinner ? 'rgba(34,197,94,.3)' : isMe ? 'rgba(229,166,83,.25)' : 'rgba(255,255,255,.06)'}`,
+                                background: isWinner ? 'rgba(34,197,94,.06)' : isMe ? 'rgba(229,166,83,.05)' : 'var(--surface-glass)',
+                                border: `1px solid ${isWinner ? 'rgba(34,197,94,.3)' : isMe ? 'rgba(229,166,83,.25)' : 'var(--surface-border)'}`,
                                 borderRadius: 18, padding: '20px 22px', backdropFilter: 'blur(20px)',
                                 boxShadow: isWinner ? '0 0 30px rgba(34,197,94,.12)' : 'none',
                             }}>
@@ -319,12 +319,12 @@ export default function ContestPage() {
                                 {/* Score */}
                                 <div style={{ marginBottom: 12 }}>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 8 }}>
-                                        <span style={{ fontSize: 44, fontWeight: 900, color: isWinner ? '#22C55E' : isMe ? '#E5A653' : '#F1F5F9', lineHeight: 1, textShadow: isWinner ? '0 0 20px rgba(34,197,94,.4)' : 'none' }}>{prog?.solved || 0}</span>
+                                        <span style={{ fontSize: 44, fontWeight: 900, color: isWinner ? '#22C55E' : isMe ? '#E5A653' : 'var(--text-primary)', lineHeight: 1, textShadow: isWinner ? '0 0 20px rgba(34,197,94,.4)' : 'none' }}>{prog?.solved || 0}</span>
                                         <span style={{ fontSize: 16, color: '#334155', fontWeight: 500 }}>/ {totalProblems}</span>
                                         <span style={{ fontSize: 11, color: '#475569', marginLeft: 4 }}>solved</span>
                                     </div>
                                     {/* Progress bar */}
-                                    <div style={{ height: 8, background: 'rgba(255,255,255,.06)', borderRadius: 8, overflow: 'hidden' }}>
+                                    <div style={{ height: 8, background: 'var(--surface-hover)', borderRadius: 8, overflow: 'hidden' }}>
                                         <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg,${barColor},${barColor}bb)`, borderRadius: 8, transition: 'width .8s ease', boxShadow: pct > 0 ? `0 0 8px ${barColor}60` : 'none' }} />
                                     </div>
                                 </div>
@@ -340,11 +340,11 @@ export default function ContestPage() {
                 </div>
 
                 {/* ── PROBLEMS ── */}
-                <div style={{ background: 'rgba(255,255,255,.022)', backdropFilter: 'blur(24px)', border: '1px solid rgba(255,255,255,.065)', borderRadius: 20, padding: '22px 24px' }}>
+                <div style={{ background: 'var(--bg-card)', backdropFilter: 'blur(24px)', border: '1px solid var(--surface-border)', borderRadius: 20, padding: '22px 24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
                         <div>
                             <div style={{ fontSize: 15, fontWeight: 800, marginBottom: 2 }}>Contest Problems</div>
-                            <div style={{ fontSize: 11.5, color: '#64748B' }}>
+                            <div style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>
                                 {isActive ? 'Solve on LeetCode · Solves detected automatically after syncing' : isPending ? 'Problems are revealed when the contest starts' : 'Final problem set for this contest'}
                             </div>
                         </div>
@@ -356,7 +356,7 @@ export default function ContestPage() {
                     </div>
 
                     {!challenge.problems?.length ? (
-                        <div style={{ textAlign: 'center', padding: '36px 0', color: '#64748B' }}>
+                        <div style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)' }}>
                             {isPending ? '🔒 Problems are locked until the contest starts.' : 'No problems assigned.'}
                         </div>
                     ) : (
@@ -369,12 +369,12 @@ export default function ContestPage() {
                                 return (
                                     <div key={i} style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        padding: '14px 18px', background: 'rgba(255,255,255,.02)',
-                                        border: '1px solid rgba(255,255,255,.05)', borderRadius: 14,
+                                        padding: '14px 18px', background: 'var(--surface-glass)',
+                                        border: '1px solid var(--surface-border)', borderRadius: 14,
                                         transition: 'all .2s', gap: 16,
                                     }}
-                                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,.04)'; e.currentTarget.style.borderColor = 'rgba(229,166,83,.2)' }}
-                                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,.02)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,.05)' }}
+                                        onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.borderColor = 'rgba(229,166,83,.2)' }}
+                                        onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-glass)'; e.currentTarget.style.borderColor = 'var(--surface-border)' }}
                                     >
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flex: 1 }}>
                                             {/* Number badge */}
@@ -383,7 +383,7 @@ export default function ContestPage() {
                                                 <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 5 }}>{title}</div>
                                                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                                                     <span style={{ fontSize: 10.5, fontWeight: 700, color: dc, background: dbg, padding: '2px 10px', borderRadius: 20, border: `1px solid ${dc}30` }}>{p.difficulty}</span>
-                                                    {p.platform && <span style={{ fontSize: 10, color: '#64748B', background: 'rgba(255,255,255,.04)', padding: '2px 9px', borderRadius: 20 }}>{p.platform}</span>}
+                                                    {p.platform && <span style={{ fontSize: 10, color: 'var(--text-muted)', background: 'var(--surface-glass)', padding: '2px 9px', borderRadius: 20 }}>{p.platform}</span>}
                                                 </div>
                                             </div>
                                         </div>
@@ -396,7 +396,7 @@ export default function ContestPage() {
                                             ].map(({ prog, label, color }) => {
                                                 const solved = prog?.solvedTitles?.includes(p.titleSlug) || prog?.solvedTitles?.includes(title)
                                                 return (
-                                                    <div key={label} title={`${label}: ${solved ? 'Solved' : 'Pending'}`} style={{ width: 24, height: 24, borderRadius: 6, background: solved ? `${color}20` : 'rgba(255,255,255,.04)', border: `1px solid ${solved ? color + '40' : 'rgba(255,255,255,.06)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, transition: 'all .2s' }}>
+                                                    <div key={label} title={`${label}: ${solved ? 'Solved' : 'Pending'}`} style={{ width: 24, height: 24, borderRadius: 6, background: solved ? `${color}20` : 'var(--surface-glass)', border: `1px solid ${solved ? color + '40' : 'var(--surface-border)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, transition: 'all .2s' }}>
                                                         {solved ? '✓' : '·'}
                                                     </div>
                                                 )
@@ -418,7 +418,7 @@ export default function ContestPage() {
 
                     {isActive && (
                         <div style={{ marginTop: 18, padding: '13px 18px', background: 'rgba(56,189,248,.04)', border: '1px solid rgba(56,189,248,.15)', borderRadius: 12 }}>
-                            <div style={{ fontSize: 12, color: '#94A3B8', lineHeight: 1.8 }}>
+                            <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
                                 <strong style={{ color: '#38BDF8' }}>💡 Scoring:</strong> Solve problems on LeetCode directly. Click <em>Sync Solves</em> above or visit the Dashboard and hit Sync to record your progress. Leaderboard auto-refreshes every 10 seconds.
                             </div>
                         </div>

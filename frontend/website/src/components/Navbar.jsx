@@ -76,11 +76,11 @@ export default function Navbar({ scrolled }) {
                     minWidth: 0,
                 }}
             >
-                <div className="ml-logo-icon">
+                <div className="ml-logo-icon" style={{ color: 'var(--text-primary)' }}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                         <path
                             d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                            stroke="#F5EBD6"
+                            stroke="currentColor"
                             strokeWidth="2.2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -120,7 +120,7 @@ export default function Navbar({ scrolled }) {
                     width: '42px',
                     height: '42px',
                     fontSize: '1.6rem',
-                    color: '#F5EBD6',
+                    color: 'var(--text-primary)',
                     background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',

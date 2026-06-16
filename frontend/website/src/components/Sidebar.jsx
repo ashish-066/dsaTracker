@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { getUserName, getUserEmail, fetchDashboardData } from '../services/api'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { fetchDashboardData, getUserEmail, getUserName } from '../services/api'
 import { useProfilePic } from '../utils/profilePic'
 
 const NAV_ITEMS = [
@@ -12,7 +12,7 @@ const NAV_ITEMS = [
         ),
         label: 'Dashboard',
         path: '/dashboard',
-        color: '#6366F1',
+        color: 'var(--nav-dashboard)',
     },
     {
         icon: (
@@ -22,7 +22,7 @@ const NAV_ITEMS = [
         ),
         label: 'Training',
         path: '/problems',
-        color: '#22D3EE',
+        color: 'var(--nav-training)',
     },
     {
         icon: (
@@ -32,7 +32,7 @@ const NAV_ITEMS = [
         ),
         label: 'Challenges',
         path: '/challenges',
-        color: '#F59E0B',
+        color: 'var(--nav-challenges)',
     },
     {
         icon: (
@@ -42,7 +42,7 @@ const NAV_ITEMS = [
         ),
         label: 'Community',
         path: '/community',
-        color: '#34D399',
+        color: 'var(--nav-community)',
     },
     {
         icon: (
@@ -52,7 +52,7 @@ const NAV_ITEMS = [
         ),
         label: 'Profile',
         path: '/profile',
-        color: '#F472B6',
+        color: 'var(--nav-profile)',
     },
 ]
 

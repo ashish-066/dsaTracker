@@ -1,8 +1,60 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
 import * as api from '../services/api'
+const THEME_VARS = {
+    dark: {
+        'bg-primary': '#0B0F1A',
+        'bg-secondary': '#121727',
+        'card-bg': 'rgba(255,255,255,0.025)',
+        'card-bg-hover': 'rgba(255,255,255,0.04)',
+        'card-border': 'rgba(255,255,255,0.06)',
+        'card-border-hover': 'rgba(255,255,255,0.1)',
+        'text-primary': '#F1F5F9',
+        'text-secondary': '#CBD5E1',
+        'text-muted': '#64748B',
+        'text-tertiary': '#475569',
+        'accent-amber': '#E5A653',
+        'accent-purple': '#9F8FE3',
+        'accent-green': '#10B981',
+        'accent-blue': '#3B82F6',
+        'accent-pink': '#EC4899',
+        'accent-red': '#EF4444',
+        'accent-orange': '#F97316',
+        'accent-cyan': '#06B6D4',
+        'code-bg': 'rgba(8,12,30,0.8)',
+        'code-border': 'rgba(255,255,255,0.06)',
+        'code-inline-bg': 'rgba(229,166,83,0.1)',
+        'code-inline-border': 'rgba(229,166,83,0.18)',
+        'code-inline-color': '#F3C887',
+    },
+    light: {
+        'bg-primary': '#FFFFFF',
+        'bg-secondary': '#F8FAFC',
+        'card-bg': 'rgba(15,23,42,0.04)',
+        'card-bg-hover': 'rgba(15,23,42,0.08)',
+        'card-border': 'rgba(15,23,42,0.12)',
+        'card-border-hover': 'rgba(15,23,42,0.18)',
+        'text-primary': '#0F172A',
+        'text-secondary': '#334155',
+        'text-muted': '#94A3B8',
+        'text-tertiary': '#CBD5E1',
+        'accent-amber': '#D97706',
+        'accent-purple': '#7C3AED',
+        'accent-green': '#059669',
+        'accent-blue': '#2563EB',
+        'accent-pink': '#DB2777',
+        'accent-red': '#DC2626',
+        'accent-orange': '#EA580C',
+        'accent-cyan': '#0891B2',
+        'code-bg': 'rgba(15,23,42,0.06)',
+        'code-border': 'rgba(15,23,42,0.12)',
+        'code-inline-bg': 'rgba(217,119,6,0.1)',
+        'code-inline-border': 'rgba(217,119,6,0.2)',
+        'code-inline-color': '#B45309',
+    }
+}
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const TOPICS = ['all', 'arrays', 'graphs', 'dynamic-programming', 'trees', 'binary-search', 'system-design', 'strings', 'backtracking']
@@ -43,7 +95,6 @@ const FEED_TABS = [
     { id: 'mine',        label: 'My Posts' },
 ]
 
-// Static right-panel data (backend integration to be done in a separate issue)
 const TRENDING_TOPICS = [
     { tag: 'SystemDesign',        count: '1.2k' },
     { tag: 'DynamicProgramming',  count: '845'  },
@@ -58,6 +109,10 @@ const TOP_CONTRIBUTORS = [
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+function getCSSVar(varName, theme = 'dark') {
+    return THEME_VARS[theme][varName] || THEME_VARS.dark[varName]
+}
+
 function topicColor(t) { return TOPIC_COLORS[t?.toLowerCase()] || TOPIC_COLORS.general }
 
 function timeAgo(isoStr) {
@@ -75,15 +130,30 @@ function readTime(content) {
 }
 
 function difficultyBadge(post) {
-    // Infer a badge from the topic / title length heuristic
-    if (post.featured) return { label: 'STAFF PICK', color: '#E5A653', bg: 'rgba(229,166,83,0.12)', border: 'rgba(229,166,83,0.3)' }
+    const theme = 'dark'
+    if (post.featured) return { 
+        label: 'STAFF PICK', 
+        color: getCSSVar('accent-amber', theme), 
+        bg: `rgba(229,166,83,0.12)`, 
+        border: `rgba(229,166,83,0.3)` 
+    }
     const words = (post.content || '').split(/\s+/).length
-    if (words > 400) return { label: 'HARD',   color: '#EF4444', bg: 'rgba(239,68,68,0.1)',  border: 'rgba(239,68,68,0.25)'  }
-    if (words > 150) return { label: 'MEDIUM', color: '#F59E0B', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.25)' }
+    if (words > 400) return { 
+        label: 'HARD',   
+        color: getCSSVar('accent-red', theme), 
+        bg: `rgba(239,68,68,0.1)`,  
+        border: `rgba(239,68,68,0.25)`  
+    }
+    if (words > 150) return { 
+        label: 'MEDIUM', 
+        color: getCSSVar('accent-orange', theme), 
+        bg: `rgba(245,158,11,0.1)`, 
+        border: `rgba(245,158,11,0.25)` 
+    }
     return null
 }
 
-// ─── Avatar ───────────────────────────────────────────────────────────────────
+// Avatar 
 function Avatar({ name, size = 36, colors }) {
     const [c1, c2] = colors || topicColor('general')
     const letter = (name || '?')[0].toUpperCase()
@@ -99,8 +169,9 @@ function Avatar({ name, size = 36, colors }) {
     )
 }
 
-// ─── Upvote column ────────────────────────────────────────────────────────────
+// Upvote column
 function UpvoteCol({ count, liked, onLike, liking }) {
+    const theme = 'dark'
     const fmt = n => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
     return (
         <div style={{
@@ -112,7 +183,8 @@ function UpvoteCol({ count, liked, onLike, liking }) {
                 disabled={liking}
                 style={{
                     background: 'none', border: 'none', cursor: 'pointer', padding: 4,
-                    color: liked ? '#E5A653' : '#475569', transition: 'color .2s',
+                    color: liked ? getCSSVar('accent-amber', theme) : getCSSVar('text-tertiary', theme), 
+                    transition: 'color .2s',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
             >
@@ -120,14 +192,14 @@ function UpvoteCol({ count, liked, onLike, liking }) {
                     <polyline points="18 15 12 9 6 15" />
                 </svg>
             </button>
-            <span style={{ fontSize: 13, fontWeight: 700, color: liked ? '#E5A653' : '#94A3B8', lineHeight: 1 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: liked ? getCSSVar('accent-amber', theme) : getCSSVar('text-muted', theme), lineHeight: 1 }}>
                 {fmt(count)}
             </span>
             <button
                 onClick={e => e.stopPropagation()}
                 style={{
                     background: 'none', border: 'none', cursor: 'pointer', padding: 4,
-                    color: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: getCSSVar('text-tertiary', theme), display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
             >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -138,7 +210,7 @@ function UpvoteCol({ count, liked, onLike, liking }) {
     )
 }
 
-// ─── Post Row (feed item) ─────────────────────────────────────────────────────
+// Post Row 
 function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }) {
     const [liking, setLiking]   = useState(false)
     const [liked, setLiked]     = useState(post.likedByMe)
@@ -149,6 +221,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
     const isOwner               = myEmail && post.userId === myEmail
     const badge                 = difficultyBadge(post)
     const isFeatured            = post.featured
+    const theme                 = 'dark'
 
     async function handleLike() {
         setLiking(true)
@@ -173,11 +246,11 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
             style={{
                 display: 'flex', gap: 0,
                 background: isFeatured
-                    ? 'rgba(229,166,83,0.06)'
-                    : expanded ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.025)',
+                    ? `rgba(229,166,83,0.06)`
+                    : expanded ? getCSSVar('card-bg-hover', theme) : getCSSVar('card-bg', theme),
                 border: isFeatured
-                    ? '1px solid rgba(229,166,83,0.25)'
-                    : expanded ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.06)',
+                    ? `1px solid rgba(229,166,83,0.25)`
+                    : expanded ? `1px solid ${getCSSVar('card-border-hover', theme)}` : `1px solid ${getCSSVar('card-border', theme)}`,
                 borderRadius: 14,
                 overflow: 'hidden',
                 cursor: 'pointer',
@@ -189,14 +262,14 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
             onClick={onToggle}
             onMouseEnter={e => {
                 if (!expanded && !isFeatured && !dimmed) {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                    e.currentTarget.style.background = getCSSVar('card-bg-hover', theme)
+                    e.currentTarget.style.borderColor = getCSSVar('card-border-hover', theme)
                 }
             }}
             onMouseLeave={e => {
                 if (!expanded && !isFeatured && !dimmed) {
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
+                    e.currentTarget.style.background = getCSSVar('card-bg', theme)
+                    e.currentTarget.style.borderColor = getCSSVar('card-border', theme)
                 }
             }}
         >
@@ -214,7 +287,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                 {/* Top row: featured badge + badge + topic */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
                     {isFeatured && (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: '#E5A653', letterSpacing: '0.05em' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, color: getCSSVar('accent-amber', theme), letterSpacing: '0.05em' }}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                             FEATURED
                         </span>
@@ -236,7 +309,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                 {/* Title */}
                 <h3 style={{
                     fontSize: expanded ? 22 : 16, fontWeight: 800, lineHeight: 1.35,
-                    color: '#F1F5F9', marginBottom: 8, letterSpacing: '-0.01em',
+                    color: getCSSVar('text-primary', theme), marginBottom: 8, letterSpacing: '-0.01em',
                     transition: 'font-size .2s',
                 }}>
                     {post.title}
@@ -245,7 +318,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                 {/* Preview / Full content */}
                 {!expanded ? (
                     <p style={{
-                        fontSize: 13.5, color: '#64748B', lineHeight: 1.7,
+                        fontSize: 13.5, color: getCSSVar('text-muted', theme), lineHeight: 1.7,
                         display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                         margin: 0,
                     }}>
@@ -253,8 +326,8 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                     </p>
                 ) : (
                     <div style={{ marginTop: 8 }}>
-                        <Markdown text={post.content} />
-                        <style>{MD_CSS}</style>
+                        <Markdown text={post.content} theme={theme} />
+                        <style>{getMarkdownCSS(theme)}</style>
                     </div>
                 )}
 
@@ -266,12 +339,12 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                     {/* Author + time */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <Avatar name={post.authorName || post.userId} size={26} colors={[c1, c2]} />
-                        <span style={{ fontSize: 12.5, color: '#94A3B8', fontWeight: 500 }}>
+                        <span style={{ fontSize: 12.5, color: getCSSVar('text-muted', theme), fontWeight: 500 }}>
                             {post.authorName || post.userId}
                             {post.authorUsername && (
-                                <span style={{ color: '#E5A653', fontWeight: 600 }}> @{post.authorUsername}</span>
+                                <span style={{ color: getCSSVar('accent-amber', theme), fontWeight: 600 }}> @{post.authorUsername}</span>
                             )}
-                            <span style={{ color: '#475569' }}> · {timeAgo(post.createdAt)} · {readTime(post.content)} min read</span>
+                            <span style={{ color: getCSSVar('text-tertiary', theme) }}> · {timeAgo(post.createdAt)} · {readTime(post.content)} min read</span>
                         </span>
                     </div>
 
@@ -283,11 +356,11 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                             style={{
                                 display: 'flex', alignItems: 'center', gap: 5,
                                 background: 'none', border: 'none', cursor: 'pointer',
-                                color: '#475569', fontSize: 12.5, fontWeight: 600, padding: '4px 8px',
+                                color: getCSSVar('text-tertiary', theme), fontSize: 12.5, fontWeight: 600, padding: '4px 8px',
                                 borderRadius: 7, transition: 'all .15s',
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#94A3B8' }}
-                            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#475569' }}
+                            onMouseEnter={e => { e.currentTarget.style.background = `rgba(255,255,255,0.06)`; e.currentTarget.style.color = getCSSVar('text-muted', theme) }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = getCSSVar('text-tertiary', theme) }}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
@@ -302,7 +375,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                             title={saved ? 'Saved' : 'Save'}
                             style={{
                                 background: 'none', border: 'none', cursor: 'pointer',
-                                color: saved ? '#E5A653' : '#475569', fontSize: 14, padding: '4px 6px',
+                                color: saved ? getCSSVar('accent-amber', theme) : getCSSVar('text-tertiary', theme), fontSize: 14, padding: '4px 6px',
                                 borderRadius: 7, transition: 'color .2s',
                             }}
                         >
@@ -316,10 +389,10 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                             onClick={e => e.stopPropagation()}
                             style={{
                                 background: 'none', border: 'none', cursor: 'pointer',
-                                color: '#475569', padding: '4px 6px', borderRadius: 7, transition: 'color .2s',
+                                color: getCSSVar('text-tertiary', theme), padding: '4px 6px', borderRadius: 7, transition: 'color .2s',
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.color = '#94A3B8' }}
-                            onMouseLeave={e => { e.currentTarget.style.color = '#475569' }}
+                            onMouseEnter={e => { e.currentTarget.style.color = getCSSVar('text-muted', theme) }}
+                            onMouseLeave={e => { e.currentTarget.style.color = getCSSVar('text-tertiary', theme) }}
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
@@ -332,8 +405,8 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                             <button
                                 onClick={e => { e.stopPropagation(); onDelete(post.id) }}
                                 style={{
-                                    background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.2)',
-                                    color: '#EF4444', fontSize: 10, fontWeight: 700, padding: '3px 8px',
+                                    background: `rgba(239,68,68,.08)`, border: `1px solid rgba(239,68,68,.2)`,
+                                    color: getCSSVar('accent-red', theme), fontSize: 10, fontWeight: 700, padding: '3px 8px',
                                     borderRadius: 6, cursor: 'pointer',
                                 }}
                             >
@@ -346,8 +419,8 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                             <button
                                 onClick={e => { e.stopPropagation(); onToggle() }}
                                 style={{
-                                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                                    color: '#94A3B8', padding: '4px 10px', borderRadius: 7,
+                                    background: 'rgba(255,255,255,0.06)', border: `1px solid rgba(255,255,255,0.1)`,
+                                    color: getCSSVar('text-muted', theme), padding: '4px 10px', borderRadius: 7,
                                     fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
                                 }}
                             >
@@ -364,13 +437,13 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
     )
 }
 
-// ─── Right Sidebar Widgets ────────────────────────────────────────────────────
 
-// Weekly Challenge widget — static, backend integration in separate issue
+
 function WeeklyChallengeWidget() {
+    const theme = 'dark'
     return (
         <div style={{
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(229,166,83,0.2)',
+            background: getCSSVar('card-bg', theme), border: `1px solid rgba(229,166,83,0.2)`,
             borderRadius: 14, padding: '18px 18px', overflow: 'hidden', position: 'relative',
         }}>
             {/* Glow */}
@@ -378,23 +451,23 @@ function WeeklyChallengeWidget() {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                 <span style={{ fontSize: 16 }}>📅</span>
-                <span style={{ fontSize: 10, fontWeight: 800, color: '#E5A653', letterSpacing: '0.08em' }}>WEEKLY CHALLENGE</span>
+                <span style={{ fontSize: 10, fontWeight: 800, color: getCSSVar('accent-amber', theme), letterSpacing: '0.08em' }}>WEEKLY CHALLENGE</span>
                 <span style={{ marginLeft: 'auto', fontSize: 18 }}>🏆</span>
             </div>
-            <h3 style={{ fontSize: 17, fontWeight: 800, color: '#F1F5F9', lineHeight: 1.3, marginBottom: 8 }}>
+            <h3 style={{ fontSize: 17, fontWeight: 800, color: getCSSVar('text-primary', theme), lineHeight: 1.3, marginBottom: 8 }}>
                 Solve "Rainwater Trapping"
             </h3>
-            <p style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.6, marginBottom: 14 }}>
+            <p style={{ fontSize: 12.5, color: getCSSVar('text-muted', theme), lineHeight: 1.6, marginBottom: 14 }}>
                 Join 2,451 other developers tackling this classic array problem. 3 days left!
             </p>
             <button style={{
                 width: '100%', padding: '9px 0', borderRadius: 8, fontWeight: 700,
-                fontSize: 13, cursor: 'pointer', border: '1px solid rgba(229,166,83,0.4)',
-                background: 'rgba(229,166,83,0.1)', color: '#E5A653',
+                fontSize: 13, cursor: 'pointer', border: `1px solid rgba(229,166,83,0.4)`,
+                background: `rgba(229,166,83,0.1)`, color: getCSSVar('accent-amber', theme),
                 transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(229,166,83,0.2)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(229,166,83,0.1)' }}
+                onMouseEnter={e => { e.currentTarget.style.background = `rgba(229,166,83,0.2)` }}
+                onMouseLeave={e => { e.currentTarget.style.background = `rgba(229,166,83,0.1)` }}
             >
                 Attempt Now →
             </button>
@@ -402,33 +475,33 @@ function WeeklyChallengeWidget() {
     )
 }
 
-// Trending Topics widget — static, backend integration in separate issue
 function TrendingTopicsWidget() {
+    const theme = 'dark'
     return (
         <div style={{
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: getCSSVar('card-bg', theme), border: `1px solid ${getCSSVar('card-border', theme)}`,
             borderRadius: 14, padding: '16px 18px',
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 14 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E5A653" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={getCSSVar('accent-amber', theme)} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
                 </svg>
-                <span style={{ fontSize: 11, fontWeight: 800, color: '#94A3B8', letterSpacing: '0.07em' }}>TRENDING TOPICS</span>
+                <span style={{ fontSize: 11, fontWeight: 800, color: getCSSVar('text-muted', theme), letterSpacing: '0.07em' }}>TRENDING TOPICS</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {TRENDING_TOPICS.map((t, i) => (
                     <div key={i} style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                        padding: '8px 0', borderBottom: i < TRENDING_TOPICS.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                        padding: '8px 0', borderBottom: i < TRENDING_TOPICS.length - 1 ? `1px solid ${getCSSVar('card-border', theme)}` : 'none',
                         cursor: 'pointer',
                     }}
                         onMouseEnter={e => { e.currentTarget.style.opacity = '0.75' }}
                         onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
                     >
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#CBD5E1' }}>
-                            <span style={{ color: '#E5A653' }}>#</span> {t.tag}
+                        <span style={{ fontSize: 13, fontWeight: 600, color: getCSSVar('text-secondary', theme) }}>
+                            <span style={{ color: getCSSVar('accent-amber', theme) }}>#</span> {t.tag}
                         </span>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: '#475569' }}>{t.count}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: getCSSVar('text-tertiary', theme) }}>{t.count}</span>
                     </div>
                 ))}
             </div>
@@ -436,17 +509,17 @@ function TrendingTopicsWidget() {
     )
 }
 
-// Top Contributors widget — static, backend integration in separate issue
 function TopContributorsWidget() {
-    const rankColors = ['#E5A653', '#94A3B8', '#CD7F32']
+    const theme = 'dark'
+    const rankColors = [getCSSVar('accent-amber', theme), getCSSVar('text-muted', theme), '#CD7F32']
     return (
         <div style={{
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: getCSSVar('card-bg', theme), border: `1px solid ${getCSSVar('card-border', theme)}`,
             borderRadius: 14, padding: '16px 18px',
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 14 }}>
                 <span style={{ fontSize: 14 }}>🏅</span>
-                <span style={{ fontSize: 11, fontWeight: 800, color: '#94A3B8', letterSpacing: '0.07em' }}>TOP CONTRIBUTORS</span>
+                <span style={{ fontSize: 11, fontWeight: 800, color: getCSSVar('text-muted', theme), letterSpacing: '0.07em' }}>TOP CONTRIBUTORS</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {TOP_CONTRIBUTORS.map((c, i) => (
@@ -465,8 +538,8 @@ function TopContributorsWidget() {
                             fontSize: 13, fontWeight: 800, color: '#fff', flexShrink: 0,
                         }}>{c.name[0]}</div>
                         <div style={{ minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 700, color: '#E2E8F0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
-                            <div style={{ fontSize: 11, color: '#475569' }}>{c.rep} · {c.solutions}</div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: getCSSVar('text-secondary', theme), whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
+                            <div style={{ fontSize: 11, color: getCSSVar('text-tertiary', theme) }}>{c.rep} · {c.solutions}</div>
                         </div>
                     </div>
                 ))}
@@ -475,42 +548,43 @@ function TopContributorsWidget() {
     )
 }
 
-// Community Stats widget — static
 function CommunityStatsWidget() {
+    const theme = 'dark'
     return (
         <div style={{
-            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+            background: getCSSVar('card-bg', theme), border: `1px solid ${getCSSVar('card-border', theme)}`,
             borderRadius: 14, padding: '16px 18px',
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0,
         }}>
-            <div style={{ textAlign: 'center', padding: '8px 0', borderRight: '1px solid rgba(255,255,255,0.07)' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>1,204</div>
-                <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+            <div style={{ textAlign: 'center', padding: '8px 0', borderRight: `1px solid ${getCSSVar('card-border', theme)}` }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: getCSSVar('text-primary', theme) }}>1,204</div>
+                <div style={{ fontSize: 11, color: getCSSVar('text-muted', theme), marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block' }} />
                     ONLINE
                 </div>
             </div>
             <div style={{ textAlign: 'center', padding: '8px 0' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>342</div>
-                <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>POSTS TODAY</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: getCSSVar('text-primary', theme) }}>342</div>
+                <div style={{ fontSize: 11, color: getCSSVar('text-muted', theme), marginTop: 2 }}>POSTS TODAY</div>
             </div>
         </div>
     )
 }
 
-// ─── Search Bar ───────────────────────────────────────────────────────────────
+// Search Bar
 function SearchBar({ value, onChange }) {
+    const theme = 'dark'
     return (
         <div style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)',
+            background: `rgba(255,255,255,0.05)`, border: `1px solid rgba(255,255,255,0.09)`,
             borderRadius: 10, padding: '8px 14px', flex: 1, maxWidth: 340,
             transition: 'border-color .2s',
         }}
             onFocus={e => { e.currentTarget.style.borderColor = 'rgba(229,166,83,0.4)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.09)' }}
         >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={getCSSVar('text-tertiary', theme)} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             <input
@@ -519,15 +593,15 @@ function SearchBar({ value, onChange }) {
                 placeholder="Search discussions..."
                 style={{
                     background: 'none', border: 'none', outline: 'none',
-                    fontSize: 13, color: '#CBD5E1', flex: 1,
-                    '::placeholder': { color: '#475569' },
+                    fontSize: 13, color: getCSSVar('text-secondary', theme), flex: 1,
+                    '::placeholder': { color: getCSSVar('text-tertiary', theme) },
                 }}
             />
         </div>
     )
 }
 
-// ─── Markdown renderer (unchanged from original) ──────────────────────────────
+// Markdown renderer 
 function safeLinkUrl(raw) {
     if (raw == null) return null
     const url = String(raw).trim()
@@ -562,7 +636,7 @@ function mdInline(s, keyBase = 'i') {
     return out
 }
 
-function Markdown({ text }) {
+function Markdown({ text, theme = 'dark' }) {
     if (!text) return null
     const lines = text.replace(/\r\n/g, '\n').split('\n')
     const blocks = []
@@ -611,7 +685,39 @@ function Markdown({ text }) {
     return <div className="md-body">{blocks}</div>
 }
 
-// ─── Write Editor (full-page, unchanged from original) ────────────────────────
+//Markdown CSS
+function getMarkdownCSS(theme = 'dark') {
+    return `
+.md-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding:6px 8px; margin-bottom:14px; background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.06); border-radius:12px; backdrop-filter:blur(6px); }
+.md-tb-btn { min-width:32px; height:32px; padding:0 10px; background:transparent; border:1px solid transparent; color:#CBD5E1; font-size:13px; font-weight:600; letter-spacing:0.02em; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s,transform 0.1s; display:inline-flex; align-items:center; justify-content:center; }
+.md-tb-btn:hover { background:rgba(229,166,83,0.12); color:#F8FAFC; border-color:rgba(229,166,83,0.25); }
+.md-tb-btn:active { transform:translateY(1px); }
+.md-tb-bold { font-weight:900; } .md-tb-italic { font-style:italic; } .md-tb-mono { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:12px; }
+.md-tb-sep { width:1px; height:18px; background:rgba(255,255,255,0.08); margin:0 4px; display:inline-block; }
+.md-hint { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed rgba(255,255,255,0.06); font-size:12px; color:#64748B; }
+.md-hint-k { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:11.5px; color:#94A3B8; background:rgba(15,23,42,0.6); padding:2px 7px; border-radius:5px; border:1px solid rgba(255,255,255,0.05); }
+.md-hint-muted { margin-left:auto; opacity:0.6; font-style:italic; }
+.md-body { font-size:15px; line-height:1.8; color:#CBD5E1; letter-spacing:0.005em; }
+.md-body > * + * { margin-top:16px; }
+.md-h1,.md-h2,.md-h3 { color:#F1F5F9; font-weight:800; letter-spacing:-0.02em; line-height:1.25; margin-top:32px; }
+.md-h1 { font-size:24px; margin-top:24px; } .md-h2 { font-size:20px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.07); } .md-h3 { font-size:17px; color:#E2E8F0; }
+.md-p { margin:0; }
+.md-body strong { color:#F1F5F9; font-weight:800; } .md-body em { color:#E2E8F0; font-style:italic; }
+.md-icode { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:0.88em; padding:2px 7px; border-radius:5px; background:rgba(229,166,83,0.1); border:1px solid rgba(229,166,83,0.18); color:#F3C887; }
+.md-block { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:13px; line-height:1.65; padding:14px 16px; background:rgba(8,12,30,0.8); border:1px solid rgba(255,255,255,0.06); border-left:3px solid rgba(229,166,83,0.5); border-radius:10px; color:#E2E8F0; overflow-x:auto; }
+.md-block code { background:none; border:none; padding:0; color:inherit; font-size:inherit; }
+.md-ul,.md-ol { margin:0; padding-left:24px; color:#CBD5E1; } .md-ul li,.md-ol li { margin:6px 0; padding-left:4px; line-height:1.7; }
+.md-ul li::marker { color:#E5A653; } .md-ol li::marker { color:#9F8FE3; font-weight:700; }
+.md-quote { margin:0; padding:4px 18px; border-left:3px solid rgba(159,143,227,0.7); background:rgba(159,143,227,0.05); color:#E2E8F0; font-style:italic; border-radius:0 10px 10px 0; }
+.md-quote p { margin:8px 0; }
+.md-hr { border:none; height:1px; background:linear-gradient(90deg,transparent,rgba(229,166,83,0.3),transparent); margin:24px 0; }
+.md-link { color:#F3C887; text-decoration:none; border-bottom:1px solid rgba(243,200,135,0.35); transition:color 0.15s,border-color 0.15s; }
+.md-link:hover { color:#FFE4BC; border-bottom-color:rgba(255,228,188,0.7); }
+.md-link-blocked { color:#94A3B8; text-decoration:line-through; text-decoration-color:rgba(148,163,184,0.5); cursor:not-allowed; }
+`
+}
+
+// Write Editor
 const TOOLS = [
     { id: 'b',   label: 'B',     title: 'Bold (Ctrl+B)',   bold: true,   apply: ta => mdWrap(ta, '**', '**', 'bold text') },
     { id: 'i',   label: 'I',     title: 'Italic (Ctrl+I)', italic: true, apply: ta => mdWrap(ta, '*', '*', 'italic') },
@@ -635,6 +741,7 @@ function mdWrap(ta, before, after = before, placeholder = '') {
     const next = v.slice(0, start) + before + sel + after + v.slice(end)
     return { value: next, selStart: start + before.length, selEnd: start + before.length + sel.length }
 }
+
 function mdLinePrefix(ta, prefix) {
     const start = ta.selectionStart, end = ta.selectionEnd, v = ta.value
     const lineStart = v.lastIndexOf('\n', start - 1) + 1
@@ -644,11 +751,13 @@ function mdLinePrefix(ta, prefix) {
     const next = v.slice(0, lineStart) + replaced + v.slice(lineEnd)
     return { value: next, selStart: lineStart, selEnd: lineStart + replaced.length }
 }
+
 function mdInsertAt(ta, snippet) {
     const start = ta.selectionStart, v = ta.value
     const next = v.slice(0, start) + snippet + v.slice(start)
     return { value: next, selStart: start + snippet.length, selEnd: start + snippet.length }
 }
+
 function mdCodeBlock(ta, lang = '', placeholder = 'code') {
     const start = ta.selectionStart, end = ta.selectionEnd, v = ta.value
     const sel = v.slice(start, end) || placeholder
@@ -667,6 +776,7 @@ function WriteEditor({ onCancel, onPublished }) {
     const [preview, setPreview] = useState(false)
     const textareaRef           = useRef(null)
     const [c1]                  = topicColor(form.topic)
+    const theme                 = 'dark'
 
     useEffect(() => {
         const onKey = e => { if (e.key === 'Escape') onCancel() }
@@ -715,34 +825,34 @@ function WriteEditor({ onCancel, onPublished }) {
     return (
         <div style={{ maxWidth: 760, margin: '0 auto', paddingBottom: 80 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
-                <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.1)', color: '#94A3B8', padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
+                <button onClick={onCancel} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: `rgba(255,255,255,.05)`, border: `1px solid rgba(255,255,255,.1)`, color: getCSSVar('text-muted', theme), padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer' }}>
                     ← Back
                 </button>
                 <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={() => setPreview(p => !p)} style={{ padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', border: '1px solid rgba(255,255,255,.12)', background: preview ? 'rgba(229,166,83,.12)' : 'rgba(255,255,255,.04)', color: preview ? '#E5A653' : '#94A3B8' }}>
+                    <button onClick={() => setPreview(p => !p)} style={{ padding: '8px 16px', borderRadius: 10, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', border: `1px solid rgba(255,255,255,.12)`, background: preview ? `rgba(229,166,83,.12)` : `rgba(255,255,255,.04)`, color: preview ? getCSSVar('accent-amber', theme) : getCSSVar('text-muted', theme) }}>
                         {preview ? 'Edit' : 'Preview'}
                     </button>
-                    <button onClick={handleSubmit} disabled={submitting} style={{ padding: '8px 22px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: 'linear-gradient(135deg,#E5A653,#9F8FE3)', color: '#fff', opacity: submitting ? 0.7 : 1 }}>
+                    <button onClick={handleSubmit} disabled={submitting} style={{ padding: '8px 22px', borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', border: 'none', background: `linear-gradient(135deg,#E5A653,#9F8FE3)`, color: '#fff', opacity: submitting ? 0.7 : 1 }}>
                         {submitting ? 'Publishing…' : 'Publish Post'}
                     </button>
                 </div>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 16, overflow: 'hidden' }}>
+            <div style={{ background: getCSSVar('card-bg', theme), border: `1px solid ${getCSSVar('card-border', theme)}`, borderRadius: 16, overflow: 'hidden' }}>
                 <div style={{ height: 3, background: `linear-gradient(90deg,${c1},#9F8FE3)` }} />
                 <form onSubmit={handleSubmit} style={{ padding: '28px 32px' }}>
                     {formErr && (
-                        <div style={{ background: 'rgba(239,68,68,.1)', border: '1px solid rgba(239,68,68,.25)', color: '#EF4444', padding: '10px 14px', borderRadius: 10, fontSize: 13, marginBottom: 20 }}>
+                        <div style={{ background: `rgba(239,68,68,.1)`, border: `1px solid rgba(239,68,68,.25)`, color: getCSSVar('accent-red', theme), padding: '10px 14px', borderRadius: 10, fontSize: 13, marginBottom: 20 }}>
                             {formErr}
                         </div>
                     )}
                     <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-                        <select value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} style={{ background: 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.1)', color: '#CBD5E1', padding: '8px 14px', borderRadius: 10, fontSize: 13, cursor: 'pointer', outline: 'none' }}>
+                        <select value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} style={{ background: `rgba(255,255,255,.06)`, border: `1px solid rgba(255,255,255,.1)`, color: getCSSVar('text-secondary', theme), padding: '8px 14px', borderRadius: 10, fontSize: 13, cursor: 'pointer', outline: 'none' }}>
                             {TOPICS.filter(t => t !== 'all').map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
                     </div>
-                    <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Post title…" style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 26, fontWeight: 800, color: '#F8FAFC', letterSpacing: '-0.02em', marginBottom: 20, padding: 0, boxSizing: 'border-box' }} />
-                    <div style={{ height: 1, background: 'rgba(255,255,255,.07)', marginBottom: 20 }} />
+                    <input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Post title…" style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 26, fontWeight: 800, color: getCSSVar('text-primary', theme), letterSpacing: '-0.02em', marginBottom: 20, padding: 0, boxSizing: 'border-box' }} />
+                    <div style={{ height: 1, background: `rgba(255,255,255,.07)`, marginBottom: 20 }} />
                     {!preview ? (
                         <>
                             <div className="md-toolbar" role="toolbar">
@@ -751,7 +861,7 @@ function WriteEditor({ onCancel, onPublished }) {
                                     : <button key={t.id} type="button" title={t.title} onClick={() => applyFormat(t.apply)} className={'md-tb-btn' + (t.bold ? ' md-tb-bold' : '') + (t.italic ? ' md-tb-italic' : '') + (t.mono ? ' md-tb-mono' : '')}>{t.label}</button>
                                 )}
                             </div>
-                            <textarea ref={textareaRef} value={form.content} onChange={e => { setForm(f => ({ ...f, content: e.target.value })); autoResize(e.target) }} onKeyDown={onBodyKeyDown} placeholder="Start writing your post…" style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 16, color: '#CBD5E1', lineHeight: 1.85, resize: 'none', fontFamily: 'inherit', minHeight: 360, padding: 0, boxSizing: 'border-box' }} />
+                            <textarea ref={textareaRef} value={form.content} onChange={e => { setForm(f => ({ ...f, content: e.target.value })); autoResize(e.target) }} onKeyDown={onBodyKeyDown} placeholder="Start writing your post…" style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: 16, color: getCSSVar('text-secondary', theme), lineHeight: 1.85, resize: 'none', fontFamily: 'inherit', minHeight: 360, padding: 0, boxSizing: 'border-box' }} />
                             <div className="md-hint">
                                 <span><strong className="md-hint-k">**bold**</strong></span>
                                 <span><em className="md-hint-k">*italic*</em></span>
@@ -764,51 +874,20 @@ function WriteEditor({ onCancel, onPublished }) {
                         </>
                     ) : (
                         <div style={{ minHeight: 360 }}>
-                            {form.content ? <Markdown text={form.content} /> : <p style={{ color: '#475569', fontStyle: 'italic' }}>Nothing to preview yet.</p>}
+                            {form.content ? <Markdown text={form.content} theme={theme} /> : <p style={{ color: getCSSVar('text-tertiary', theme), fontStyle: 'italic' }}>Nothing to preview yet.</p>}
                         </div>
                     )}
                 </form>
             </div>
-            <style>{MD_CSS}</style>
+            <style>{getMarkdownCSS(theme)}</style>
         </div>
     )
 }
 
-// ─── Scoped styles (markdown + toolbar) ──────────────────────────────────────
-const MD_CSS = `
-.md-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:4px; padding:6px 8px; margin-bottom:14px; background:rgba(15,23,42,0.55); border:1px solid rgba(255,255,255,0.06); border-radius:12px; backdrop-filter:blur(6px); }
-.md-tb-btn { min-width:32px; height:32px; padding:0 10px; background:transparent; border:1px solid transparent; color:#CBD5E1; font-size:13px; font-weight:600; letter-spacing:0.02em; border-radius:8px; cursor:pointer; transition:background 0.15s,color 0.15s,border-color 0.15s,transform 0.1s; display:inline-flex; align-items:center; justify-content:center; }
-.md-tb-btn:hover { background:rgba(229,166,83,0.12); color:#F8FAFC; border-color:rgba(229,166,83,0.25); }
-.md-tb-btn:active { transform:translateY(1px); }
-.md-tb-bold { font-weight:900; } .md-tb-italic { font-style:italic; } .md-tb-mono { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:12px; }
-.md-tb-sep { width:1px; height:18px; background:rgba(255,255,255,0.08); margin:0 4px; display:inline-block; }
-.md-hint { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; margin-top:18px; padding-top:14px; border-top:1px dashed rgba(255,255,255,0.06); font-size:12px; color:#64748B; }
-.md-hint-k { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:11.5px; color:#94A3B8; background:rgba(15,23,42,0.6); padding:2px 7px; border-radius:5px; border:1px solid rgba(255,255,255,0.05); }
-.md-hint-muted { margin-left:auto; opacity:0.6; font-style:italic; }
-.md-body { font-size:15px; line-height:1.8; color:#CBD5E1; letter-spacing:0.005em; }
-.md-body > * + * { margin-top:16px; }
-.md-h1,.md-h2,.md-h3 { color:#F1F5F9; font-weight:800; letter-spacing:-0.02em; line-height:1.25; margin-top:32px; }
-.md-h1 { font-size:24px; margin-top:24px; } .md-h2 { font-size:20px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.07); } .md-h3 { font-size:17px; color:#E2E8F0; }
-.md-p { margin:0; }
-.md-body strong { color:#F1F5F9; font-weight:800; } .md-body em { color:#E2E8F0; font-style:italic; }
-.md-icode { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:0.88em; padding:2px 7px; border-radius:5px; background:rgba(229,166,83,0.1); border:1px solid rgba(229,166,83,0.18); color:#F3C887; }
-.md-block { font-family:'JetBrains Mono','Fira Code',ui-monospace,monospace; font-size:13px; line-height:1.65; padding:14px 16px; background:rgba(8,12,30,0.8); border:1px solid rgba(255,255,255,0.06); border-left:3px solid rgba(229,166,83,0.5); border-radius:10px; color:#E2E8F0; overflow-x:auto; }
-.md-block code { background:none; border:none; padding:0; color:inherit; font-size:inherit; }
-.md-ul,.md-ol { margin:0; padding-left:24px; color:#CBD5E1; } .md-ul li,.md-ol li { margin:6px 0; padding-left:4px; line-height:1.7; }
-.md-ul li::marker { color:#E5A653; } .md-ol li::marker { color:#9F8FE3; font-weight:700; }
-.md-quote { margin:0; padding:4px 18px; border-left:3px solid rgba(159,143,227,0.7); background:rgba(159,143,227,0.05); color:#E2E8F0; font-style:italic; border-radius:0 10px 10px 0; }
-.md-quote p { margin:8px 0; }
-.md-hr { border:none; height:1px; background:linear-gradient(90deg,transparent,rgba(229,166,83,0.3),transparent); margin:24px 0; }
-.md-link { color:#F3C887; text-decoration:none; border-bottom:1px solid rgba(243,200,135,0.35); transition:color 0.15s,border-color 0.15s; }
-.md-link:hover { color:#FFE4BC; border-bottom-color:rgba(255,228,188,0.7); }
-.md-link-blocked { color:#94A3B8; text-decoration:line-through; text-decoration-color:rgba(148,163,184,0.5); cursor:not-allowed; }
-`
-
-// ─── Main page ────────────────────────────────────────────────────────────────
 export default function CommunityPage() {
     const navigate = useNavigate()
+    const theme = 'dark'
 
-    const [view, setView]         = useState('feed')
     const [activeTab, setActiveTab] = useState('feed')
     const [topic, setTopic]       = useState('all')
     const [posts, setPosts]       = useState([])
@@ -816,8 +895,9 @@ export default function CommunityPage() {
     const [loading, setLoading]   = useState(true)
     const [page, setPage]         = useState(0)
     const [hasNext, setHasNext]   = useState(false)
-    const [expandedId, setExpandedId] = useState(null)   // inline expanded post id
+    const [expandedId, setExpandedId] = useState(null)
     const [searchQuery, setSearchQuery] = useState('')
+    const [view, setView]         = useState('feed')
     const myEmail = api.getUserEmail?.() || ''
 
     useEffect(() => {
@@ -827,7 +907,6 @@ export default function CommunityPage() {
 
     async function loadFeed(pg = 0) {
         setLoading(true)
-        // Tutorials / Discussions tabs use topic filter as a proxy until backend supports tab param
         const effectiveTopic = activeTab === 'tutorials' ? 'interview-tips'
             : activeTab === 'discussions' ? 'general'
             : topic
@@ -867,7 +946,6 @@ export default function CommunityPage() {
         setExpandedId(prev => prev === postId ? null : postId)
     }
 
-    // Filter posts by search
     const displayedPosts = (activeTab === 'mine' ? myPosts : posts).filter(p => {
         if (!searchQuery.trim()) return true
         const q = searchQuery.toLowerCase()
@@ -877,10 +955,9 @@ export default function CommunityPage() {
             || (p.topic || '').toLowerCase().includes(q)
     })
 
-    // ── Write view ──
     if (view === 'write') {
         return (
-            <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
+            <div className="app-shell">
                 <Sidebar />
                 <div className="main-content">
                     <Topbar title="Write a Post" subtitle="Share your insight with the community" />
@@ -892,10 +969,8 @@ export default function CommunityPage() {
         )
     }
 
-    // ── Feed view ──
     return (
-        <div className="app-shell" style={{ background: 'linear-gradient(140deg,#0B0F1A,#121727 50%,#0B0F1A)' }}>
-            {/* Ambient glow */}
+        <div className="app-shell" style={{ background: `linear-gradient(140deg,${getCSSVar('bg-primary', theme)},${getCSSVar('bg-secondary', theme)} 50%,${getCSSVar('bg-primary', theme)})` }}>
             <div style={{ position: 'fixed', top: -200, left: 80, width: 500, height: 500, background: 'radial-gradient(circle,rgba(229,166,83,0.05),transparent 65%)', borderRadius: '50%', pointerEvents: 'none', zIndex: 0 }} />
 
             <Sidebar />
@@ -903,9 +978,8 @@ export default function CommunityPage() {
                 <Topbar title="Community" subtitle="Insights and tips from fellow developers" />
                 <main className="page-content">
 
-                    {/* ── Page header row ── */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, flexWrap: 'wrap' }}>
-                        <h1 style={{ fontSize: 32, fontWeight: 900, color: '#F8FAFC', letterSpacing: '-0.03em', margin: 0, flex: '0 0 auto' }}>
+                        <h1 style={{ fontSize: 32, fontWeight: 900, color: getCSSVar('text-primary', theme), letterSpacing: '-0.03em', margin: 0, flex: '0 0 auto' }}>
                             Community
                         </h1>
                         <div style={{ flex: 1 }}>
@@ -929,14 +1003,11 @@ export default function CommunityPage() {
                         </button>
                     </div>
 
-                    {/* ── Two-column layout: feed + right sidebar ── */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 20, alignItems: 'start' }}>
 
-                        {/* LEFT: Feed */}
                         <div>
-                            {/* Tab bar */}
                             <div style={{
-                                display: 'flex', gap: 0, borderBottom: '1px solid rgba(255,255,255,0.07)',
+                                display: 'flex', gap: 0, borderBottom: `1px solid ${getCSSVar('card-border', theme)}`,
                                 marginBottom: 16, overflowX: 'auto',
                             }}>
                                 {FEED_TABS.map(tab => (
@@ -947,7 +1018,7 @@ export default function CommunityPage() {
                                         style={{
                                             background: 'none', border: 'none', cursor: 'pointer',
                                             padding: '10px 16px', fontSize: 13.5, fontWeight: 700,
-                                            color: activeTab === tab.id ? '#F1F5F9' : '#475569',
+                                            color: activeTab === tab.id ? getCSSVar('text-primary', theme) : getCSSVar('text-tertiary', theme),
                                             borderBottom: activeTab === tab.id ? '2px solid #E5A653' : '2px solid transparent',
                                             marginBottom: -1, transition: 'all .15s', whiteSpace: 'nowrap',
                                         }}
@@ -957,7 +1028,6 @@ export default function CommunityPage() {
                                 ))}
                             </div>
 
-                            {/* Topic filter pills (only on feed/hot/latest/top) */}
                             {['feed', 'latest', 'top'].includes(activeTab) && (
                                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
                                     {TOPICS.map(t => {
@@ -971,9 +1041,9 @@ export default function CommunityPage() {
                                                 style={{
                                                     padding: '5px 13px', borderRadius: 20, fontSize: 12, fontWeight: 700,
                                                     cursor: 'pointer', border: '1px solid', transition: 'all .18s',
-                                                    background: sel ? `linear-gradient(135deg,${topicColor(t)[0]},${topicColor(t)[1]})` : 'rgba(255,255,255,0.04)',
-                                                    color: sel ? '#fff' : '#64748B',
-                                                    borderColor: sel ? 'transparent' : 'rgba(255,255,255,0.08)',
+                                                    background: sel ? `linear-gradient(135deg,${topicColor(t)[0]},${topicColor(t)[1]})` : getCSSVar('card-bg', theme),
+                                                    color: sel ? '#fff' : getCSSVar('text-muted', theme),
+                                                    borderColor: sel ? 'transparent' : getCSSVar('card-border', theme),
                                                     boxShadow: sel ? `0 2px 10px ${topicColor(t)[0]}40` : 'none',
                                                 }}
                                             >
@@ -984,21 +1054,19 @@ export default function CommunityPage() {
                                 </div>
                             )}
 
-                            {/* Loading */}
                             {loading && page === 0 && (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 80, gap: 14 }}>
-                                    <div style={{ width: 36, height: 36, border: '3px solid rgba(229,166,83,0.2)', borderTop: '3px solid #E5A653', borderRadius: '50%', animation: 'spin .8s linear infinite' }} />
-                                    <div style={{ color: '#64748B', fontSize: 13 }}>Loading community feed…</div>
+                                    <div style={{ width: 36, height: 36, border: `3px solid rgba(229,166,83,0.2)`, borderTop: '3px solid #E5A653', borderRadius: '50%', animation: 'spin .8s linear infinite' }} />
+                                    <div style={{ color: getCSSVar('text-muted', theme), fontSize: 13 }}>Loading community feed…</div>
                                 </div>
                             )}
 
-                            {/* Empty state */}
                             {!loading && displayedPosts.length === 0 && (
-                                <div style={{ textAlign: 'center', padding: '70px 32px', color: '#64748B' }}>
+                                <div style={{ textAlign: 'center', padding: '70px 32px', color: getCSSVar('text-muted', theme) }}>
                                     <div style={{ fontSize: 48, marginBottom: 14 }}>
                                         {searchQuery ? '🔍' : activeTab === 'mine' ? '✍️' : '📝'}
                                     </div>
-                                    <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: '#94A3B8' }}>
+                                    <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: getCSSVar('text-muted', theme) }}>
                                         {searchQuery
                                             ? `No results for "${searchQuery}"`
                                             : activeTab === 'mine'
@@ -1023,7 +1091,6 @@ export default function CommunityPage() {
                                 </div>
                             )}
 
-                            {/* Post list */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                 {displayedPosts.map((p, idx) => (
                                     <PostRow
@@ -1039,14 +1106,13 @@ export default function CommunityPage() {
                                 ))}
                             </div>
 
-                            {/* Load more */}
                             {hasNext && !searchQuery && (
                                 <div style={{ textAlign: 'center', marginTop: 24 }}>
                                     <button
                                         onClick={() => loadFeed(page + 1)}
                                         disabled={loading}
                                         style={{
-                                            background: 'rgba(229,166,83,0.08)', border: '1px solid rgba(229,166,83,0.2)',
+                                            background: `rgba(229,166,83,0.08)`, border: `1px solid rgba(229,166,83,0.2)`,
                                             color: '#9F8FE3', padding: '10px 32px', borderRadius: 11,
                                             fontWeight: 700, fontSize: 13, cursor: 'pointer',
                                         }}
@@ -1057,7 +1123,6 @@ export default function CommunityPage() {
                             )}
                         </div>
 
-                        {/* RIGHT: Widgets */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 20 }}>
                             <WeeklyChallengeWidget />
                             <TrendingTopicsWidget />

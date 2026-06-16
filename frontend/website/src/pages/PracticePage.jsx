@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/TopBar'
@@ -44,7 +44,7 @@ function SkillRing({ pct, color, size = 44 }) {
   const r = (size - 6) / 2, circ = 2 * Math.PI * r, dash = (pct / 100) * circ
   return (
     <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', flexShrink: 0 }}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,.07)" strokeWidth={5} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--xp-track-bg)" strokeWidth={5} />
       <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={5}
         strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
         style={{ transition: 'stroke-dasharray 1.2s ease' }} />
@@ -54,7 +54,7 @@ function SkillRing({ pct, color, size = 44 }) {
 
 function MiniBar({ pct, color }) {
   return (
-    <div style={{ height: 5, background: 'rgba(255,255,255,.06)', borderRadius: 10, overflow: 'hidden', flex: 1 }}>
+    <div style={{ height: 5, background: 'var(--xp-track-bg)', borderRadius: 10, overflow: 'hidden', flex: 1 }}>
       <div style={{ height: '100%', width: `${pct}%`, borderRadius: 10, background: color, transition: 'width 1.2s ease', boxShadow: `0 0 6px ${color}55` }} />
     </div>
   )
@@ -102,7 +102,7 @@ function MissionCard({ mission, onComplete, completing }) {
                 {done ? '✓ Completed' : '🎯 Daily Mission'}
               </span>
               {mission.sequence > 1 && (
-                <span style={{ fontSize: 9, color: '#64748B', background: 'rgba(255,255,255,.06)', borderRadius: 20, padding: '1px 6px' }}>
+                <span style={{ fontSize: 9, color: '#64748B', background: 'var(--xp-track-bg)', borderRadius: 20, padding: '1px 6px' }}>
                   #{mission.sequence} today
                 </span>
               )}
@@ -172,8 +172,8 @@ function ProblemCard({ problem, category, featured = false }) {
     <div
       style={{
         position: 'relative', overflow: 'hidden', borderRadius: featured ? 18 : 14,
-        border: `1px solid ${hovered ? cat.color + '55' : 'rgba(255,255,255,.07)'}`,
-        background: hovered ? cat.bg : 'rgba(255,255,255,.025)',
+        border: `1px solid ${hovered ? cat.color + '55' : 'var(--surface-border)'}`,
+        background: hovered ? cat.bg : 'var(--surface-glass)',
         backdropFilter: 'blur(18px)',
         padding: featured ? 24 : 18,
         transition: 'all .22s ease',
@@ -203,7 +203,7 @@ function ProblemCard({ problem, category, featured = false }) {
       </div>
 
       {problem.reason && (
-        <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.55, background: 'rgba(255,255,255,.03)', borderRadius: 8, padding: '6px 10px', marginBottom: 10, marginLeft: 6, border: '1px solid rgba(255,255,255,.05)' }}>
+        <div style={{ fontSize: 11, color: '#64748B', lineHeight: 1.55, background: 'var(--surface-glass)', borderRadius: 8, padding: '6px 10px', marginBottom: 10, marginLeft: 6, border: '1px solid var(--surface-border)' }}>
           💡 {problem.reason}
         </div>
       )}
@@ -230,7 +230,7 @@ function SkillPanel({ topics, diffStats, platforms }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 16 }}>
 
       {platforms?.length > 0 && (
-        <div style={{ background: 'rgba(255,255,255,.025)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <div style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', borderRadius: 14, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 11, color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>Linked</span>
           {platforms.map(p => {
             const meta = PLAT_META[p.toLowerCase()] || { color: '#E5A653', short: p, icon: '⬡' }
@@ -240,7 +240,7 @@ function SkillPanel({ topics, diffStats, platforms }) {
       )}
 
       {diffStats && (
-        <div style={{ background: 'rgba(255,255,255,.025)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 16, padding: 18 }}>
+        <div style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', borderRadius: 16, padding: 18 }}>
           <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 14, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1 }}>Progress</div>
           {[['Easy', diffStats.easyCount, 30, '#22C55E'], ['Medium', diffStats.mediumCount, 50, '#F59E0B'], ['Hard', diffStats.hardCount, 20, '#EF4444']].map(([label, val, target, color]) => {
             const pct = Math.min(Math.round(((val || 0) / target) * 100), 100)
@@ -265,7 +265,7 @@ function SkillPanel({ topics, diffStats, platforms }) {
         </div>
       )}
 
-      <div style={{ background: 'rgba(255,255,255,.025)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 16, padding: 18 }}>
+      <div style={{ background: 'var(--surface-glass)', border: '1px solid var(--surface-border)', borderRadius: 16, padding: 18 }}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 14, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: 1 }}>Weakest Topics</div>
         {sorted.length === 0
           ? <div style={{ fontSize: 12, color: '#475569', textAlign: 'center', padding: '16px 0' }}>Sync your platforms first</div>
@@ -390,7 +390,7 @@ export default function PracticePage() {
   const rest     = displayed.slice(1)
 
   return (
-    <div className="app-shell" style={{ background: 'linear-gradient(145deg,#060918,#0c1228 55%,#070b1a)' }}>
+    <div className="app-shell">
       <div style={{ position:'fixed', top:-180, right:-180, width:500, height:500, background:'radial-gradient(circle,rgba(229,166,83,.08),transparent 65%)', borderRadius:'50%', pointerEvents:'none', zIndex:0 }} />
       <div style={{ position:'fixed', bottom:-120, left:80, width:380, height:380, background:'radial-gradient(circle,rgba(239,68,68,.06),transparent 65%)', borderRadius:'50%', pointerEvents:'none', zIndex:0 }} />
 
@@ -418,7 +418,7 @@ export default function PracticePage() {
                     return <Chip key={p} color={meta.color} bg={`${meta.color}12`}>{meta.icon} {meta.short}</Chip>
                   })}
                 </div>
-                <div style={{ fontSize:12, color:'#64748B' }}>
+                <div style={{ fontSize:12, color:'var(--text-muted)' }}>
                   {weakCount > 0
                     ? `${weakCount} weak spot${weakCount > 1 ? 's' : ''} detected · Easy, Medium and Hard problems ranked by impact`
                     : 'All topics strong · here are your next progression problems'}
@@ -426,12 +426,12 @@ export default function PracticePage() {
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
-              <div style={{ display:'flex', alignItems:'center', gap:8, background:'rgba(255,255,255,.05)', border:'1px solid rgba(255,255,255,.1)', borderRadius:10, padding:'7px 12px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:8, background:'var(--surface-glass)', border:'1px solid var(--surface-border)', borderRadius:10, padding:'7px 12px' }}>
                 <span style={{ fontSize:12 }}>🔍</span>
                 <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search problems…"
-                  style={{ background:'transparent', border:'none', outline:'none', color:'#E2E8F0', fontSize:12, width:150 }} />
+                  style={{ background:'transparent', border:'none', outline:'none', color:'var(--text-primary)', fontSize:12, width:150 }} />
               </div>
-              <button onClick={load} style={{ padding:'8px 14px', borderRadius:10, border:'1px solid rgba(255,255,255,.1)', background:'rgba(255,255,255,.05)', color:'#64748B', fontSize:12, fontWeight:600, cursor:'pointer' }}>
+              <button onClick={load} style={{ padding:'8px 14px', borderRadius:10, border:'1px solid var(--surface-border)', background:'var(--surface-glass)', color:'var(--text-muted)', fontSize:12, fontWeight:600, cursor:'pointer' }}>
                 ⟳ Refresh
               </button>
             </div>
@@ -446,7 +446,7 @@ export default function PracticePage() {
           {loading ? (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', padding:100, gap:14 }}>
               <div style={{ width:44, height:44, border:'3px solid rgba(229,166,83,.2)', borderTop:'3px solid #E5A653', borderRadius:'50%', animation:'spin .8s linear infinite' }} />
-              <div style={{ fontSize:13, color:'#64748B' }}>Analysing your skill profile…</div>
+              <div style={{ fontSize:13, color:'var(--text-muted)' }}>Analysing your skill profile…</div>
               <div style={{ fontSize:11, color:'rgba(148,163,184,.4)' }}>Fetching problems from all your linked platforms</div>
             </div>
           ) : (
@@ -462,14 +462,14 @@ export default function PracticePage() {
                     return (
                       <button key={k} onClick={() => setFilter(k)} style={{
                         padding:'6px 13px', borderRadius:20, fontWeight:700, fontSize:11, cursor:'pointer',
-                        border:`1px solid ${active ? meta.color : 'rgba(255,255,255,.08)'}`,
-                        background: active ? `${meta.color}20` : 'rgba(255,255,255,.03)',
+                        border:`1px solid ${active ? meta.color : 'var(--surface-border)'}`,
+                        background: active ? `${meta.color}20` : 'var(--surface-glass)',
                         color: active ? meta.color : '#64748B',
                         transition:'all .18s', display:'flex', alignItems:'center', gap:5,
                       }}>
                         {meta.label}
                         {count > 0 && (
-                          <span style={{ fontSize:9, fontWeight:800, background: active ? meta.color : 'rgba(255,255,255,.1)', color: active ? '#fff' : '#64748B', borderRadius:20, padding:'1px 5px' }}>
+                          <span style={{ fontSize:9, fontWeight:800, background: active ? meta.color : 'var(--surface-hover)', color: active ? '#fff' : '#64748B', borderRadius:20, padding:'1px 5px' }}>
                             {count}
                           </span>
                         )}
@@ -479,10 +479,10 @@ export default function PracticePage() {
                 </div>
 
                 {displayed.length === 0 ? (
-                  <div style={{ textAlign:'center', padding:'48px 32px', background:'rgba(255,255,255,.02)', border:'1px solid rgba(255,255,255,.06)', borderRadius:18 }}>
+                  <div style={{ textAlign:'center', padding:'48px 32px', background:'var(--surface-inset)', border:'1px solid var(--surface-border)', borderRadius:18 }}>
                     <div style={{ fontSize:42, marginBottom:12 }}>🎉</div>
                     <div style={{ fontSize:16, fontWeight:800, marginBottom:6 }}>All caught up!</div>
-                    <div style={{ fontSize:12, color:'#64748B', marginBottom:16 }}>No problems match this filter. Try "All Recs" or sync your platforms.</div>
+                    <div style={{ fontSize:12, color:'var(--text-muted)', marginBottom:16 }}>No problems match this filter. Try "All Recs" or sync your platforms.</div>
                     <button onClick={() => { setFilter('all'); setSearch('') }}
                       style={{ padding:'9px 22px', borderRadius:11, background:'linear-gradient(135deg,#E5A653,#9F8FE3)', color:'#fff', fontWeight:700, fontSize:13, border:'none', cursor:'pointer' }}>
                       Show All

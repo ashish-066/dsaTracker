@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTheme } from '../context/ThemeContext'
 import {
-    getUserName, getUserEmail, fetchDashboardData,
-    fetchNotifications, fetchUnreadNotifCount, markAllNotificationsRead,
+    fetchDashboardData,
+    fetchNotifications, fetchUnreadNotifCount,
+    getUserEmail,
+    getUserName,
+    markAllNotificationsRead,
 } from '../services/api'
 import { useProfilePic } from '../utils/profilePic'
-import { useTheme } from '../context/ThemeContext'
 
 /* ── helpers ──────────────────────────────────────────────────────────── */
 
@@ -129,10 +132,10 @@ export default function Topbar({ title, subtitle }) {
                     <div
                         className="topbar-streak"
                         style={{
-                            color: streak > 14 ? '#F59E0B'
-                                 : streak > 6  ? '#FB923C'
-                                 : streak > 0  ? '#FCD34D'
-                                 : '#9CA3AF',
+                            color: streak > 14 ? 'var(--streak-high)'
+                                 : streak > 6  ? 'var(--streak-medium)'
+                                 : streak > 0  ? 'var(--streak-low)'
+                                 : 'var(--streak-none)',
                         }}
                     >
                         {streak > 0 ? `🔥 ${streak} day${streak === 1 ? '' : 's'}` : '⚡ No streak'}
@@ -276,19 +279,19 @@ export default function Topbar({ title, subtitle }) {
 /* ── styles for the bell + dropdown (scoped to .bell-*) ───────────────── */
 const BELL_CSS = `
 .bell-wrap { position: relative; }
-.notif-btn {
+.bell-wrap .notif-btn {
     position: relative;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: #CBD5E1;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--surface-border);
+    color: var(--text-secondary);
     width: 38px; height: 38px;
     border-radius: 10px;
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
 }
-.notif-btn:hover { background: rgba(229,166,83,0.08); border-color: rgba(229,166,83,0.25); }
-.notif-btn:active { transform: translateY(1px); }
+.bell-wrap .notif-btn:hover { background: var(--amber-light); border-color: var(--border-hover); color: var(--text-primary); }
+.bell-wrap .notif-btn:active { transform: translateY(1px); }
 .bell-icon { font-size: 16px; line-height: 1; }
 .bell-has-unread { animation: bell-swing 2s ease-in-out 1; transform-origin: 50% 10%; }
 @keyframes bell-swing {
@@ -312,7 +315,7 @@ const BELL_CSS = `
     font-weight: 800;
     display: inline-flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 6px rgba(239,68,68,0.5);
-    border: 1.5px solid #0B0F1A;
+    border: 1.5px solid var(--badge-ring);
     letter-spacing: 0.02em;
 }
 
@@ -323,10 +326,10 @@ const BELL_CSS = `
     width: 360px;
     max-height: 480px;
     overflow: auto;
-    background: rgba(11, 15, 26, 0.96);
-    border: 1px solid rgba(229,166,83,0.22);
+    background: var(--popover-bg);
+    border: 1px solid var(--popover-border);
     border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    box-shadow: var(--shadow-lg), 0 0 0 1px var(--surface-inset) inset;
     backdrop-filter: blur(14px);
     z-index: 50;
     animation: bell-pop-in 0.18s ease-out;
@@ -338,29 +341,29 @@ const BELL_CSS = `
 .bell-head {
     display: flex; align-items: center; justify-content: space-between;
     padding: 14px 16px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--popover-divider);
     position: sticky; top: 0;
-    background: rgba(11,15,26,0.96);
+    background: var(--popover-head-bg);
     z-index: 2;
 }
 .bell-head-title {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 800; font-size: 14px;
-    color: #F1F5F9;
+    color: var(--text-primary);
     letter-spacing: -0.01em;
 }
-.bell-head-sub { font-size: 11px; color: #64748B; letter-spacing: 0.02em; }
+.bell-head-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 0.02em; }
 
 .bell-empty {
     padding: 46px 22px;
     text-align: center;
-    color: #64748B;
+    color: var(--text-muted);
 }
 .bell-empty-emoji { font-size: 32px; margin-bottom: 10px; opacity: 0.8; }
 .bell-empty-title {
-    font-size: 14px; font-weight: 700; color: #CBD5E1; margin-bottom: 4px;
+    font-size: 14px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;
 }
-.bell-empty-sub { font-size: 12px; line-height: 1.55; max-width: 240px; margin: 0 auto; }
+.bell-empty-sub { font-size: 12px; line-height: 1.55; max-width: 240px; margin: 0 auto; color: var(--text-muted); }
 
 .bell-list { list-style: none; margin: 0; padding: 4px 0 8px; }
 .bell-item {
@@ -370,9 +373,9 @@ const BELL_CSS = `
     cursor: pointer;
     transition: background 0.15s;
 }
-.bell-item:hover { background: rgba(255,255,255,0.03); }
-.bell-item-unread { background: rgba(229,166,83,0.06); }
-.bell-item-unread:hover { background: rgba(229,166,83,0.09); }
+.bell-item:hover { background: var(--popover-item-hover); }
+.bell-item-unread { background: var(--amber-light); }
+.bell-item-unread:hover { background: rgba(229,166,83,0.12); }
 
 .bell-item-icon {
     flex-shrink: 0;
@@ -385,21 +388,21 @@ const BELL_CSS = `
 .bell-item-body { flex: 1; min-width: 0; }
 .bell-item-title {
     font-size: 13.5px; font-weight: 700;
-    color: #F1F5F9;
+    color: var(--text-primary);
     line-height: 1.35;
     overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 .bell-item-msg {
     margin-top: 3px;
     font-size: 12px;
-    color: #94A3B8;
+    color: var(--text-secondary);
     line-height: 1.45;
     overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
 }
 .bell-item-foot {
     margin-top: 6px;
     font-size: 10.5px;
-    color: #64748B;
+    color: var(--text-muted);
     display: flex; align-items: center; gap: 6px;
     letter-spacing: 0.02em;
 }

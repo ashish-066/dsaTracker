@@ -80,15 +80,15 @@ export default function LoginPage() {
                     marginBottom: '16px',
                     fontSize: '13px',
                     lineHeight: 1.55,
-                    color: '#c8943a',
+                    color: 'var(--text-accent)',
                     display: 'flex',
                     gap: 9,
                     alignItems: 'flex-start',
                 }}>
                     <span style={{ fontSize: 16, marginTop: 1 }}>⏳</span>
                     <span>
-                        <strong style={{ color: '#E5A653' }}>Heads up!</strong> Our backend runs on a free tier and may be
-                        sleeping. The first request can take <strong style={{ color: '#E5A653' }}>10–30 seconds</strong> to
+                        <strong style={{ color: 'var(--emphasis-color)' }}>Heads up!</strong> Our backend runs on a free tier and may be
+                        sleeping. The first request can take <strong style={{ color: 'var(--emphasis-color)' }}>10–30 seconds</strong> to
                         wake up — please be patient. Once it's up, everything runs smoothly. ☕
                     </span>
                 </div>
