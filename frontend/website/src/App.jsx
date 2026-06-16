@@ -1,4 +1,4 @@
-import { Toaster } from "react-hot-toast"
+
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import ChallengePage from './pages/ChallengePage'
 import CommunityPage from './pages/CommunityPage'
@@ -13,6 +13,8 @@ import SignupPage from './pages/SignupPage'
 import { TourProvider } from './tour/TourContext'
 import TourOverlay from './tour/TourOverlay'
 
+import UsernameSetupPage from './pages/UsernameSetupPage'
+import { Toaster } from "react-hot-toast";
 function ThemedToaster() {
     return (
         <Toaster
@@ -31,6 +33,7 @@ function ThemedToaster() {
     );
 }
 
+
 export default function App() {
     return (
         <BrowserRouter>
@@ -41,6 +44,7 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/choose-username" element={<UsernameSetupPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 {/* /problems and /recommendations both point to the unified Practice page */}

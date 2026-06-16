@@ -63,6 +63,7 @@ public class SecurityConfig {
                                 "/auth/signup/request",
                                 "/auth/signup/resend",
                                 "/auth/signup/verify",
+                                "/auth/google",
                                 "/auth/username/check",
                                 // /auth/logout is permitAll on purpose — a user
                                 // with an expired/corrupt cookie should still be

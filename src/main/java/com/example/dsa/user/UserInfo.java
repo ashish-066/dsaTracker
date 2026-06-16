@@ -20,6 +20,9 @@ public class UserInfo {
     private String password;
     private String roles;
 
+    @Column(name = "google_subject", unique = true)
+    private String googleSubject;
+
     /**
      * Public-facing handle, like an Instagram username.
      * Lowercased, [a-z0-9_]{3,30}, unique across all users. Used in URLs,
@@ -164,5 +167,13 @@ public class UserInfo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getGoogleSubject() {
+        return googleSubject;
+    }
+
+    public void setGoogleSubject(String googleSubject) {
+        this.googleSubject = googleSubject;
     }
 }
