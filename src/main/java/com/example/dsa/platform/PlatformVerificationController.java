@@ -52,15 +52,19 @@ public class PlatformVerificationController {
         "leetcode", new TargetProblem(
             "two-sum", "Two Sum", "https://leetcode.com/problems/two-sum/"),
         "codeforces", new TargetProblem(
-            "4-A", "4A — Watermelon", "https://codeforces.com/problemset/problem/4/A")
+            "4-A", "4A — Watermelon", "https://codeforces.com/problemset/problem/4/A"),
+        "gfg", new TargetProblem(
+            "dummy", "GeeksForGeeks Auto-Verify", "https://practice.geeksforgeeks.org/")
     );
 
     private final LeetCodeClient leetCodeClient;
     private final CodeforcesClient codeforcesClient;
+    private final GfgClient gfgClient;
 
-    public PlatformVerificationController(LeetCodeClient lc, CodeforcesClient cf) {
+    public PlatformVerificationController(LeetCodeClient lc, CodeforcesClient cf, GfgClient gfgClient) {
         this.leetCodeClient = lc;
         this.codeforcesClient = cf;
+        this.gfgClient = gfgClient;
     }
 
     /**
@@ -82,6 +86,7 @@ public class PlatformVerificationController {
         boolean exists = switch (platform) {
             case "leetcode"   -> leetCodeClient.userExists(handle);
             case "codeforces" -> codeforcesClient.userExists(handle);
+            case "gfg"        -> gfgClient.userExists(handle);
             default            -> false;
         };
         if (!exists) {
@@ -93,6 +98,13 @@ public class PlatformVerificationController {
         Map<String, Object> resp = new HashMap<>();
         resp.put("platform", platform);
         resp.put("handle", handle);
+
+        if ("gfg".equals(platform)) {
+            // GFG doesn't support submission-based verification easily
+            resp.put("autoVerify", true);
+            return ResponseEntity.ok(resp);
+        }
+
         resp.put("problemSlug", target.slug());
         resp.put("problemName", target.name());
         resp.put("problemUrl", target.url());

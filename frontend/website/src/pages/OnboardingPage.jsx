@@ -33,6 +33,7 @@ const COMPANIES = [
 const PLATFORM_CONFIG = [
     { key: 'leetcode', label: 'LeetCode', color: '#FFA116', placeholder: 'e.g. rahul_codes' },
     { key: 'codeforces', label: 'Codeforces', color: '#1890FF', placeholder: 'e.g. rahul_cf' },
+    { key: 'gfg', label: 'GeeksforGeeks', color: '#2E8B57', placeholder: 'e.g. rahul_gfg' },
 ]
 
 export default function OnboardingPage() {
@@ -53,6 +54,10 @@ export default function OnboardingPage() {
             problemSlug: null, startTime: null, message: '', loading: false,
         },
         codeforces: {
+            username: '', status: 'idle', problemUrl: null, problemName: null,
+            problemSlug: null, startTime: null, message: '', loading: false,
+        },
+        gfg: {
             username: '', status: 'idle', problemUrl: null, problemName: null,
             problemSlug: null, startTime: null, message: '', loading: false,
         },
@@ -93,15 +98,24 @@ export default function OnboardingPage() {
         try {
             const r = await api.verifyStart(platformKey, handle)
             if (r.success) {
-                updatePlatform(platformKey, {
-                    status: 'pending',
-                    problemSlug: r.data.problemSlug,
-                    problemName: r.data.problemName,
-                    problemUrl:  r.data.problemUrl,
-                    startTime:   r.data.startTime,
-                    loading: false,
-                    message: '',
-                })
+                if (r.data.autoVerify) {
+                    updatePlatform(platformKey, {
+                        status: 'verified',
+                        loading: false,
+                        message: '✅ Account found and linked!',
+                    })
+                    api.savePlatformVerified(platformKey, handle, true, new Date().toISOString())
+                } else {
+                    updatePlatform(platformKey, {
+                        status: 'pending',
+                        problemSlug: r.data.problemSlug,
+                        problemName: r.data.problemName,
+                        problemUrl:  r.data.problemUrl,
+                        startTime:   r.data.startTime,
+                        loading: false,
+                        message: '',
+                    })
+                }
             } else {
                 updatePlatform(platformKey, {
                     loading: false,

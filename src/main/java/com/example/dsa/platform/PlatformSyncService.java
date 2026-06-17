@@ -23,6 +23,7 @@ public class PlatformSyncService {
     private final UserSolvedProblemRepository solvedProblemRepo;
     private final LeetCodeClient leetCodeClient;
     private final CodeforcesClient codeforcesClient;
+    private final GfgClient gfgClient;
     private final UserInfoRepository userInfoRepo;
     // @Lazy to avoid potential circular-dependency at startup
     private final ChallengeService challengeService;
@@ -35,6 +36,7 @@ public class PlatformSyncService {
             UserSolvedProblemRepository solvedProblemRepo,
             LeetCodeClient leetCodeClient,
             CodeforcesClient codeforcesClient,
+            GfgClient gfgClient,
             UserInfoRepository userInfoRepo,
             @Lazy ChallengeService challengeService) {
         this.platformAccountRepo = platformAccountRepo;
@@ -43,6 +45,7 @@ public class PlatformSyncService {
         this.solvedProblemRepo = solvedProblemRepo;
         this.leetCodeClient = leetCodeClient;
         this.codeforcesClient = codeforcesClient;
+        this.gfgClient = gfgClient;
         this.userInfoRepo = userInfoRepo;
         this.challengeService = challengeService;
     }
@@ -72,6 +75,8 @@ public class PlatformSyncService {
             return syncLeetCode(userId, username);
         } else if ("codeforces".equalsIgnoreCase(platform)) {
             return syncCodeforces(userId, username);
+        } else if ("gfg".equalsIgnoreCase(platform)) {
+            return syncGfg(userId, username);
         }
         return Map.of("error", "Unsupported platform: " + platform);
     }
@@ -104,6 +109,8 @@ public class PlatformSyncService {
                     stats = leetCodeClient.fetchProfileStats(acc.getUsername());
                 } else if ("codeforces".equalsIgnoreCase(acc.getPlatformName())) {
                     stats = codeforcesClient.fetchStats(acc.getUsername());
+                } else if ("gfg".equalsIgnoreCase(acc.getPlatformName())) {
+                    stats = gfgClient.fetchProfileStats(acc.getUsername());
                 }
                 if (stats.containsKey("calendar")) {
                     @SuppressWarnings("unchecked")
@@ -233,6 +240,21 @@ public class PlatformSyncService {
             notifyChallengeSolves(userId, newSlugs);
 
         markSynced(userId, "codeforces");
+
+        Map<String, Object> response = new LinkedHashMap<>(stats);
+        response.put("syncedAt", LocalDateTime.now().toString());
+        response.remove("topics");
+        return response;
+    }
+
+    /* ── Private: GFG sync ── */
+    private Map<String, Object> syncGfg(String userId, String username) {
+        Map<String, Object> stats = gfgClient.fetchProfileStats(username);
+        upsertStats(userId, "gfg", stats);
+        // GFG doesn't currently fetch topics/acSlugs in our basic Jsoup implementation
+        // so we skip upsertTopics and persistSolvedSlugs for now.
+
+        markSynced(userId, "gfg");
 
         Map<String, Object> response = new LinkedHashMap<>(stats);
         response.put("syncedAt", LocalDateTime.now().toString());
