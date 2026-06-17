@@ -98,6 +98,39 @@ public class UserController {
         return "Welcome this endpoint is not secure";
     }
 
+    /**
+     * Contributor / demo login — creates the demo account on first call,
+     * then issues an auth cookie so the caller lands in the app immediately.
+     *
+     * The demo account has no linked platforms, so it lands on the
+     * dashboard's "link your platforms" empty state — perfect for a quick
+     * contributor walkthrough without needing real credentials.
+     */
+    @PostMapping("/demo-login")
+    public ResponseEntity<?> demoLogin(HttpServletRequest request, HttpServletResponse response) {
+        final String DEMO_EMAIL = "demo@algosprint.dev";
+        final String DEMO_NAME  = "Demo Contributor";
+
+        // Create the account if it doesn't exist yet (idempotent)
+        if (service.findByEmail(DEMO_EMAIL).isEmpty()) {
+            UserInfo demo = new UserInfo();
+            demo.setEmail(DEMO_EMAIL);
+            demo.setName(DEMO_NAME);
+            demo.setPassword("demo-account-no-password-login-only");
+            demo.setRoles("ROLE_USER");
+            service.addUser(demo);
+        }
+
+        String token = jwtService.generateToken(DEMO_EMAIL);
+        setAuthCookie(request, response, token);
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("ok",    true);
+        resp.put("email", DEMO_EMAIL);
+        resp.put("name",  DEMO_NAME);
+        return ResponseEntity.ok(resp);
+    }
+
     @PostMapping("/addNewUser")
     public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
         String result = service.addUser(userInfo);

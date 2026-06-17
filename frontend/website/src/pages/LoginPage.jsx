@@ -108,9 +108,36 @@ export default function LoginPage() {
                 )}
 
                 {/* Google SSO */}
-                <div style={{ marginBottom: 16 }}>
+                <div style={{ marginBottom: 10 }}>
                     <GoogleAuthButton onCredential={handleGoogleCredential} disabled={loading} />
                 </div>
+
+                {/* Contributor / demo quick-access */}
+                <button
+                    type="button"
+                    onClick={async () => {
+                        setError('')
+                        setLoading(true)
+                        const result = await api.demoLogin()
+                        setLoading(false)
+                        if (result.success) navigate('/dashboard')
+                        else setError(result.error)
+                    }}
+                    disabled={loading}
+                    style={{
+                        width: '100%', marginBottom: 16, padding: '10px',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px dashed rgba(255,255,255,0.18)',
+                        borderRadius: 10, color: '#94A3B8',
+                        fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                        transition: 'all .2s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(229,166,83,0.4)'; e.currentTarget.style.color = '#E5A653' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'; e.currentTarget.style.color = '#94A3B8' }}
+                >
+                    🛠 Continue as Contributor
+                </button>
 
                 <div className="auth-divider">or</div>
 

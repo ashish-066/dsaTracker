@@ -65,6 +65,7 @@ public class SecurityConfig {
                                 "/auth/signup/verify",
                                 "/auth/google",
                                 "/auth/username/check",
+                                "/auth/demo-login",
                                 // /auth/logout is permitAll on purpose — a user
                                 // with an expired/corrupt cookie should still be
                                 // able to clear it cleanly without bouncing off 401.

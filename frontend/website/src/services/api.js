@@ -407,6 +407,26 @@ export async function loginWithGoogle(credential) {
     }
 }
 
+/** Demo / contributor login — no credentials needed. */
+export async function demoLogin() {
+    try {
+        const res = await fetch(`${API_BASE}/auth/demo-login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        })
+        const data = await res.json().catch(() => ({}))
+        if (res.ok) {
+            setUserEmail(data.email)
+            if (data.name) setUserName(data.name)
+            return { success: true, data }
+        }
+        return { success: false, error: data.error || 'Demo login failed' }
+    } catch {
+        return { success: false, error: 'Cannot connect to server.' }
+    }
+}
+
 /** Login: exchange email + password for an HttpOnly auth cookie. */
 export async function login(email, password) {
     try {
@@ -916,4 +936,13 @@ export async function broadcastNotification({ title, message, link }) {
 // ── Recommendations ────────────────────────────────────────────────────────────
 export async function completeDailyMission() {
     return authFetchJson('/recommendations/daily-mission/complete', { method: 'POST' })
+}
+
+// ── Community widgets ──────────────────────────────────────────────────────────
+export async function fetchWeeklyChallenge() {
+    return authFetchJson('/api/community/weekly-challenge')
+}
+
+export async function fetchCommunityStats() {
+    return authFetchJson('/api/community/stats')
 }
