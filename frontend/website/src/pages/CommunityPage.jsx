@@ -45,16 +45,10 @@ const FEED_TABS = [
 
 // Static right-panel data (backend integration to be done in a separate issue)
 const TRENDING_TOPICS = [
-    { tag: 'SystemDesign',        count: '1.2k' },
-    { tag: 'DynamicProgramming',  count: '845'  },
-    { tag: 'FAANG_Interviews',    count: '632'  },
-    { tag: 'Python',              count: '412'  },
-]
-
-const TOP_CONTRIBUTORS = [
-    { name: 'Michael Chen', rep: '14k Rep', solutions: '42 Solutions', rank: 1 },
-    { name: 'Emma Watson',  rep: '12k Rep', solutions: '38 Solutions', rank: 2 },
-    { name: 'James Doe',    rep: '10k Rep', solutions: '29 Solutions', rank: 3 },
+    { tag: 'SystemDesign',        filter: 'system-design',       count: '1.2k' },
+    { tag: 'DynamicProgramming',  filter: 'dynamic-programming', count: '845'  },
+    { tag: 'FAANG_Interviews',    filter: 'arrays',              count: '632'  },
+    { tag: 'Python',              filter: 'strings',             count: '412'  },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -139,7 +133,8 @@ function UpvoteCol({ count, liked, onLike, liking }) {
 }
 
 // ─── Post Row (feed item) ─────────────────────────────────────────────────────
-function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }) {
+function PostRow({ post, onLike, onDelete, myEmail }) {
+    const navigate              = useNavigate()
     const [liking, setLiking]   = useState(false)
     const [liked, setLiked]     = useState(post.likedByMe)
     const [likes, setLikes]     = useState(post.likeCount)
@@ -174,27 +169,24 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                 display: 'flex', gap: 0,
                 background: isFeatured
                     ? 'rgba(229,166,83,0.06)'
-                    : expanded ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.025)',
+                    : 'rgba(255,255,255,0.025)',
                 border: isFeatured
                     ? '1px solid rgba(229,166,83,0.25)'
-                    : expanded ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.06)',
+                    : '1px solid rgba(255,255,255,0.06)',
                 borderRadius: 14,
                 overflow: 'hidden',
                 cursor: 'pointer',
                 transition: 'all .25s',
-                opacity: dimmed ? 0.45 : 1,
-                transform: dimmed ? 'scale(0.99)' : 'scale(1)',
-                pointerEvents: dimmed ? 'none' : 'auto',
             }}
-            onClick={onToggle}
+            onClick={() => navigate(`/community/post/${post.id}`)}
             onMouseEnter={e => {
-                if (!expanded && !isFeatured && !dimmed) {
+                if (!isFeatured) {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
                 }
             }}
             onMouseLeave={e => {
-                if (!expanded && !isFeatured && !dimmed) {
+                if (!isFeatured) {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
                 }
@@ -235,28 +227,20 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
 
                 {/* Title */}
                 <h3 style={{
-                    fontSize: expanded ? 22 : 16, fontWeight: 800, lineHeight: 1.35,
+                    fontSize: 16, fontWeight: 800, lineHeight: 1.35,
                     color: '#F1F5F9', marginBottom: 8, letterSpacing: '-0.01em',
-                    transition: 'font-size .2s',
                 }}>
                     {post.title}
                 </h3>
 
-                {/* Preview / Full content */}
-                {!expanded ? (
-                    <p style={{
-                        fontSize: 13.5, color: '#64748B', lineHeight: 1.7,
-                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                        margin: 0,
-                    }}>
-                        {post.preview || post.content}
-                    </p>
-                ) : (
-                    <div style={{ marginTop: 8 }}>
-                        <Markdown text={post.content} />
-                        <style>{MD_CSS}</style>
-                    </div>
-                )}
+                {/* Preview */}
+                <p style={{
+                    fontSize: 13.5, color: '#64748B', lineHeight: 1.7,
+                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    margin: 0,
+                }}>
+                    {post.preview || post.content}
+                </p>
 
                 {/* Footer row */}
                 <div style={{
@@ -279,7 +263,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         {/* Comments placeholder */}
                         <button
-                            onClick={e => { e.stopPropagation(); onToggle() }}
+                            onClick={e => { e.stopPropagation(); navigate(`/community/post/${post.id}`) }}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: 5,
                                 background: 'none', border: 'none', cursor: 'pointer',
@@ -340,23 +324,6 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                                 Delete
                             </button>
                         )}
-
-                        {/* Collapse arrow when expanded */}
-                        {expanded && (
-                            <button
-                                onClick={e => { e.stopPropagation(); onToggle() }}
-                                style={{
-                                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                                    color: '#94A3B8', padding: '4px 10px', borderRadius: 7,
-                                    fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
-                                }}
-                            >
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="18 15 12 9 6 15"/>
-                                </svg>
-                                Collapse
-                            </button>
-                        )}
                     </div>
                 </div>
             </div>
@@ -366,34 +333,53 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
 
 // ─── Right Sidebar Widgets ────────────────────────────────────────────────────
 
-// Weekly Challenge widget — static, backend integration in separate issue
+// Weekly Challenge widget — fetches from /api/community/weekly-challenge
 function WeeklyChallengeWidget() {
+    const [challenge, setChallenge] = useState(null)
+
+    useEffect(() => {
+        api.fetchWeeklyChallenge().then(r => { if (r.ok) setChallenge(r.data) })
+    }, [])
+
+    const title    = challenge?.title        || 'Loading…'
+    const desc     = challenge?.description  || ''
+    const daysLeft = challenge?.daysLeft     ?? '?'
+    const url      = challenge?.url          || null
+    const diff     = challenge?.difficulty   || ''
+    const participants = challenge?.participants || '—'
+
+    const diffColor = diff === 'Hard' ? '#EF4444' : diff === 'Easy' ? '#22C55E' : '#F59E0B'
+
     return (
         <div style={{
             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(229,166,83,0.2)',
             borderRadius: 14, padding: '18px 18px', overflow: 'hidden', position: 'relative',
         }}>
-            {/* Glow */}
             <div style={{ position: 'absolute', top: -40, right: -40, width: 120, height: 120, background: 'radial-gradient(circle,rgba(229,166,83,0.15),transparent 70%)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
                 <span style={{ fontSize: 16 }}>📅</span>
                 <span style={{ fontSize: 10, fontWeight: 800, color: '#E5A653', letterSpacing: '0.08em' }}>WEEKLY CHALLENGE</span>
-                <span style={{ marginLeft: 'auto', fontSize: 18 }}>🏆</span>
+                {diff && <span style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: `${diffColor}18`, color: diffColor, border: `1px solid ${diffColor}30` }}>{diff}</span>}
             </div>
             <h3 style={{ fontSize: 17, fontWeight: 800, color: '#F1F5F9', lineHeight: 1.3, marginBottom: 8 }}>
-                Solve "Rainwater Trapping"
+                {title}
             </h3>
-            <p style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.6, marginBottom: 14 }}>
-                Join 2,451 other developers tackling this classic array problem. 3 days left!
+            <p style={{ fontSize: 12.5, color: '#64748B', lineHeight: 1.6, marginBottom: 6 }}>{desc}</p>
+            <p style={{ fontSize: 11, color: '#475569', marginBottom: 14 }}>
+                {participants} participants · {daysLeft} {daysLeft === 1 ? 'day' : 'days'} left
             </p>
-            <button style={{
-                width: '100%', padding: '9px 0', borderRadius: 8, fontWeight: 700,
-                fontSize: 13, cursor: 'pointer', border: '1px solid rgba(229,166,83,0.4)',
-                background: 'rgba(229,166,83,0.1)', color: '#E5A653',
-                transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(229,166,83,0.2)' }}
+            <button
+                onClick={() => url && window.open(url, '_blank', 'noopener,noreferrer')}
+                disabled={!url}
+                style={{
+                    width: '100%', padding: '9px 0', borderRadius: 8, fontWeight: 700,
+                    fontSize: 13, cursor: url ? 'pointer' : 'default',
+                    border: '1px solid rgba(229,166,83,0.4)',
+                    background: 'rgba(229,166,83,0.1)', color: '#E5A653',
+                    transition: 'all .2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                }}
+                onMouseEnter={e => { if (url) e.currentTarget.style.background = 'rgba(229,166,83,0.2)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(229,166,83,0.1)' }}
             >
                 Attempt Now →
@@ -402,8 +388,8 @@ function WeeklyChallengeWidget() {
     )
 }
 
-// Trending Topics widget — static, backend integration in separate issue
-function TrendingTopicsWidget() {
+// Trending Topics widget — clicking filters the feed
+function TrendingTopicsWidget({ onTopicClick }) {
     return (
         <div style={{
             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
@@ -420,8 +406,9 @@ function TrendingTopicsWidget() {
                     <div key={i} style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         padding: '8px 0', borderBottom: i < TRENDING_TOPICS.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                        cursor: 'pointer',
+                        cursor: 'pointer', transition: 'opacity .15s',
                     }}
+                        onClick={() => onTopicClick && onTopicClick(t.filter)}
                         onMouseEnter={e => { e.currentTarget.style.opacity = '0.75' }}
                         onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
                     >
@@ -436,9 +423,13 @@ function TrendingTopicsWidget() {
     )
 }
 
-// Top Contributors widget — static, backend integration in separate issue
-function TopContributorsWidget() {
+// Top Contributors widget — real data from /api/community/stats
+function TopContributorsWidget({ contributors }) {
     const rankColors = ['#E5A653', '#94A3B8', '#CD7F32']
+    const display = contributors?.length
+        ? contributors
+        : [{ name: '—', postCount: 0 }, { name: '—', postCount: 0 }, { name: '—', postCount: 0 }]
+
     return (
         <div style={{
             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
@@ -449,24 +440,22 @@ function TopContributorsWidget() {
                 <span style={{ fontSize: 11, fontWeight: 800, color: '#94A3B8', letterSpacing: '0.07em' }}>TOP CONTRIBUTORS</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {TOP_CONTRIBUTORS.map((c, i) => (
+                {display.map((c, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        {/* Rank badge */}
                         <div style={{
                             width: 22, height: 22, borderRadius: '50%', background: `${rankColors[i]}20`,
                             border: `1px solid ${rankColors[i]}40`, display: 'flex', alignItems: 'center',
                             justifyContent: 'center', fontSize: 10, fontWeight: 800, color: rankColors[i], flexShrink: 0,
-                        }}>{c.rank}</div>
-                        {/* Avatar */}
+                        }}>{i + 1}</div>
                         <div style={{
                             width: 32, height: 32, borderRadius: '50%',
                             background: `linear-gradient(135deg, ${rankColors[i]}, ${rankColors[i]}88)`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: 13, fontWeight: 800, color: '#fff', flexShrink: 0,
-                        }}>{c.name[0]}</div>
+                        }}>{(c.name || '?')[0].toUpperCase()}</div>
                         <div style={{ minWidth: 0 }}>
                             <div style={{ fontSize: 13, fontWeight: 700, color: '#E2E8F0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</div>
-                            <div style={{ fontSize: 11, color: '#475569' }}>{c.rep} · {c.solutions}</div>
+                            <div style={{ fontSize: 11, color: '#475569' }}>{c.postCount} {c.postCount === 1 ? 'post' : 'posts'}</div>
                         </div>
                     </div>
                 ))}
@@ -475,8 +464,8 @@ function TopContributorsWidget() {
     )
 }
 
-// Community Stats widget — static
-function CommunityStatsWidget() {
+// Community Stats widget — real postsToday from /api/community/stats
+function CommunityStatsWidget({ postsToday }) {
     return (
         <div style={{
             background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
@@ -484,14 +473,14 @@ function CommunityStatsWidget() {
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0,
         }}>
             <div style={{ textAlign: 'center', padding: '8px 0', borderRight: '1px solid rgba(255,255,255,0.07)' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>1,204</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>—</div>
                 <div style={{ fontSize: 11, color: '#64748B', marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', display: 'inline-block' }} />
                     ONLINE
                 </div>
             </div>
             <div style={{ textAlign: 'center', padding: '8px 0' }}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>342</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: '#F1F5F9' }}>{postsToday ?? '—'}</div>
                 <div style={{ fontSize: 11, color: '#64748B', marginTop: 2 }}>POSTS TODAY</div>
             </div>
         </div>
@@ -816,13 +805,14 @@ export default function CommunityPage() {
     const [loading, setLoading]   = useState(true)
     const [page, setPage]         = useState(0)
     const [hasNext, setHasNext]   = useState(false)
-    const [expandedId, setExpandedId] = useState(null)   // inline expanded post id
     const [searchQuery, setSearchQuery] = useState('')
+    const [communityStats, setCommunityStats] = useState(null)
     const myEmail = api.getUserEmail?.() || ''
 
     useEffect(() => {
         if (!api.isAuthenticated()) { navigate('/login'); return }
         loadFeed(0)
+        api.fetchCommunityStats().then(r => { if (r.ok) setCommunityStats(r.data) })
     }, [topic, activeTab])
 
     async function loadFeed(pg = 0) {
@@ -861,10 +851,6 @@ export default function CommunityPage() {
         if (!confirm('Delete this post?')) return
         const r = await api.deletePost(postId)
         if (r.ok) { loadFeed(0); if (activeTab === 'mine') loadMine() }
-    }
-
-    function toggleExpand(postId) {
-        setExpandedId(prev => prev === postId ? null : postId)
     }
 
     // Filter posts by search
@@ -943,7 +929,7 @@ export default function CommunityPage() {
                                     <button
                                         key={tab.id}
                                         id={`community-tab-${tab.id}`}
-                                        onClick={() => { setActiveTab(tab.id); setExpandedId(null) }}
+                                        onClick={() => { setActiveTab(tab.id) }}
                                         style={{
                                             background: 'none', border: 'none', cursor: 'pointer',
                                             padding: '10px 16px', fontSize: 13.5, fontWeight: 700,
@@ -967,7 +953,7 @@ export default function CommunityPage() {
                                             <button
                                                 key={t}
                                                 id={`community-topic-${t}`}
-                                                onClick={() => { setTopic(t); setPage(0); setExpandedId(null) }}
+                                                onClick={() => { setTopic(t); setPage(0) }}
                                                 style={{
                                                     padding: '5px 13px', borderRadius: 20, fontSize: 12, fontWeight: 700,
                                                     cursor: 'pointer', border: '1px solid', transition: 'all .18s',
@@ -1032,9 +1018,6 @@ export default function CommunityPage() {
                                         onLike={handleLike}
                                         onDelete={handleDelete}
                                         myEmail={myEmail}
-                                        expanded={expandedId === p.id}
-                                        dimmed={expandedId !== null && expandedId !== p.id}
-                                        onToggle={() => toggleExpand(p.id)}
                                     />
                                 ))}
                             </div>
@@ -1060,9 +1043,9 @@ export default function CommunityPage() {
                         {/* RIGHT: Widgets */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 20 }}>
                             <WeeklyChallengeWidget />
-                            <TrendingTopicsWidget />
-                            <TopContributorsWidget />
-                            <CommunityStatsWidget />
+                            <TrendingTopicsWidget onTopicClick={t => { setTopic(t); setActiveTab('feed') }} />
+                            <TopContributorsWidget contributors={communityStats?.topContributors} />
+                            <CommunityStatsWidget postsToday={communityStats?.postsToday} />
                         </div>
                     </div>
 
