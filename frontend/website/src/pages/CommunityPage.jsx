@@ -133,7 +133,8 @@ function UpvoteCol({ count, liked, onLike, liking }) {
 }
 
 // ─── Post Row (feed item) ─────────────────────────────────────────────────────
-function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }) {
+function PostRow({ post, onLike, onDelete, myEmail }) {
+    const navigate              = useNavigate()
     const [liking, setLiking]   = useState(false)
     const [liked, setLiked]     = useState(post.likedByMe)
     const [likes, setLikes]     = useState(post.likeCount)
@@ -168,27 +169,24 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                 display: 'flex', gap: 0,
                 background: isFeatured
                     ? 'rgba(229,166,83,0.06)'
-                    : expanded ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.025)',
+                    : 'rgba(255,255,255,0.025)',
                 border: isFeatured
                     ? '1px solid rgba(229,166,83,0.25)'
-                    : expanded ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.06)',
+                    : '1px solid rgba(255,255,255,0.06)',
                 borderRadius: 14,
                 overflow: 'hidden',
                 cursor: 'pointer',
                 transition: 'all .25s',
-                opacity: dimmed ? 0.45 : 1,
-                transform: dimmed ? 'scale(0.99)' : 'scale(1)',
-                pointerEvents: dimmed ? 'none' : 'auto',
             }}
-            onClick={onToggle}
+            onClick={() => navigate(`/community/post/${post.id}`)}
             onMouseEnter={e => {
-                if (!expanded && !isFeatured && !dimmed) {
+                if (!isFeatured) {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
                 }
             }}
             onMouseLeave={e => {
-                if (!expanded && !isFeatured && !dimmed) {
+                if (!isFeatured) {
                     e.currentTarget.style.background = 'rgba(255,255,255,0.025)'
                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
                 }
@@ -229,28 +227,20 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
 
                 {/* Title */}
                 <h3 style={{
-                    fontSize: expanded ? 22 : 16, fontWeight: 800, lineHeight: 1.35,
+                    fontSize: 16, fontWeight: 800, lineHeight: 1.35,
                     color: '#F1F5F9', marginBottom: 8, letterSpacing: '-0.01em',
-                    transition: 'font-size .2s',
                 }}>
                     {post.title}
                 </h3>
 
-                {/* Preview / Full content */}
-                {!expanded ? (
-                    <p style={{
-                        fontSize: 13.5, color: '#64748B', lineHeight: 1.7,
-                        display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                        margin: 0,
-                    }}>
-                        {post.preview || post.content}
-                    </p>
-                ) : (
-                    <div style={{ marginTop: 8 }}>
-                        <Markdown text={post.content} />
-                        <style>{MD_CSS}</style>
-                    </div>
-                )}
+                {/* Preview */}
+                <p style={{
+                    fontSize: 13.5, color: '#64748B', lineHeight: 1.7,
+                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    margin: 0,
+                }}>
+                    {post.preview || post.content}
+                </p>
 
                 {/* Footer row */}
                 <div style={{
@@ -273,7 +263,7 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         {/* Comments placeholder */}
                         <button
-                            onClick={e => { e.stopPropagation(); onToggle() }}
+                            onClick={e => { e.stopPropagation(); navigate(`/community/post/${post.id}`) }}
                             style={{
                                 display: 'flex', alignItems: 'center', gap: 5,
                                 background: 'none', border: 'none', cursor: 'pointer',
@@ -332,23 +322,6 @@ function PostRow({ post, onLike, onDelete, myEmail, expanded, dimmed, onToggle }
                                 }}
                             >
                                 Delete
-                            </button>
-                        )}
-
-                        {/* Collapse arrow when expanded */}
-                        {expanded && (
-                            <button
-                                onClick={e => { e.stopPropagation(); onToggle() }}
-                                style={{
-                                    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
-                                    color: '#94A3B8', padding: '4px 10px', borderRadius: 7,
-                                    fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4,
-                                }}
-                            >
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                    <polyline points="18 15 12 9 6 15"/>
-                                </svg>
-                                Collapse
                             </button>
                         )}
                     </div>
@@ -832,7 +805,6 @@ export default function CommunityPage() {
     const [loading, setLoading]   = useState(true)
     const [page, setPage]         = useState(0)
     const [hasNext, setHasNext]   = useState(false)
-    const [expandedId, setExpandedId] = useState(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [communityStats, setCommunityStats] = useState(null)
     const myEmail = api.getUserEmail?.() || ''
@@ -879,10 +851,6 @@ export default function CommunityPage() {
         if (!confirm('Delete this post?')) return
         const r = await api.deletePost(postId)
         if (r.ok) { loadFeed(0); if (activeTab === 'mine') loadMine() }
-    }
-
-    function toggleExpand(postId) {
-        setExpandedId(prev => prev === postId ? null : postId)
     }
 
     // Filter posts by search
@@ -961,7 +929,7 @@ export default function CommunityPage() {
                                     <button
                                         key={tab.id}
                                         id={`community-tab-${tab.id}`}
-                                        onClick={() => { setActiveTab(tab.id); setExpandedId(null) }}
+                                        onClick={() => { setActiveTab(tab.id) }}
                                         style={{
                                             background: 'none', border: 'none', cursor: 'pointer',
                                             padding: '10px 16px', fontSize: 13.5, fontWeight: 700,
@@ -985,7 +953,7 @@ export default function CommunityPage() {
                                             <button
                                                 key={t}
                                                 id={`community-topic-${t}`}
-                                                onClick={() => { setTopic(t); setPage(0); setExpandedId(null) }}
+                                                onClick={() => { setTopic(t); setPage(0) }}
                                                 style={{
                                                     padding: '5px 13px', borderRadius: 20, fontSize: 12, fontWeight: 700,
                                                     cursor: 'pointer', border: '1px solid', transition: 'all .18s',
@@ -1050,9 +1018,6 @@ export default function CommunityPage() {
                                         onLike={handleLike}
                                         onDelete={handleDelete}
                                         myEmail={myEmail}
-                                        expanded={expandedId === p.id}
-                                        dimmed={expandedId !== null && expandedId !== p.id}
-                                        onToggle={() => toggleExpand(p.id)}
                                     />
                                 ))}
                             </div>
@@ -1078,7 +1043,7 @@ export default function CommunityPage() {
                         {/* RIGHT: Widgets */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 20 }}>
                             <WeeklyChallengeWidget />
-                            <TrendingTopicsWidget onTopicClick={t => { setTopic(t); setActiveTab('feed'); setExpandedId(null) }} />
+                            <TrendingTopicsWidget onTopicClick={t => { setTopic(t); setActiveTab('feed') }} />
                             <TopContributorsWidget contributors={communityStats?.topContributors} />
                             <CommunityStatsWidget postsToday={communityStats?.postsToday} />
                         </div>
