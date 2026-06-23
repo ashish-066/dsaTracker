@@ -36,10 +36,11 @@ A full-stack application designed to track your Data Structures and Algorithms (
 
 ### Backend Setup
 1. Ensure PostgreSQL is running and update your database credentials in `src/main/resources/application.properties` or `application.yml`.
-2. For Google login, create a Google OAuth web client and set the same client ID in both runtimes:
-   ```bash
+2. For Google login, create a Google OAuth web client and configure the client ID in both runtimes:
+
+   **Backend:** Add this to your `src/main/resources/application.properties` (or `application.yml`):
+   ```properties
    GOOGLE_CLIENT_ID=your-google-web-client-id
-   VITE_GOOGLE_CLIENT_ID=your-google-web-client-id
    ```
    The backend verifies the Google ID token audience with `GOOGLE_CLIENT_ID`; no Google client secret is required for the browser button flow.
 3. Build and run the backend using the provided Maven wrapper:
